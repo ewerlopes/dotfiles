@@ -56,10 +56,10 @@
 
 (package! org-modern)
 
-(package! org-super-agenda)
-
   (package! doct
      :recipe (:host github :repo "progfolio/doct")
      :pin "506c22f365b75f5423810c4933856802554df464")
+
+(package! org-super-agenda)
 
 (package! org-roam)

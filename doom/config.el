@@ -358,87 +358,6 @@
 (setq org-habit-show-all-today t
       org-habit-show-habits-only-for-today nil)
 
-(setq org-agenda-files (apply 'append
-      (mapcar
-       (lambda (directory)
-         (directory-files-recursively
-           directory org-agenda-file-regexp))
-           '("~/org/gtd"))))
-
-(eval-after-load 'org
-  '(progn
-     (setq org-agenda-start-day "-0d")
-     (setq org-agenda-start-on-weekday nil)))
-
-(use-package! org-super-agenda
-  :after org-agenda
-  :init
-  (setq
-        org-agenda-time-grid
-        (quote
-         ((daily today require-timed)
-          (0700 0800 0900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200)
-          "......" "-----------------------------------------------------"))
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done t
-        org-agenda-include-deadlines t
-        org-agenda-include-diary t
-        org-agenda-block-separator nil
-        org-agenda-compact-blocks t
-        org-agenda-span 1
-        org-agenda-start-with-log-mode t
-        org-agenda-custom-commands
-        '(("o" "Overview"
-                    ((agenda "" ((org-agenda-span 'day)
-                                 (org-super-agenda-groups
-                                  '((:name "\nToday"
-                                           :time-grid t
-                                           :date today
-                                           :todo "TODAY"
-                                           :scheduled today
-                                           :order 1)))))
-                     (alltodo "" ((org-agenda-overriding-header "\nCategories")
-                                  (org-super-agenda-groups
-                                   '(
-                                     (:name "Started"
-                                      :todo "STRT"
-                                      :order 5)
-                                     (:name "Important"
-                                      :tag "Important"
-                                      :priority "A"
-                                      :order 3)
-                                     (:name "Due Today"
-                                      :deadline today
-                                      :order 4)
-                                     (:name "Due Soon"
-                                      :deadline future
-                                      :order 8)
-                                     (:name "Overdue"
-                                      :deadline past
-                                      :scheduled past
-                                      :face error
-                                      :order 7)
-                                      (:name "To Refile"
-                                      :and(
-                                          :todo "TODO"
-                                          :not (:habit t)
-                                      )
-                                      :order 9)
-                                     (:name "To read"
-                                      :tag "Read"
-                                      :order 30)
-                                     (:name "Waiting"
-                                      :todo "WAITING"
-                                      :order 20)
-                                     (:name "Trivial"
-                                            :priority<= "C"
-                                            :tag ("Trivial" "Unimportant")
-                                            :todo ("SOMEDAY")
-                                            :order 90)
-                                     (:discard (:anything t))))))))))
-  :config
-  (org-super-agenda-mode))
-
   (use-package! doct
       :commands doct)
 
@@ -649,11 +568,11 @@
   (org-capture nil "t"))
 
 (after! org-agenda (map! :map org-agenda-mode-map
-      "i" #'org-agenda-clock-in
-      "I" #'jethro/clock-in-and-advance
-      "r" #'jethro/org-process-inbox
-      "R" #'org-agenda-refile
-      "C" #'jethro/org-inbox-capture))
+      "C-c c i" #'org-agenda-clock-in
+      "C-c c I" #'jethro/clock-in-and-advance
+      "C-c c r" #'jethro/org-process-inbox
+      "C-c c R" #'org-agenda-refile
+      "C-c c C" #'jethro/org-inbox-capture))
 
 (defun jethro/advance-todo ()
   (org-todo 'right)
@@ -667,6 +586,87 @@
 (defun jethro/tag-new-node-as-draft ()
   (org-roam-tag-add '("draft")))
 (add-hook 'org-roam-capture-new-node-hook #'jethro/tag-new-node-as-draft)
+
+(setq org-agenda-files (apply 'append
+      (mapcar
+       (lambda (directory)
+         (directory-files-recursively
+           directory org-agenda-file-regexp))
+           '("~/org/gtd"))))
+
+(eval-after-load 'org
+  '(progn
+     (setq org-agenda-start-day "-0d")
+     (setq org-agenda-start-on-weekday nil)))
+
+(use-package! org-super-agenda
+  :after org-agenda
+  :init
+  (setq
+        org-agenda-time-grid
+        (quote
+         ((daily today require-timed)
+          (0700 0800 0900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300)
+          "......" "-----------------------------------------------------"))
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-include-deadlines t
+        org-agenda-include-diary t
+        org-agenda-block-separator nil
+        org-agenda-compact-blocks t
+        org-agenda-span 1
+        org-agenda-start-with-log-mode t
+        org-agenda-custom-commands
+        '(("o" "Overview"
+                    ((agenda "" ((org-agenda-span 'day)
+                                 (org-super-agenda-groups
+                                  '((:name "\nToday"
+                                           :time-grid t
+                                           :date today
+                                           :todo "TODAY"
+                                           :scheduled today
+                                           :order 1)))))
+                     (alltodo "" ((org-agenda-overriding-header "\nCategories")
+                                  (org-super-agenda-groups
+                                   '(
+                                     (:name "Started"
+                                      :todo "STRT"
+                                      :order 5)
+                                     (:name "Important"
+                                      :tag "Important"
+                                      :priority "A"
+                                      :order 3)
+                                     (:name "Due Today"
+                                      :deadline today
+                                      :order 4)
+                                     (:name "Due Soon"
+                                      :deadline future
+                                      :order 8)
+                                     (:name "Overdue"
+                                      :deadline past
+                                      :scheduled past
+                                      :face error
+                                      :order 7)
+                                      (:name "To Refile"
+                                      :and(
+                                          :todo "TODO"
+                                          :not (:habit t)
+                                      )
+                                      :order 9)
+                                     (:name "To read"
+                                      :tag "Read"
+                                      :order 30)
+                                     (:name "Waiting"
+                                      :todo "WAITING"
+                                      :order 20)
+                                     (:name "Trivial"
+                                            :priority<= "C"
+                                            :tag ("Trivial" "Unimportant")
+                                            :todo ("SOMEDAY")
+                                            :order 90)
+                                     (:discard (:anything t))))))))))
+  :config
+  (org-super-agenda-mode))
 
 (require 'org-protocol)
 
