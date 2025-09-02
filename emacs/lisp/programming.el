@@ -1,0 +1,1229 @@
+(use-package treesit
+  :defer t
+  :straight (:type built-in)
+  :hook ((bash-ts-mode c-ts-mode c++-ts-mode
+          html-ts-mode js-ts-mode typescript-ts-mode
+          json-ts-mode rust-ts-mode tsx-ts-mode python-ts-mode
+          css-ts-mode yaml-ts-mode) . lsp-deferred)
+  :init
+  (setq treesit-font-lock-level 4
+        treesit-language-source-alist
+        '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+          (c "https://github.com/tree-sitter/tree-sitter-c")
+          (cmake "https://github.com/uyha/tree-sitter-cmake")
+          (common-lisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+          (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+          (css "https://github.com/tree-sitter/tree-sitter-css")
+          (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+          (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+          (go "https://github.com/tree-sitter/tree-sitter-go")
+          (go-mod "https://github.com/camdencheek/tree-sitter-go-mod")
+          (html "https://github.com/tree-sitter/tree-sitter-html")
+          (js ("https://github.com/tree-sitter/tree-sitter-javascript" "master" "src"))
+          (json "https://github.com/tree-sitter/tree-sitter-json")
+          (lua "https://github.com/Azganoth/tree-sitter-lua")
+          (make "https://github.com/alemuller/tree-sitter-make")
+          (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+          (python "https://github.com/tree-sitter/tree-sitter-python")
+          (r "https://github.com/r-lib/tree-sitter-r")
+          (rust "https://github.com/tree-sitter/tree-sitter-rust")
+          (toml "https://github.com/tree-sitter/tree-sitter-toml")
+          (tsx "https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src")
+          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+          (yaml "https://github.com/ikatyang/tree-sitter-yaml"))))
+
+(use-package appwrite
+  :defer t
+  :straight (appwrite :build t
+                      :type git
+                      :host github
+                      :repo "Phundrak/appwrite.el")
+  :config
+  (setopt appwrite-endpoint "https://appwrite.phundrak.com"
+          appwrite-devel t))
+
+(use-package flycheck
+  :straight (:build t)
+  :defer t
+  :init
+  (global-flycheck-mode)
+  :config
+  (setq flycheck-emacs-lisp-load-path 'inherit)
+
+  ;; Rerunning checks on every newline is a mote excessive.
+  (delq 'new-line flycheck-check-syntax-automatically)
+  ;; And don't recheck on idle as often
+  (setq flycheck-idle-change-delay 2.0)
+
+  ;; For the above functionality, check syntax in a buffer that you
+  ;; switched to on briefly. This allows “refreshing” the syntax check
+  ;; state for several buffers quickly after e.g. changing a config
+  ;; file.
+  (setq flycheck-buffer-switch-check-intermediate-buffers t)
+
+  ;; Display errors a little quicker (default is 0.9s)
+  (setq flycheck-display-errors-delay 0.2))
+
+(use-package flycheck-popup-tip
+  :straight (:build t)
+  :after (flycheck evil)
+  :hook (flycheck-mode . flycheck-popup-tip-mode)
+  :config
+  (setq flycheck-popup-tip-error-prefix "X ")
+  (with-eval-after-load 'evil
+    (add-hook 'evil-insert-state-entry-hook
+              #'flycheck-popup-tip-delete-popup)
+    (add-hook 'evil-replace-state-entry-hook
+              #'flycheck-popup-tip-delete-popup)))
+
+(use-package ispell
+  :if (executable-find "aspell")
+  :defer t
+  :straight (:type built-in)
+  :config
+  (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+  (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+  (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
+  (setq ispell-program-name "aspell"
+        ispell-extra-args   '("--sug-mode=ultra" "--run-together")
+        ispell-aspell-dict-dir (ispell-get-aspell-config-value "dict-dir")
+        ispell-aspell-data-dir (ispell-get-aspell-config-value "data-dir")
+        ispell-personal-dictionary (expand-file-name (concat "ispell/" ispell-dictionary ".pws")
+                                                     user-emacs-directory)))
+
+(use-package flyspell
+  :defer t
+  :straight (:type built-in)
+  :ghook 'org-mode 'markdown-mode 'TeX-mode
+  :init
+  (defhydra flyspell-hydra ()
+    "
+Spell Commands^^           Add To Dictionary^^              Other
+--------------^^---------- -----------------^^------------- -----^^---------------------------
+[_b_] check whole buffer   [_B_] add word to dict (buffer)  [_t_] toggle spell check
+[_r_] check region         [_G_] add word to dict (global)  [_q_] exit
+[_d_] change dictionary    [_S_] add word to dict (session) [_Q_] exit and disable spell check
+[_n_] next error
+[_c_] correct before point
+[_s_] correct at point
+"
+    ("B" nil)
+    ("b" flyspell-buffer)
+    ("r" flyspell-region)
+    ("d" ispell-change-dictionary)
+    ("G" nil)
+    ("n" flyspell-goto-next-error)
+    ("c" flyspell-correct-wrapper)
+    ("Q" flyspell-mode :exit t)
+    ("q" nil :exit t)
+    ("S" nil)
+    ("s" flyspell-correct-at-point)
+    ("t" nil))
+  :config
+  (provide 'ispell) ;; force loading ispell
+  (setq flyspell-issue-welcome-flag nil
+        flyspell-issue-message-flag nil))
+
+(use-package flyspell-correct
+  :defer t
+  :straight (:build t)
+  :general ([remap ispell-word] #'flyspell-correct-at-point)
+  :config
+  (require 'flyspell-correct-ivy nil t))
+
+(use-package flyspell-correct-ivy
+  :defer t
+  :straight (:build t)
+  :after flyspell-correct)
+
+(use-package flyspell-lazy
+  :defer t
+  :straight (:build t)
+  :after flyspell
+  :config
+  (setq flyspell-lazy-idle-seconds 1
+        flyspell-lazy-window-idle-seconds 3)
+  (flyspell-lazy-mode +1))
+
+(use-package lsp-mode
+  :defer t
+  :straight (:build t)
+  :init
+  (setq lsp-keymap-prefix "C-c l"
+        read-process-output-max (* 3 1024 1024))
+  (setenv "LSP_USE_PLISTS" "true")
+  :hook ((c-mode          . lsp-deferred)
+         (c++-mode        . lsp-deferred)
+         (html-mode       . lsp-deferred)
+         (sh-mode         . lsp-deferred)
+         (lsp-mode        . lsp-enable-which-key-integration)
+         (lsp-mode        . lsp-ui-mode))
+  :commands (lsp lsp-deferred)
+  :custom
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-eldoc-render-all t)
+  (lsp-idle-delay 0.6)
+  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-use-plist t)
+  :config
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-tramp-connection "shellcheck")
+                    :major-modes '(sh-mode)
+                    :remote? t
+                    :server-id 'shellcheck-remote)))
+
+(use-package lsp-ui
+  :after lsp
+  :defer t
+  :straight (:build t)
+  :commands lsp-ui-mode
+  :config
+  (require 'lsp-ui-flycheck)
+  (require 'lsp-ui-sideline)
+  (setq lsp-ui-peek-always-show t
+        lsp-ui-doc-enable t
+        lsp-ui-sideline-show-diagnostics t
+        lsp-ui-sideline-show-code-action t)
+  :general
+  (phundrak/major-leader-key
+    :keymaps 'lsp-ui-peek-mode-map
+    :packages 'lsp-ui
+    "c" #'lsp-ui-pook--select-prev-file
+    "t" #'lsp-ui-pook--select-next
+    "s" #'lsp-ui-pook--select-prev
+    "r" #'lsp-ui-pook--select-next-file))
+
+(use-package lsp-ivy
+  :straight (:build t)
+  :defer t
+  :after lsp
+  :commands lsp-ivy-workspace-symbol)
+
+(use-package lsp-treemacs
+  :defer t
+  :straight (:build t))
+
+(use-package exec-path-from-shell
+  :defer t
+  :straight (:build t)
+  :init (exec-path-from-shell-initialize))
+
+(use-package consult-lsp
+  :defer t
+  :after lsp
+  :straight (:build t)
+  :general
+  (phundrak/evil
+    :keymaps 'lsp-mode-map
+    [remap xref-find-apropos] #'consult-lsp-symbols))
+
+(use-package dap-mode
+  :after lsp
+  :defer t
+  :straight (:build t)
+  :config
+  (dap-ui-mode)
+  (dap-ui-controls-mode 1)
+  (add-hook 'dap-stopped-hook
+            (lambda (arg) (call-interactively #'dap-hydra)))
+  :init
+  ;; JS/TS
+  (with-eval-after-load 'web-mode
+    (require 'dap-firefox)
+    (require 'dap-chrome)
+    (require 'dap-node))
+
+  ;; Rust
+  (with-eval-after-load 'rustic-mode
+    (require 'dap-lldb)
+    (require 'dap-gdb-lldb)
+    (dap-register-debug-template
+     "Rust::LLDB Run Configuration"
+     (list :type "lldb"
+           :request "launch"
+           :name "LLDB::Run"
+           :gdbpath "rust-lldb"
+           :target nil
+           :cwd nil))))
+
+(use-package langtool
+  :defer t
+  :straight (:build t)
+  :commands (langtool-check
+             langtool-check-done
+             langtool-show-message-at-point
+             langtool-correct-buffer)
+  :custom
+  (langtool-default-language "en-US")
+  (langtool-mother-tongue "fr")
+  :config
+  (setq langtool-java-classpath (string-join '("/usr/share/languagetool"
+                                               "/usr/share/java/languagetool/*")
+                                             ":")))
+
+(use-package writegood-mode
+  :defer t
+  :straight (:build t)
+  :hook org-mode latex-mode
+  :general
+  (phundrak/major-leader-key
+    :keymaps 'writegood-mode-map
+    "g" #'writegood-grade-level
+    "r" #'writegood-reading-ease))
+
+(defun my/local-tab-indent ()
+  (setq-local indent-tabs-mode 1))
+
+(add-hook 'makefile-mode-hook #'my/local-tab-indent)
+
+(use-package caddyfile-mode
+  :defer t
+  :straight (:build t)
+  :mode (("Caddyfile\\'" . caddyfile-mode)
+         ("caddy\\.conf\\'" . caddyfile-mode)))
+
+(use-package cmake-mode
+  :defer t
+  :straight (:build t))
+
+(use-package company-cmake
+  :straight (company-cmake :build t
+                           :type git
+                           :host github
+                           :repo "purcell/company-cmake")
+  :after cmake-mode
+  :defer t)
+
+(use-package cmake-font-lock
+  :defer t
+  :after cmake-mode
+  :straight (:build t))
+
+(use-package eldoc-cmake
+  :straight (:build t)
+  :defer t
+  :after cmake-mode)
+
+(use-package csv-mode
+  :straight (:build t)
+  :defer t
+  :general
+  (phundrak/major-leader-key
+    :keymaps 'csv-mode-map
+    "a"  #'csv-align-fields
+    "d"  #'csv-kill-fields
+    "h"  #'csv-header-line
+    "i"  #'csv-toggle-invisibility
+    "n"  #'csv-forward-field
+    "p"  #'csv-backward-field
+    "r"  #'csv-reverse-region
+    "s"  '(:ignore t :wk "sort")
+    "sf" #'csv-sort-fields
+    "sn" #'csv-sort-numeric-fields
+    "so" #'csv-toggle-descending
+    "t"  #'csv-transpose
+    "u"  #'csv-unalign-fields
+    "y"  '(:ignore t :wk yank)
+    "yf" #'csv-yank-fields
+    "yt" #'csv-yank-as-new-table))
+
+(use-package dotenv-mode
+  :defer t
+  :straight (:build t))
+
+(use-package gnuplot
+  :straight (:build t)
+  :defer t)
+
+(use-package graphviz-dot-mode
+  :defer t
+  :straight (:build t)
+  :after org
+  :mode (("\\.diag\\'"      . graphviz-dot-mode)
+         ("\\.blockdiag\\'" . graphviz-dot-mode)
+         ("\\.nwdiag\\'"    . graphviz-dot-mode)
+         ("\\.rackdiag\\'"  . graphviz-dot-mode)
+         ("\\.dot\\'"       . graphviz-dot-mode)
+         ("\\.gv\\'"        . graphviz-dot-mode))
+  :init
+  (setq graphviz-dot-indent-width tab-width)
+  (with-eval-after-load 'org
+      (defalias 'org-babel-execute:graphviz-dot #'org-babel-execute:dot)
+      (add-to-list 'org-babel-load-languages '(dot . t))
+      (require 'ob-dot)
+      (setq org-src-lang-modes
+            (append '(("dot" . graphviz-dot))
+                    (delete '("dot" . fundamental) org-src-lang-modes))))
+
+  :general
+  (phundrak/major-leader-key
+    :keymaps 'graphviz-dot-mode-map
+    "=" #'graphviz-dot-indent-graph
+    "c" #'compile)
+  :config
+  (setq graphviz-dot-indent-width 4))
+
+(use-package markdown-mode
+  :defer t
+  :straight t
+  :mode
+  (("\\.mkd\\'" . markdown-mode)
+   ("\\.mdk\\'" . markdown-mode)
+   ("\\.mdx\\'" . markdown-mode))
+  :hook (markdown-mode . orgtbl-mode)
+  :hook (markdown-mode . visual-line-mode)
+  :general
+  (phundrak/evil
+    :keymaps 'markdown-mode-map
+    :packages '(markdown-mode evil)
+    "M-RET" #'markdown-insert-list-item
+    "M-c"   #'markdown-promote
+    "M-t"   #'markdown-move-down
+    "M-s"   #'markdown-move-up
+    "M-r"   #'markdown-demote
+    "t"     #'evil-next-visual-line
+    "s"     #'evil-previous-visual-line)
+  (phundrak/major-leader-key
+    :keymaps 'markdown-mode-map
+    :packages 'markdown-mode
+    "{"   #'markdown-backward-paragraph
+    "}"   #'markdown-forward-paragraph
+    "]"   #'markdown-complete
+    ">"   #'markdown-indent-region
+    "»"   #'markdown-indent-region
+    "<"   #'markdown-outdent-region
+    "«"   #'markdown-outdent-region
+    "n"   #'markdown-next-link
+    "p"   #'markdown-previous-link
+    "f"   #'markdown-follow-thing-at-point
+    "k"   #'markdown-kill-thing-at-point
+    "c"   '(:ignore t :which-key "command")
+    "c]"  #'markdown-complete-buffer
+    "cc"  #'markdown-check-refs
+    "ce"  #'markdown-export
+    "cm"  #'markdown-other-window
+    "cn"  #'markdown-cleanup-list-numbers
+    "co"  #'markdown-open
+    "cp"  #'markdown-preview
+    "cv"  #'markdown-export-and-preview
+    "cw"  #'markdown-kill-ring-save
+    "h"   '(:ignore t :which-key "headings")
+    "hi"  #'markdown-insert-header-dwim
+    "hI"  #'markdown-insert-header-setext-dwim
+    "h1"  #'markdown-insert-header-atx-1
+    "h2"  #'markdown-insert-header-atx-2
+    "h3"  #'markdown-insert-header-atx-3
+    "h4"  #'markdown-insert-header-atx-4
+    "h5"  #'markdown-insert-header-atx-5
+    "h6"  #'markdown-insert-header-atx-6
+    "h!"  #'markdown-insert-header-setext-1
+    "h@"  #'markdown-insert-header-setext-2
+    "i"   '(:ignore t :which-key "insert")
+    "i-"  #'markdown-insert-hr
+    "if"  #'markdown-insert-footnote
+    "ii"  #'markdown-insert-image
+    "il"  #'markdown-insert-link
+    "it"  #'markdown-insert-table
+    "iw"  #'markdown-insert-wiki-link
+    "l"   '(:ignore t :which-key "lists")
+    "li"  #'markdown-insert-list-item
+    "T"   '(:ignore t :which-key "toggle")
+    "Ti"  #'markdown-toggle-inline-images
+    "Tu"  #'markdown-toggle-url-hiding
+    "Tm"  #'markdown-toggle-markup-hiding
+    "Tt"  #'markdown-toggle-gfm-checkbox
+    "Tw"  #'markdown-toggle-wiki-links
+    "t"   '(:ignore t :which-key "table")
+    "tc"  #'markdown-table-move-column-left
+    "tt"  #'markdown-table-move-row-down
+    "ts"  #'markdown-table-move-row-up
+    "tr"  #'markdown-table-move-column-right
+    "ts"  #'markdown-table-sort-lines
+    "tC"  #'markdown-table-convert-region
+    "tt"  #'markdown-table-transpose
+    "td"  '(:ignore t :which-key "delete")
+    "tdc" #'markdown-table-delete-column
+    "tdr" #'markdown-table-delete-row
+    "ti"  '(:ignore t :which-key "insert")
+    "tic" #'markdown-table-insert-column
+    "tir" #'markdown-table-insert-row
+    "x"   '(:ignore t :which-key "text")
+    "xb"  #'markdown-insert-bold
+    "xB"  #'markdown-insert-gfm-checkbox
+    "xc"  #'markdown-insert-code
+    "xC"  #'markdown-insert-gfm-code-block
+    "xi"  #'markdown-insert-italic
+    "xk"  #'markdown-insert-kbd
+    "xp"  #'markdown-insert-pre
+    "xP"  #'markdown-pre-region
+    "xs"  #'markdown-insert-strike-through
+    "xq"  #'markdown-blockquote-region)
+  :config
+  (setq markdown-fontify-code-blocks-natively t))
+
+(use-package gh-md
+  :defer t
+  :after markdown-mode
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+    :packages 'gh-md
+    :keymaps 'markdown-mode-map
+    "cr" #'gh-md-render-buffer))
+
+(use-package ox-gfm
+  :straight (:build t)
+  :defer t
+  :after (org ox))
+
+(use-package markdown-toc
+  :defer t
+  :after markdown-mode
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+    :packages 'markdown-toc
+    :keymaps 'markdown-mode-map
+    "iT" #'markdown-toc-generate-toc))
+
+(use-package edit-indirect
+  :straight (:build t)
+  :defer t)
+
+(use-package nix-mode
+  :straight (:build t)
+  :defer t)
+
+(use-package nginx-mode
+  :straight (:build t)
+  :defer t)
+
+(use-package company-nginx
+  :straight (company-nginx :build t
+                           :type git
+                           :host github
+                           :repo "emacsmirror/company-nginx")
+  :defer t
+  :config
+  (add-hook 'nginx-mode-hook (lambda ()
+                               (add-to-list 'company-backends #'company-nginx))))
+
+(use-package pkgbuild-mode
+  :straight (:build t)
+  :defer t
+  :custom
+  (pkgbuild-update-sums-on-save nil)
+  (pkgbuild-ask-about-save nil)
+  :general
+  (phundrak/major-leader-key
+    :keymaps 'pkgbuild-mode-map
+    "c"  #'pkgbuild-syntax-check
+    "i"  #'pkgbuild-initialize
+    "I"  #'pkgbuild-increase-release-tag
+    "m"  #'pkgbuild-makepkg
+    "u"  '(:ignore :wk "update")
+    "us" #'pkgbuild-update-sums-line
+    "uS" #'pkgbuild-update-srcinfo))
+
+(use-package plantuml-mode
+  :defer t
+  :straight (:build t)
+  :mode ("\\.\\(pum\\|puml\\)\\'" . plantuml-mode)
+  :after ob
+  :init
+  (add-to-list 'org-babel-load-languages '(plantuml . t))
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'plantuml-mode-map
+   :packages 'plantuml-mode
+   "c"  '(:ignore t :which-key "compile")
+   "cc" #'plantuml-preview
+   "co" #'plantuml-set-output-type)
+  :config
+  (setq plantuml-default-exec-mode 'jar
+        plantuml-jar-path "~/.local/bin/plantuml.jar"
+        org-plantuml-jar-path "~/.local/bin/plantuml.jar"))
+
+(use-package ron-mode
+  :defer t
+  :straight (:build t))
+
+(use-package fish-mode
+  :straight (:build t)
+  :defer t)
+
+(use-package shell
+  :defer t
+  :straight (:type built-in)
+  :hook (shell-mode . tree-sitter-hl-mode))
+
+(use-package ssh-config-mode
+  :defer t
+  :straight (:build t))
+
+(use-package systemd
+  :defer t
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+    :keymaps '(systemd-mode-map)
+    "d" '(systemd-doc-directives :which-key "directives manpage")
+    "o" 'systemd-doc-open))
+
+(use-package tmux-mode
+  :defer t
+  :straight (tmux-mode :type git :host github :repo "nverno/tmux-mode")
+  :mode (("tmux\\.conf\\'" . tmux-mode)))
+
+(use-package toml-mode
+  :straight (:build t)
+  :defer t
+  :mode "/\\(Cargo.lock\\|\\.cargo/config\\)\\'")
+
+(use-package yaml-mode
+  :defer t
+  :straight (:build t)
+  :mode "\\.yml\\'"
+  :mode "\\.yaml\\'")
+
+(use-package yuck-mode
+  :straight (:build t)
+  :defer t
+  :hook ((yuck-mode . parinfer-rust-mode)))
+
+(use-package cc-mode
+  :straight (:type built-in)
+  :defer t
+  :init
+  (put 'c-c++-backend 'safe-local-variable 'symbolp)
+  (add-hook 'c-mode-hook #'tree-sitter-hl-mode)
+  (add-hook 'c++-mode-hook #'tree-sitter-hl-mode)
+  :config
+  (require 'compile)
+  :general
+  (phundrak/undefine
+    :keymaps '(c-mode-map c++-mode-map)
+    ";" nil)
+  (phundrak/major-leader-key
+   :keymaps '(c-mode-map c++-mode-map)
+   "l"  '(:keymap lsp-command-map :which-key "lsp" :package lsp-mode))
+  (phundrak/evil
+   :keymaps '(c-mode-map c++-mode-map)
+   "ga" #'projectile-find-other-file
+   "gA" #'projectile-find-other-file-other-window))
+
+(use-package clang-format+
+  :straight (:build t)
+  :defer t
+  :init
+  (add-hook 'c-mode-common-hook #'clang-format+-mode))
+
+(use-package modern-cpp-font-lock
+  :straight (:build t)
+  :defer t
+  :hook (c++-mode . modern-c++-font-lock-mode))
+
+(use-package lisp-mode
+  :straight (:type built-in)
+  :defer t
+  :after parinfer-rust-mode
+  :hook (lisp-mode . parinfer-rust-mode)
+  :config
+  (put 'defcommand 'lisp-indent-function 'defun)
+  (setq inferior-lisp-program "/usr/bin/sbcl --noinform"))
+
+(use-package stumpwm-mode
+  :straight (:build t)
+  :defer t
+  :hook lisp-mode
+  :config
+  (phundrak/major-leader-key
+   :keymaps 'stumpwm-mode-map
+   :packages 'stumpwm-mode
+   "e"  '(:ignore t :which-key "eval")
+   "ee" #'stumpwm-eval-last-sexp
+   "ed" #'stumpwm-eval-defun
+   "er" #'stumpwm-eval-region))
+
+(use-package sly
+  :defer t
+  :straight (:build t))
+
+(use-package eldoc
+  :defer t
+  :after company
+  :init
+  (eldoc-add-command 'company-complete-selection
+                     'company-complete-common
+                     'company-capf
+                     'company-abort))
+
+(use-package elisp-mode
+  :straight (:type built-in)
+  :requires smartparens
+  :config
+  (add-hook 'emacs-lisp-mode-hook (lambda () (smartparens-mode -1))))
+
+(use-package elisp-demos
+  :defer t
+  :straight (:build t)
+  :config
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+
+(use-package epdh
+  :straight (epdh :type git
+                  :host github
+                  :repo "alphapapa/emacs-package-dev-handbook"
+                  :build t)
+  :defer t)
+
+(phundrak/major-leader-key
+ :keymaps 'emacs-lisp-mode-map
+ "'"   #'ielm
+ "c"   '(emacs-lisp-byte-compile :which-key "Byte compile")
+ "C"   '(:ignore t :which-key "checkdoc")
+ "Cc"  #'checkdoc
+ "Cs"  #'checkdoc-start
+ "e"   '(:ignore t :which-key "eval")
+ "eb"  #'eval-buffer
+ "ed"  #'eval-defun
+ "ee"  #'eval-last-sexp
+ "er"  #'eval-region
+
+ "h"   '(:ignore t :which-key "help")
+ "hh"  #'helpful-at-point
+
+ "t"   '(:ignore t :wk "toggle")
+ "tP"  '(:ignore t :wk "parinfer")
+ "tPs" #'parinfer-rust-switch-mode
+ "tPd" #'parinfer-rust-mode-disable
+ "tPp" #'parinfer-rust-toggle-paren-mode)
+
+(use-package package-lint
+  :defer t
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+    :keymaps 'emacs-lisp-mode-map
+    :packages 'package-lint
+    "l" #'package-lint-current-buffer))
+
+(use-package cask-mode
+  :defer t
+  :straight (:build t))
+
+;; (use-package eask-api
+;;  :defer t
+;;  :straight (eask-api :type git
+;;                      :host github
+;;                      :repo "emacs-eask/eask-api"))
+;;
+;;(use-package eask-mode
+;;  :defer t
+;;  :straight (eask-mode :type git
+;;                       :host github
+;;                       :repo "emacs-eask/eask-mode"))
+
+(use-package lsp-java
+  :requires lsp
+  :straight (:build t)
+  :after lsp
+  :hook (java-mode . lsp-deferred))
+
+(use-package python
+  :defer t
+  :straight (:build t)
+  :after ob
+  :mode (("SConstruct\\'" . python-mode)
+         ("SConscript\\'" . python-mode)
+         ("[./]flake8\\'" . conf-mode)
+         ("/Pipfile\\'"   . conf-mode))
+  :init
+  (setq python-indent-guess-indent-offset-verbose nil)
+  (add-hook 'python-mode-local-vars-hook #'lsp)
+  :config
+  (setq python-indent-guess-indent-offset-verbose nil)
+  (when (and (executable-find "python3")
+           (string= python-shell-interpreter "python"))
+    (setq python-shell-interpreter "python3"))
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp")))
+
+(use-package pytest
+  :defer t
+  :straight (:build t)
+  :commands (pytest-one
+             pytest-pdb-one
+             pytest-all
+             pytest-pdb-all
+             pytest-last-failed
+             pytest-pdb-last-failed
+             pytest-module
+             pytest-pdb-module)
+  :config
+  (add-to-list 'pytest-project-root-files "setup.cfg")
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :infix "t"
+   :packages 'pytest
+   ""  '(:ignore t :which-key "test")
+   "a" #'python-pytest
+   "f" #'python-pytest-file-dwim
+   "F" #'python-pytest-file
+   "t" #'python-pytest-function-dwim
+   "T" #'python-pytest-function
+   "r" #'python-pytest-repeat
+   "p" #'python-pytest-dispatch))
+
+(use-package poetry
+  :defer t
+  :straight (:build t)
+  :commands (poetry-venv-toggle
+             poetry-tracking-mode)
+  :config
+  (setq poetry-tracking-strategy 'switch-buffer)
+  (add-hook 'python-mode-hook #'poetry-tracking-mode))
+
+(use-package pip-requirements
+  :defer t
+  :straight (:build t))
+
+(use-package pippel
+  :defer t
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'pippel
+   "P" #'pippel-list-packages))
+
+(use-package pipenv
+  :defer t
+  :straight (:build t)
+  :commands (pipenv-activate
+             pipenv-deactivate
+             pipenv-shell
+             pipenv-open
+             pipenv-install
+             pipenv-uninstall)
+  :hook (python-mode . pipenv-mode)
+  :init (setq pipenv-with-projectile nil)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'pipenv
+   :infix "e"
+   ""  '(:ignore t :which-key "pipenv")
+   "a" #'pipenv-activate
+   "d" #'pipenv-deactivate
+   "i" #'pipenv-install
+   "l" #'pipenv-lock
+   "o" #'pipenv-open
+   "r" #'pipenv-run
+   "s" #'pipenv-shell
+   "u" #'pipenv-uninstall))
+
+(use-package pyenv
+  :defer t
+  :straight (:build t)
+  :config
+  (add-hook 'python-mode-hook #'pyenv-track-virtualenv)
+  (add-to-list 'global-mode-string
+               '(pyenv-virtual-env-name (" venv:" pyenv-virtual-env-name " "))
+               'append))
+
+(use-package pyenv-mode
+  :defer t
+  :after python
+  :straight (:build t)
+  :if (executable-find "pyenv")
+  :commands (pyenv-mode-versions)
+  :general
+  (phundrak/major-leader-key
+    :packages 'pyenv-mode
+    :keymaps 'python-mode-map
+    :infix "v"
+    "u" #'pyenv-mode-unset
+    "s" #'pyenv-mode-set))
+
+(use-package pyimport
+  :defer t
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+    :packages 'pyimport
+    :keymaps 'python-mode-map
+    :infix "i"
+    ""  '(:ignore t :which-key "imports")
+    "i" #'pyimport-insert-missing
+    "r" #'pyimport-remove-unused))
+
+(use-package py-isort
+  :defer t
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'py-isort
+   :infix "i"
+   ""  '(:ignore t :which-key "imports")
+   "s" #'py-isort-buffer
+   "R" #'py-isort-region))
+
+(use-package counsel-pydoc
+  :defer t
+  :straight (:build t))
+
+(use-package sphinx-doc
+  :defer t
+  :straight (:build t)
+  :init
+  (add-hook 'python-mode-hook #'sphinx-doc-mode)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'sphinx-doc
+   :infix "S"
+   ""  '(:ignore t :which-key "sphinx-doc")
+   "e" #'sphinx-doc-mode
+   "d" #'sphinx-doc))
+
+(use-package cython-mode
+  :defer t
+  :straight (:build t)
+  :mode "\\.p\\(yx\\|x[di]\\)\\'"
+  :config
+  (setq cython-default-compile-format "cython -a %s")
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'cython-mode-map
+   :packages 'cython-mode
+   :infix "c"
+   ""  '(:ignore t :which-key "cython")
+   "c" #'cython-compile))
+
+(use-package flycheck-cython
+  :defer t
+  :straight (:build t)
+  :after cython-mode)
+
+(use-package blacken
+  :defer t
+  :straight (:build t)
+  :init
+  (add-hook 'python-mode-hook #'blacken-mode))
+
+(use-package lsp-pyright
+  :after lsp-mode
+  :defer t
+  :straight (:buidl t))
+
+(use-package rust-mode
+  :straight t
+  :defer t
+  :init
+  (setq rust-mode-treesitter-derive t))
+
+(use-package rustic
+  :defer t
+  :straight (:build t)
+  :mode ("\\.rs\\'" . rustic-mode)
+  :hook (rustic-mode-local-vars . rustic-setup-lsp)
+  :hook (rustic-mode . lsp-deferred)
+  :init
+  (with-eval-after-load 'org
+    (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
+    (add-to-list 'org-src-lang-modes '("rust" . rustic)))
+  (setq rustic-lsp-client 'lsp-mode)
+  :general
+  (general-define-key
+   :keymaps 'rustic-mode-map
+   :packages 'lsp
+   "M-t" #'lsp-ui-imenu
+   "M-?" #'lsp-find-references)
+  (phundrak/major-leader-key
+   :keymaps 'rustic-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp"))
+  (phundrak/major-leader-key
+   :keymaps 'rustic-mode-map
+   :packages 'rustic
+   "b"  '(:ignore t :which-key "build")
+   "bb" #'rustic-cargo-build
+   "bB" #'rustic-cargo-bench
+   "bc" #'rustic-cargo-check
+   "bC" #'rustic-cargo-clippy
+   "bd" #'rustic-cargo-doc
+   "bf" #'rustic-cargo-fmt
+   "bn" #'rustic-cargo-new
+   "bo" #'rustic-cargo-outdated
+   "br" #'rustic-cargo-run
+   "t"  '(:ignore t :which-key "cargo test")
+   "ta" #'rustic-cargo-test
+   "tt" #'rustic-cargo-current-test)
+  :config
+  (setq rustic-indent-method-chain    t
+        rustic-babel-format-src-block nil
+        rustic-format-trigger         nil)
+  (remove-hook 'rustic-mode-hook #'flycheck-mode)
+  (remove-hook 'rustic-mode-hook #'flymake-mode-off)
+  (remove-hook 'rustic-mode-hook #'rustic-setup-lsp))
+
+(use-package uiua-ts-mode
+  :mode "\\.ua\\'"
+  :straight (:build t))
+
+(use-package emmet-mode
+  :straight (:build t)
+  :defer t
+  :hook ((css-mode  . emmet-mode)
+         (html-mode . emmet-mode)
+         (web-mode  . emmet-mode)
+         (sass-mode . emmet-mode)
+         (scss-mode . emmet-mode)
+         (web-mode  . emmet-mode))
+  :config
+  (general-define-key
+   :keymaps 'emmet-mode-keymap
+   "M-RET" #'emmet-expand-yas)
+  (phundrak/major-leader-key
+    :keymaps 'web-mode-map
+    :packages '(web-mode emmet-mode)
+    "e" '(:ignore t :which-key "emmet")
+    "ee" #'emmet-expand-line
+    "ep" #'emmet-preview
+    "eP" #'emmet-preview-mode
+    "ew" #'emmet-wrap-with-markup))
+
+(use-package impatient-mode
+  :straight (:build t)
+  :defer t)
+
+(use-package web-mode
+  :defer t
+  :straight (:build t)
+  :hook html-mode
+  :hook (web-mode . prettier-js-mode)
+  :hook (web-mode . lsp-deferred)
+  :mode (("\\.phtml\\'"      . web-mode)
+         ("\\.tpl\\.php\\'"  . web-mode)
+         ("\\.twig\\'"       . web-mode)
+         ("\\.xml\\'"        . web-mode)
+         ("\\.html\\'"       . web-mode)
+         ("\\.htm\\'"        . web-mode)
+         ("\\.[gj]sp\\'"     . web-mode)
+         ("\\.as[cp]x?\\'"   . web-mode)
+         ("\\.eex\\'"        . web-mode)
+         ("\\.erb\\'"        . web-mode)
+         ("\\.mustache\\'"   . web-mode)
+         ("\\.handlebars\\'" . web-mode)
+         ("\\.hbs\\'"        . web-mode)
+         ("\\.eco\\'"        . web-mode)
+         ("\\.ejs\\'"        . web-mode)
+         ("\\.svelte\\'"     . web-mode)
+         ("\\.ctp\\'"        . web-mode)
+         ("\\.djhtml\\'"     . web-mode)
+         ("\\.vue\\'"        . web-mode))
+  :config
+  (setopt web-mode-markup-indent-offset 2
+          web-mode-code-indent-offset   2
+          web-mode-css-indent-offset    2
+          web-mode-style-padding        0
+          web-mode-script-padding       0)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'web-mode-map
+   :packages 'web-mode
+   "="  '(:ignore t :which-key "format")
+   "E"  '(:ignore t :which-key "errors")
+   "El" #'web-mode-dom-errors-show
+   "gb" #'web-mode-element-beginning
+   "g"  '(:ignore t :which-key "goto")
+   "gc" #'web-mode-element-child
+   "gp" #'web-mode-element-parent
+   "gs" #'web-mode-element-sibling-next
+   "h"  '(:ignore t :which-key "dom")
+   "hp" #'web-mode-dom-xpath
+   "r"  '(:ignore t :which-key "refactor")
+   "rc" #'web-mode-element-clone
+   "rd" #'web-mode-element-vanish
+   "rk" #'web-mode-element-kill
+   "rr" #'web-mode-element-rename
+   "rw" #'web-mode-element-wrap
+   "z"  #'web-mode-fold-or-unfold)
+  (phundrak/major-leader-key
+    :keymaps 'web-mode-map
+    :packages '(lsp-mode web-mode)
+    "l" '(:keymap lsp-command-map :which-key "lsp")))
+
+(use-package company-web
+  :defer t
+  :straight (:build t)
+  :after (emmet-mode web-mode))
+
+(use-package css-mode
+  :defer t
+  :straight (:type built-in)
+  :hook (css-mode . smartparens-mode)
+  :hook (css-mode . lsp-deferred)
+  :hook (scss-mode . prettier-js-mode)
+  :init
+  (put 'css-indent-offset 'safe-local-variable #'integerp)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'css-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp"))
+  (phundrak/major-leader-key
+    :keymaps 'css-mode-map
+    :packages 'css-mode
+    "=" '(:ignore :wk "format")
+    "g" '(:ignore :wk "goto")))
+
+(use-package scss-mode
+  :straight (:build t)
+  :hook (scss-mode . smartparens-mode)
+  :hook (scss-mode . lsp-deferred)
+  :hook (scss-mode . prettier-js-mode)
+  :defer t
+  :mode "\\.scss\\'")
+
+(use-package counsel-css
+  :straight (:build t)
+  :defer t
+  :init
+  (cl-loop for (mode-map . mode-hook) in '((css-mode-map  . css-mode-hook)
+                                           (scss-mode-map . scss-mode-hook))
+           do (add-hook mode-hook #'counsel-css-imenu-setup)
+           (phundrak/major-leader-key
+            :keymaps mode-map
+            "gh" #'counsel-css)))
+
+(use-package less-css-mode
+  :straight  (:type built-in)
+  :defer t
+  :mode "\\.less\\'"
+  :hook (less-css-mode . smartparens-mode)
+  :hook (less-css-mode . lsp-deferred)
+  :hook (less-css-mode . prettier-js-mode)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'less-css-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp")))
+
+(use-package rjsx-mode
+  :defer t
+  :straight (:build t)
+  :after compile
+  :mode "\\.[mc]?jsx?\\'"
+  :mode "\\.es6\\'"
+  :mode "\\.pac\\'"
+  :interpreter "node"
+  :hook (rjsx-mode . rainbow-delimiters-mode)
+  :hook (rjsx-mode . lsp-deferred)
+  :init
+  (add-to-list 'compilation-error-regexp-alist 'node)
+  (add-to-list 'compilation-error-regexp-alist-alist
+               '(node "^[[:blank:]]*at \\(.*(\\|\\)\\(.+?\\):\\([[:digit:]]+\\):\\([[:digit:]]+\\)"
+                      2 3 4))
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'rjsx-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp"))
+  :config
+  (setq js-chain-indent                  t
+        js2-basic-offset                 2
+        ;; ignore shebangs
+        js2-skip-preprocessor-directives t
+        ;; Flycheck handles this already
+        js2-mode-show-parse-errors       nil
+        js2-mode-show-strict-warnings    nil
+        ;; conflicting with eslint, Flycheck already handles this
+        js2-strict-missing-semi-warning  nil
+        js2-highlight-level              3
+        js2-idle-timer-delay             0.15))
+
+(use-package js2-refactor
+  :defer t
+  :straight (:build t)
+  :after (js2-mode rjsx-mode)
+  :hook (js2-mode . js2-refactor-mode)
+  :hook (rjsx-mode . js2-refactor-mode))
+
+(use-package npm-transient
+  :defer t
+  :straight (npm-transient :build t
+                           :type git
+                           :host github
+                           :repo "Phundrak/npm-transient"))
+  ;; :general
+  ;; (phundrak/major-leader-key
+  ;;   :packages '(npm-transient rjsx-mode web-mode)
+  ;;   :keymaps '(rjsx-mode-map web-mode-map)
+  ;;   "n" #'npm-transient))
+
+(use-package prettier-js
+  :defer t
+  :straight (:build t)
+  :after (rjsx-mode web-mode typescript-mode)
+  :hook ((rjsx-mode typescript-mode) . prettier-js-mode)
+  :config
+  (setq prettier-js-args '("--single-quote" "--jsx-single-quote")))
+
+(use-package typescript-mode
+  :defer t
+  :straight (:build t)
+  :hook (typescript-mode     . rainbow-delimiters-mode)
+  :hook (typescript-tsx-mode . rainbow-delimiters-mode)
+  :hook (typescript-mode     . lsp-deferred)
+  :hook (typescript-tsx-mode . lsp-deferred)
+  :hook (typescript-mode     . prettier-js-mode)
+  :hook (typescript-tsx-mode . prettier-js-mode)
+  :commands typescript-tsx-mode
+  :after flycheck
+  :init
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
+  :general
+  (phundrak/major-leader-key
+   :keymaps '(typescript-mode-map typescript-tsx-mode-map)
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp"))
+  (phundrak/major-leader-key
+    :packages 'typescript-mode
+    :keymaps '(typescript-mode-map typescript-tsx-mode-map)
+    "n" '(:keymap npm-mode-command-keymap :which-key "npm"))
+  :config
+  (with-eval-after-load 'flycheck
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+    (flycheck-add-mode 'javascript-eslint 'typescript-mode)
+    (flycheck-add-mode 'javascript-eslint 'typescript-tsx-mode)
+    (flycheck-add-mode 'typescript-tslint 'typescript-tsx-mode))
+  (when (fboundp 'web-mode)
+    (define-derived-mode typescript-tsx-mode web-mode "TypeScript-TSX"))
+  (autoload 'js2-line-break "js2-mode" nil t))
+
+(use-package tide
+  :defer t
+  :straight (:build t)
+  :hook (tide-mode . tide-hl-identifier-mode)
+  :config
+  (setq tide-completion-detailed              t
+        tide-always-show-documentation        t
+        tide-server-may-response-length       524288
+        tide-completion-setup-company-backend nil)
+
+  (advice-add #'tide-setup :after #'eldoc-mode)
+
+  :general
+  (phundrak/major-leader-key
+    :keymaps 'tide-mode-map
+    "R"   #'tide-restart-server
+    "f"   #'tide-format
+    "rrs" #'tide-rename-symbol
+    "roi" #'tide-organize-imports))
