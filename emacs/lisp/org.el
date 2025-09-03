@@ -65,12 +65,16 @@
   (defvar org-journal-file "~/org/journal.org")
   (defvar org-novel-file "~/org/novel.org")
   (defvar org-agenda-file "~/org/agenda/private.org")
+  (defvar org-inbox-file "~/org/agenda/inbox.org")
   (setq org-capture-templates
         '(
           ("e" "Email")
           ("ew" "Write Email" entry
             (file+headline org-default-notes-file "Emails")
             (file "~/org/capture/email.orgcaptmpl"))
+          ("i" "Inbox" entry
+            (file+headline org-inbox-file "Inbox")
+            (file "~/org/capture/notes.orgcaptmpl"))
           ("j" "Journal" entry
             (file+datetree org-journal-file ##)
             (file "~/org/capture/journal.orgcaptmpl"))
@@ -138,8 +142,7 @@
             (file "~/org/capture/health.orgcaptmpl"))
           ("ti" "Informatique" entry
             (file+headline org-private-agenda-file "Informatique")
-            (file "~/org/capture/informatique.orgcaptmpl"))
-          ))
+            (file "~/org/capture/informatique.orgcaptmpl"))))
   (defun org-emphasize-bold ()
     "Emphasize as bold the current region."
     (interactive)
@@ -449,6 +452,7 @@
 (setq org-habit-show-all-today t
       org-habit-show-habits-only-for-today nil)
 
+(setq jethro/org-agenda-directory "~/org/agenda/")
 (setq org-agenda-files (apply 'append
       (mapcar
        (lambda (directory)
@@ -456,84 +460,41 @@
            directory org-agenda-file-regexp))
            '("~/org/agenda"))))
 
-(eval-after-load 'org
-  '(progn
-     (setq org-agenda-start-day "-0d")
-     (setq org-agenda-start-on-weekday nil)))
+;;(setq org-agenda-block-separator nil)
+(setq org-agenda-start-with-log-mode t)
 
-(use-package org-super-agenda
-  :after org-agenda
-  :init
-  (setq
-        org-agenda-time-grid
-        (quote
-         ((daily today require-timed)
-          (0700 0800 0900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300)
-          "......" "-----------------------------------------------------"))
-        org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done t
-        org-agenda-include-deadlines t
-        org-agenda-include-diary nil
-        org-agenda-block-separator nil
-        org-agenda-compact-blocks t
-        org-agenda-span 1
-        org-agenda-start-with-log-mode t
-        org-agenda-custom-commands
-        '(("o" "Overview"
-                    ((agenda "" ((org-agenda-span 'day)
-                                 (org-super-agenda-groups
-                                  '((:name "\nToday"
-                                      :time-grid t
-                                      :date today
-                                      :todo "TODAY"
-                                      :scheduled today
-                                      :order 0)
-                                    (:name "Habits"  ; Optionally specify section name
-                                      :todo "TODAY"
-                                      :habit t
-                                      :order 1
-                                      )))))
-                     (alltodo "" ((org-agenda-overriding-header "\nCategories")
-                                  (org-super-agenda-groups
-                                   '(
-                                     (:name "Started"
-                                      :todo "STRT"
-                                      :order 5)
-                                     (:name "Important"
-                                      :tag "Important"
-                                      :priority "A"
-                                      :order 3)
-                                     (:name "Due Today"
-                                      :deadline today
-                                      :order 4)
-                                     (:name "Due Soon"
-                                      :deadline future
-                                      :order 8)
-                                     (:name "Overdue"
-                                      :deadline past
-                                      :scheduled past
-                                      :face error
-                                      :order 7)
-                                      (:name "To Refile"
-                                      :and(
-                                          :todo "TODO"
-                                          :not (:habit t)
-                                      )
-                                      :order 9)
-                                     (:name "To read"
-                                      :tag "Read"
-                                      :order 30)
-                                     (:name "Waiting"
-                                      :todo "WAITING"
-                                      :order 20)
-                                     (:name "Trivial"
-                                            :priority<= "C"
-                                            :tag ("Trivial" "Unimportant")
-                                            :todo ("SOMEDAY")
-                                            :order 90)
-                                     (:discard (:anything t))))))))))
-  :config
-  (org-super-agenda-mode))
+(setq jethro/org-agenda-todo-view
+      `(" " "Agenda"
+        ((agenda ""
+                 ((org-agenda-span 'day)
+                  (org-deadline-warning-days 365)))
+         (todo "TODO"
+               ((org-agenda-overriding-header "To Refile")
+                (org-agenda-files '(,(concat jethro/org-agenda-directory "inbox.org")))))
+         (todo "NEXT"
+               ((org-agenda-overriding-header "In Progress")
+                (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
+                                    ,(concat jethro/org-agenda-directory "projects.org")
+                                    ,(concat jethro/org-agenda-directory "next.org")))
+                ))
+         (todo "TODO"
+               ((org-agenda-overriding-header "Projects")
+                (org-agenda-files '(,(concat jethro/org-agenda-directory "projects.org")))
+                ))
+         (todo "TODO"
+               ((org-agenda-overriding-header "One-off Tasks")
+                (org-agenda-files '(,(concat jethro/org-agenda-directory "next.org")))
+                (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))
+         nil)))
+
+(add-to-list 'org-agenda-custom-commands `,jethro/org-agenda-todo-view)
+
+(define-key org-agenda-mode-map "i" 'org-agenda-clock-in)
+(define-key org-agenda-mode-map "r" 'jethro/org-process-inbox)
+(define-key org-agenda-mode-map "R" 'org-agenda-refile)
+(define-key org-agenda-mode-map "c" 'jethro/org-inbox-capture)
+
+(setq org-columns-default-format "%40ITEM(Task) %Effort(EE){:} %CLOCKSUM(Time Spent) %SCHEDULED(Scheduled) %DEADLINE(Deadline)")
 
 (use-package ob-async
   :straight (:build t)
@@ -568,6 +529,32 @@
   :after org
   :init (add-hook 'before-save-hook #'org-unique-id-maybe))
 
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+
+(setq org-log-done 'time
+      org-log-into-drawer t
+      org-log-state-notes-insert-after-drawers nil)
+
+(setq org-tag-alist (quote (("@errand" . ?e)
+                            ("@office" . ?o)
+                            ("@home" . ?h)
+                            ("@school" . ?s)
+                            (:newline)
+                            ("WAITING" . ?w)
+                            ("HOLD" . ?H)
+                            ("CANCELLED" . ?c))))
+
+(setq org-fast-tag-selection-single-key nil)
+
+(setq org-refile-use-outline-path 'file
+      org-outline-path-complete-in-steps nil)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-targets '(("next.org" :level . 0)
+                           ("someday.org" :level . 0)
+                           ("reading.org" :level . 1)))
+
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of
 `org-edit-src-code'. If the variable `org-src-window-setup' has
@@ -582,6 +569,101 @@ the value `split-window-right', then it will be changed to
            (if (equal org-src-window-setup 'split-window-right)
                "vertically"
              "horizontally")))
+
+(defun jethro/org-archive-done-tasks ()
+  "Archive all done tasks."
+  (interactive)
+  (org-map-entries 'org-archive-subtree "/DONE" 'file))
+
+(defvar jethro/org-agenda-bulk-process-key ?f
+  "Default key for bulk processing inbox items.")
+
+(defun jethro/org-process-inbox ()
+  "Called in org-agenda-mode, processes all inbox items."
+  (interactive)
+  (org-agenda-bulk-mark-regexp "inbox:")
+  (jethro/bulk-process-entries))
+
+(defvar jethro/org-current-effort "1:00"
+  "Current effort for agenda items.")
+
+(defun jethro/my-org-agenda-set-effort (effort)
+  "Set the effort property for the current headline."
+  (interactive
+   (list (read-string (format "Effort [%s]: " jethro/org-current-effort) nil nil jethro/org-current-effort)))
+  (setq jethro/org-current-effort effort)
+  (org-agenda-check-no-diary)
+  (let* ((hdmarker (or (org-get-at-bol 'org-hd-marker)
+                       (org-agenda-error)))
+         (buffer (marker-buffer hdmarker))
+         (pos (marker-position hdmarker))
+         (inhibit-read-only t)
+         newhead)
+    (org-with-remote-undo buffer
+      (with-current-buffer buffer
+        (widen)
+        (goto-char pos)
+        (org-show-context 'agenda)
+        (funcall-interactively 'org-set-effort nil jethro/org-current-effort)
+        (end-of-line 1)
+        (setq newhead (org-get-heading)))
+      (org-agenda-change-all-lines newhead hdmarker))))
+
+(defun jethro/org-agenda-process-inbox-item ()
+  "Process a single item in the org-agenda."
+  (org-with-wide-buffer
+   (org-agenda-set-tags)
+   (org-agenda-priority)
+   (call-interactively 'jethro/my-org-agenda-set-effort)
+   (org-agenda-refile nil nil t)))
+
+(defun jethro/bulk-process-entries ()
+  (if (not (null org-agenda-bulk-marked-entries))
+      (let ((entries (reverse org-agenda-bulk-marked-entries))
+            (processed 0)
+            (skipped 0))
+        (dolist (e entries)
+          (let ((pos (text-property-any (point-min) (point-max) 'org-hd-marker e)))
+            (if (not pos)
+                (progn (message "Skipping removed entry at %s" e)
+                       (cl-incf skipped))
+              (goto-char pos)
+              (let (org-loop-over-headlines-in-active-region) (funcall 'jethro/org-agenda-process-inbox-item))
+              ;; `post-command-hook' is not run yet.  We make sure any
+              ;; pending log note is processed.
+              (when (or (memq 'org-add-log-note (default-value 'post-command-hook))
+                        (memq 'org-add-log-note post-command-hook))
+                (org-add-log-note))
+              (cl-incf processed))))
+        (org-agenda-redo)
+        (unless org-agenda-persistent-marks (org-agenda-bulk-unmark-all))
+        (message "Acted on %d entries%s%s"
+                 processed
+                 (if (= skipped 0)
+                     ""
+                   (format ", skipped %d (disappeared before their turn)"
+                           skipped))
+                 (if (not org-agenda-persistent-marks) "" " (kept marked)")))))
+
+(defun jethro/org-inbox-capture ()
+  (interactive)
+  "Capture a task in agenda mode."
+  (org-capture nil "i"))
+
+(setq org-agenda-bulk-custom-functions `((,jethro/org-agenda-bulk-process-key jethro/org-agenda-process-inbox-item)))
+
+(defun jethro/set-todo-state-next ()
+  "Visit each parent task and change NEXT states to TODO"
+  (org-todo "NEXT"))
+
+(add-hook 'org-clock-in-hook 'jethro/set-todo-state-next 'append)
+
+(use-package org-clock-convenience
+  :bind (:map org-agenda-mode-map
+              ("<S-up>" . org-clock-convenience-timestamp-up)
+              ("<S-down>" . org-clock-convenience-timestamp-down)
+              ("o" . org-clock-convenience-fill-gap)
+              ("e" . org-clock-convenience-fill-gap-both)))
 
 (use-package ox-hugo
   :defer t

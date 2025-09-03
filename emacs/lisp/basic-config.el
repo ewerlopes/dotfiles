@@ -87,7 +87,7 @@ the user."
 (defvar phundrak/default-font-size 160
   "Default font size.")
 
-(defvar phundrak/default-font-name "Iosevka Nerd Font"
+(defvar phundrak/default-font-name "Iosevka Nerd Font" ;; "Cascadia Code"
   "Default font.")
 
 (defun my/set-font ()
