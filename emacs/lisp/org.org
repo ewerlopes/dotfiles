@@ -255,10 +255,6 @@ I like keeping repeaters around:
 #+end_src
 
 ** Agenda
-#+name: org-agenda-files
-;;#+begin_src emacs-lisp :tangle no
-;;(setq org-agenda-files (list "~/org/agenda" "~/org/notes.org"))
-;;#+end_src
 
 Adding the proper files to pull agenda from. This adds in the project-based files in addition, since each could/can have their own todo.org file.
 
@@ -284,6 +280,12 @@ Adding the proper files to pull agenda from. This adds in the project-based file
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
                 (org-agenda-files '(,(concat jethro/org-agenda-directory "inbox.org")))))
+        (todo "WAITING|HOLD"
+              ((org-agenda-overriding-header "On Hold / Waiting")
+              (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
+                                  ,(concat jethro/org-agenda-directory "projects.org")
+                                  ,(concat jethro/org-agenda-directory "next.org")))
+              ))
          (todo "NEXT"
                ((org-agenda-overriding-header "In Progress")
                 (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
@@ -301,7 +303,9 @@ Adding the proper files to pull agenda from. This adds in the project-based file
          nil)))
 
 (add-to-list 'org-agenda-custom-commands `,jethro/org-agenda-todo-view)
+#+end_src
 
+#+BEGIN_SRC emacs-lisp
 (define-key org-agenda-mode-map "i" 'org-agenda-clock-in)
 (define-key org-agenda-mode-map "r" 'jethro/org-process-inbox)
 (define-key org-agenda-mode-map "R" 'org-agenda-refile)
@@ -796,7 +800,9 @@ the value `split-window-right', then it will be changed to
   (org-todo "NEXT"))
 
 (add-hook 'org-clock-in-hook 'jethro/set-todo-state-next 'append)
+#+end_src
 
+#+BEGIN_SRC emacs-lisp
 (use-package org-clock-convenience
   :bind (:map org-agenda-mode-map
               ("<S-up>" . org-clock-convenience-timestamp-up)

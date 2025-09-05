@@ -471,6 +471,12 @@
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
                 (org-agenda-files '(,(concat jethro/org-agenda-directory "inbox.org")))))
+        (todo "WAITING|HOLD"
+              ((org-agenda-overriding-header "On Hold / Waiting")
+              (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
+                                  ,(concat jethro/org-agenda-directory "projects.org")
+                                  ,(concat jethro/org-agenda-directory "next.org")))
+              ))
          (todo "NEXT"
                ((org-agenda-overriding-header "In Progress")
                 (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")

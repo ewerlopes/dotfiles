@@ -99,14 +99,6 @@ the user."
 (my/set-font)
 (add-hook 'server-after-make-frame-hook #'my/set-font)
 
-(setq frame-title-format
-      '(""
-        "%b"
-        (:eval
-         (let ((project-name (projectile-project-name)))
-           (unless (string= "-" project-name)
-             (format (if (buffer-modified-p) " ◉ %s" "  ●  %s - Emacs") project-name))))))
-
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 
 (when (equal system-type 'darwin)
