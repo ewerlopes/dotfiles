@@ -315,10 +315,8 @@ Adding the proper files to pull agenda from. This adds in the project-based file
 #+end_src
 
 ** Babel
-One of the amazing features of org-mode is its literary programming capacities
-by running code blocks from within Org-mode itself. But for that, only a couple
-of languages are supported directly by Org-mode itself, and they need to be
-activated. Here are the languages I activated in my Org-mode configuration:
+One of the amazing features of org-mode is its literary programming capacities by running code blocks from within Org-mode itself. But for that, only a couple of languages are supported directly by Org-mode itself, and they need to be activated. Here are the languages I activated in my Org-mode configuration:
+
 #+NAME: org-babel-languages-table
 | C          |
 | emacs-lisp |
@@ -389,11 +387,13 @@ client. Even better if it can work inside org-mode!
 #+end_src
 
 ** Behavior
+
 A useful package I like is ~toc-org~ which creates automatically a table
 of contents. My main usage for this however is not just to create a
 table of content of my files to quickly jump around my file (I have
 ~counsel-org-goto~ for that), but it is for creating table of contents
 for org files that will be hosted and viewable on GitHub.
+
 #+begin_src emacs-lisp
 (use-package toc-org
   :after (org markdown-mode)
@@ -405,6 +405,7 @@ for org files that will be hosted and viewable on GitHub.
 #+end_src
 
 ~electric-mode~ also bothers me a lot when editing org files, so let's deactivate it:
+
 #+name: org-behavior-electric
 #+begin_src emacs-lisp :tangle no
 (add-hook 'org-mode-hook (lambda ()
@@ -455,8 +456,9 @@ Adding some refile config
       org-outline-path-complete-in-steps nil)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-refile-targets '(("next.org" :level . 0)
-                           ("someday.org" :level . 0)
-                           ("reading.org" :level . 1)))
+                            ("someday.org" :level . 0)
+                            ("reading.org" :level . 1)
+                            ("projects.org" :maxlevel . 1)))
 #+end_src
 
 ** Capture
@@ -622,6 +624,7 @@ The capture templates are set like so:
 #+end_src
 
 ** Custom functions
+
 *** Emphasize text
 Sometimes, I want to emphasize some text in my org-mode documents.
 It's very possible to just go to the beginning of the chosen text, add
@@ -808,7 +811,9 @@ the value `split-window-right', then it will be changed to
               ("<S-up>" . org-clock-convenience-timestamp-up)
               ("<S-down>" . org-clock-convenience-timestamp-down)
               ("o" . org-clock-convenience-fill-gap)
-              ("e" . org-clock-convenience-fill-gap-both)))
+              ("e" . org-clock-convenience-fill-gap-both))
+  :straight (:build t)
+  :after org)
 #+end_src
 
 ** Exporters
@@ -946,6 +951,7 @@ I then have a couple of babel-related functions.
 The ~org-babel-transient~ hydra allows me to quickly navigate between
 code blocks and interact with them. This code block was inspired by
 one you can find in Spacemacs.
+
 #+name: org-hydra-babel
 #+begin_src emacs-lisp :tangle no
 (defhydra org-babel-transient ()
@@ -1144,7 +1150,8 @@ org-roam is a Zettelkasten-style knowledge management system based on org-mode.
 (use-package reftex
   :commands turn-on-reftex
   :init (setq reftex-default-bibliography "~/org/bibliography/references.bib"
-              reftex-plug-into-AUCTeX     t))
+              reftex-plug-into-AUCTeX     t)
+  :straight t)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1351,6 +1358,7 @@ to anything user-defined. Let's all-the-iconify this!
 #+end_src
 
 ** Misc
+
 ~org-tree-slide~ is a presentation tool for org-mode.
 #+begin_src emacs-lisp
 (use-package org-tree-slide

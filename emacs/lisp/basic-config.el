@@ -11,11 +11,6 @@
 (setq-default indent-tabs-mode nil)
 (add-hook 'prog-mode-hook (lambda () (setq indent-tabs-mode nil)))
 
-(setq epg-pinentry-mode 'loopback)
-
-(dolist (mode '(prog-mode-hook latex-mode-hook))
-  (add-hook mode #'display-line-numbers-mode))
-
 (dolist (mode '(prog-mode-hook latex-mode-hook))
   (add-hook mode #'hs-minor-mode))
 
@@ -84,26 +79,6 @@ the user."
 
 (add-hook 'after-change-major-mode-hook #'modeline-contitional-buffer-encoding)
 
-(defvar phundrak/default-font-size 160
-  "Default font size.")
-
-(defvar phundrak/default-font-name "Iosevka Nerd Font" ;; "Cascadia Code"
-  "Default font.")
-
-(defun my/set-font ()
-  (when (find-font (font-spec :name phundrak/default-font-name))
-    (set-face-attribute 'default nil
-                        :font phundrak/default-font-name
-                        :height phundrak/default-font-size)))
-
-(my/set-font)
-(add-hook 'server-after-make-frame-hook #'my/set-font)
+(add-to-list 'default-frame-alist `(font . "Iosevka Nerd Font-20"))
 
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
-
-(when (equal system-type 'darwin)
-  ;; Treat option as meta and command as super
-   (setq mac-option-key-is-meta t)
-   (setq mac-command-key-is-meta nil)
-   (setq mac-command-modifier 'super)
-   (setq mac-option-modifier 'meta))

@@ -5,12 +5,15 @@
 #+property: header-args:emacs-lisp+ :mkdirp yes :noweb no-export
 
 * Keybinding Managers
+
 ** Which-key
+
 Which key is, I think, one of my favorite quality of life package.
 When you begin a keybind, Emacs will show you all keybinds you can
 follow the first one with in order to form a full keychord. Very
 useful when you have a lot of keybinds and don't remember exactly what
 is what.
+
 #+begin_src emacs-lisp
 (use-package which-key
   :straight (:build t)
@@ -22,6 +25,7 @@ is what.
 #+end_src
 
 ** General
+
 General is an awesome package for managing keybindings. Not only is it
 oriented towards keychords by default (which I love), but it also
 provides some integration with evil so that we can declare keybindings
@@ -32,6 +36,7 @@ all keybinds will be prefixed with ~SPC~ and keybinds related to a
 specific mode (often major modes) will be prefixed by a comma ~,~ (and
 by ~C-SPC~ and ~M-m~ respectively when in ~insert-mode~ or ~emacs-mode~). You
 can still feel some influence from my Spacemacs years here.
+
 #+begin_src emacs-lisp
 (use-package general
   :straight (:build t)
@@ -56,8 +61,10 @@ can still feel some influence from my Spacemacs years here.
 #+end_src
 
 ** Evil
+
 Evil emulates most of vim's keybinds, because let's be honest here,
 they are much more comfortable than Emacs'.
+
 #+begin_src emacs-lisp
 (use-package evil
   :straight (:build t)
@@ -81,6 +88,7 @@ I want to undefine some default keybinds of Evil because it does not
 match my workflow. Namely, I use the space key and the comma as
 leaders for my keybinds, and I'm way too used to Emacs' ~C-t~, ~C-a~, ~C-e~,
 and ~C-y~.
+
 #+name: evil-undefine-keys
 #+begin_src emacs-lisp :tangle no
 (evil-global-set-key 'motion "t" 'evil-next-visual-line)
@@ -102,6 +110,7 @@ and ~C-y~.
 #+end_src
 
 ** Hydra
+
 [[https://github.com/abo-abo/hydra][Hydra]] is a simple menu creator for keybindings.
 #+begin_src emacs-lisp
 (use-package hydra

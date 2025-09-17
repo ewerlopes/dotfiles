@@ -559,7 +559,8 @@
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-refile-targets '(("next.org" :level . 0)
                            ("someday.org" :level . 0)
-                           ("reading.org" :level . 1)))
+                           ("reading.org" :level . 1)
+                           ("projects.org" :maxlevel . 1)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of
@@ -669,7 +670,9 @@ the value `split-window-right', then it will be changed to
               ("<S-up>" . org-clock-convenience-timestamp-up)
               ("<S-down>" . org-clock-convenience-timestamp-down)
               ("o" . org-clock-convenience-fill-gap)
-              ("e" . org-clock-convenience-fill-gap-both)))
+              ("e" . org-clock-convenience-fill-gap-both))
+  :straight (:build t)
+  :after org)
 
 (use-package ox-hugo
   :defer t
@@ -710,7 +713,8 @@ the value `split-window-right', then it will be changed to
 (use-package reftex
   :commands turn-on-reftex
   :init (setq reftex-default-bibliography "~/org/bibliography/references.bib"
-              reftex-plug-into-AUCTeX     t))
+              reftex-plug-into-AUCTeX     t)
+  :straight t)
 
 (use-package org-ref
   ;; :after (org ox-bibtex pdf-tools)

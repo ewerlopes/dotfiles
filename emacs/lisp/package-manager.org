@@ -5,7 +5,9 @@
 #+property: header-args:emacs-lisp+ :mkdirp yes :noweb no-export
 
 * Package Manager
+
 ** Repositories
+
 By default, only GNU's repositories are available to the package
 managers of Emacs. I also want to use Melpa and org-mode's repository,
 so let's add them! Note that the stock /elpa/ repository is renamed to
@@ -15,6 +17,7 @@ Both the /gnu/ and the /nonfree/ repositories are Elpa repositories now,
 and they are renamed here in order to avoid any confusion between the
 two of them. Melpa is a community-maintained repository which contains
 an absurd amount of Emacs packages.
+
 #+begin_src emacs-lisp
 (setq package-archives '(("melpa"  . "https://melpa.org/packages/")
                          ("gnu"    . "https://elpa.gnu.org/packages/")
@@ -28,16 +31,19 @@ supports ~general~ which I use for my keybindings (see below), but also
 because with it, I can specify where to retrieve packages that are not
 on MELPA or ELPA but on GitHub and other online Git repositories too.
 First, let's bootstrap straight.
+
 #+begin_src emacs-lisp
 (defvar bootstrap-version)
-(defvar comp-deferred-compilation-deny-list ()) ; workaround, otherwise straight shits itself
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
         (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
          'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
@@ -46,23 +52,24 @@ First, let's bootstrap straight.
 
 Now, we can refresh our package list in order to be able to install
 stuff.
-#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp :tangle no
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 #+end_src
 
 From time to time, I fork some packages either because I'm trying to
-implement something new in said package, or because the package is
+implement something new, or because the package is
 unmaintained, and I want to continue developing it a bit more. Straight
 provides a nice feature for using forks of a package with its ~:fork~
 option. If set to ~t~, then straight will attempt to retrieve the
 package with the same name but with a different username on the same
 host. This username is retrieved through the following variable:
+
 #+begin_src emacs-lisp
 (setq straight-host-usernames
-      '((github . "ewerlopes")
-        (gitlab . "ewerlopes")))
+      '((github . "ewerlopes")))
 #+end_src
 
 The huge advantage of straight is it clones through git the packages
@@ -73,6 +80,7 @@ with the forge described by the =origin= remote, which isn't necessarily
 the one I want Forge to interact with by default. Therefore,
 =straight.el= will name all default remotes =straight= to avoid any name
 collision with my regular development flow.
+
 #+begin_src emacs-lisp
 (setq straight-vc-git-default-remote-name "straight")
 #+end_src
