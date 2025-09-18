@@ -1,0 +1,22 @@
+#+title: Emacs - Packages - AI Assistant
+#+setupfile: ../headers
+#+property: header-args:emacs-lisp  :mkdirp yes :lexical t :exports code
+#+property: header-args:emacs-lisp+ :tangle ~/.config/emacs/lisp/ai-assistant.el
+#+property: header-args:emacs-lisp+ :mkdirp yes :noweb no-export
+
+* AI Assistant
+
+I have been using LLMs for a while now, and I find it to be a very
+useful tool for generating code snippets, explanations, doing a bit of rubber ducking, etc.
+~gptel~ is a very nice package that integrates well with Emacs.
+
+#+begin_src emacs-lisp
+(straight-use-package 'gptel)
+(setq
+ gptel-model   'test
+ gptel-backend (gptel-make-openai "llama-cpp"
+                 :stream t
+                 :protocol "http"
+                 :host "localhost:8080"
+                 :models '(test)))
+#+end_src
