@@ -112,6 +112,7 @@ and ~C-y~.
 ** Hydra
 
 [[https://github.com/abo-abo/hydra][Hydra]] is a simple menu creator for keybindings.
+
 #+begin_src emacs-lisp
 (use-package hydra
   :straight (:build t)

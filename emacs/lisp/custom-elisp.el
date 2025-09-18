@@ -77,7 +77,7 @@ and ending with the extension of the requested TYPE."
   (switch-to-buffer "*scratch*"))
 
 (defvar my/emacs-org-config-directory
-  (expand-file-name ".emacs.d/" (getenv "HOME"))
+  (expand-file-name ".config/emacs" (getenv "HOME"))
   "Location of my config as org files.")
 
 (defun my/tangle-emacs-config ()

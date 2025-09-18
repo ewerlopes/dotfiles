@@ -142,7 +142,7 @@ b s~, which bring the user directly to the ~*Messages*~ buffer and the
 
 #+begin_src emacs-lisp :results none
   (defvar my/emacs-org-config-directory
-    (expand-file-name ".emacs.d/" (getenv "HOME"))
+    (expand-file-name ".config/emacs" (getenv "HOME"))
     "Location of my config as org files.")
 
   (defun my/tangle-emacs-config ()

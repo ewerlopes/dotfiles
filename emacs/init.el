@@ -3,6 +3,7 @@
     "custom-elisp.el"
     "package-manager.el"
     "keybinding-managers.el"
+    "autocompletion.el"
     "keybindings.el"
     "visual-config.el"
     "org.el"

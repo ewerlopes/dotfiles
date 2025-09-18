@@ -1,5 +1,4 @@
 (setq package-enable-at-startup nil
-      package-install-upgrade-built-in t  ; auto upgrade built-in packages
       inhibit-startup-message   t
       visual-line-fringe-indicators nil ; remove fringe bitmaps on wrapped lines
       frame-resize-pixelwise    t  ; fine resize
