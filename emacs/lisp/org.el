@@ -558,9 +558,9 @@
       org-outline-path-complete-in-steps nil)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-refile-targets '(("next.org" :level . 0)
-                           ("someday.org" :level . 0)
-                           ("reading.org" :level . 1)
-                           ("projects.org" :maxlevel . 1)))
+                            ("someday.org" :level . 0)
+                            ("reading.org" :level . 1)
+                            ("projects.org" :maxlevel . 1)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of
@@ -828,16 +828,6 @@ the value `split-window-right', then it will be changed to
   :custom (org-modern-table nil)
   :hook (org-mode . org-modern-mode)
   :hook (org-agenda-finalize . org-modern-agenda))
-
-(use-package org-fancy-priorities
-  :after (org all-the-icons)
-  :straight (:build t)
-  :hook (org-mode        . org-fancy-priorities-mode)
-  :hook (org-agenda-mode . org-fancy-priorities-mode)
-  :config
-  (setq org-fancy-priorities-list `(,(all-the-icons-faicon "flag"     :height 1.1 :v-adjust 0.0)
-                                    ,(all-the-icons-faicon "arrow-up" :height 1.1 :v-adjust 0.0)
-                                    ,(all-the-icons-faicon "square"   :height 1.1 :v-adjust 0.0))))
 
 (use-package org-ol-tree
   :after (org avy)

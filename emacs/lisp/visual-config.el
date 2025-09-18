@@ -109,10 +109,10 @@
       :straight (:build t)
       :init (solaire-global-mode +1))
 
-(use-package gruber-darker-theme
-      :straight t
-      :config
-      (load-theme 'gruber-darker t))
+(use-package doom-themes
+  :straight (:build t)
+  :defer t
+  :init (load-theme 'doom-dark+ t))
 
 (use-package rainbow-delimiters
       :straight (:build t)

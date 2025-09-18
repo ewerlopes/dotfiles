@@ -199,21 +199,20 @@ slightly darker background? I'm not sure.)
 
 ** Theme
 
-I have felt in love for the ~gruber-darker-theme~.
+;I have felt in love for the ~gruber-darker-theme~.
+;#+begin_src emacs-lisp
+;(use-package gruber-darker-theme
+;      :straight t
+;      :config
+;      (load-theme 'gruber-darker t))
+;#+end_src
 
 #+begin_src emacs-lisp
-(use-package gruber-darker-theme
-      :straight t
-      :config
-      (load-theme 'gruber-darker t))
+(use-package doom-themes
+  :straight (:build t)
+  :defer t
+  :init (load-theme 'doom-dark+ t))
 #+end_src
-
-;#+begin_src emacs-lisp
-;(use-package doom-themes
-;  :straight (:build t)
-;  :defer t
-;  :init (load-theme 'doom-nord-aurora t))
-;#+end_src
 
 ** Rainbow Delimiters
 This makes Lisp especially more readable, but it's also nice to have

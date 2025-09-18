@@ -1306,16 +1306,14 @@ tables, source blocks, and tags, and it applies settings similar to
 
 ~org-fancy-priorities~ change the priority of an org element such as ~#A~
 to anything user-defined. Let's all-the-iconify this!
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package org-fancy-priorities
   :after (org all-the-icons)
   :straight (:build t)
   :hook (org-mode        . org-fancy-priorities-mode)
   :hook (org-agenda-mode . org-fancy-priorities-mode)
   :config
-  (setq org-fancy-priorities-list `(,(all-the-icons-faicon "flag"     :height 1.1 :v-adjust 0.0)
-                                    ,(all-the-icons-faicon "arrow-up" :height 1.1 :v-adjust 0.0)
-                                    ,(all-the-icons-faicon "square"   :height 1.1 :v-adjust 0.0))))
+  (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")))
 #+end_src
 
 /Org Outline Tree/ is a better way of managing my org files' outline.
