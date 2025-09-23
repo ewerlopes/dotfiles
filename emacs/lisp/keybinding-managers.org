@@ -77,7 +77,6 @@ they are much more comfortable than Emacs'.
   (require 'evil-vars)
   :config
   <<evil-undefine-keys>>
-  <<evil-bepo>>
   (evil-mode 1)
   (setq evil-want-fine-undo t) ; more granular undo with evil
   (evil-set-initial-state 'messages-buffer-mode 'normal)
@@ -107,6 +106,16 @@ and ~C-y~.
  "C-a" nil
  "C-y" nil
  "C-e" nil)
+#+end_src
+
+This package enables and integrates Evil into a lot of different modes, such as org-mode, dired,etc. 
+
+#+begin_src emacs-lisp
+(use-package evil-collection
+  :after evil
+  :straight (:build t)
+  :config
+  (evil-collection-init))
 #+end_src
 
 ** Hydra

@@ -124,8 +124,3 @@
       :commands info-colors-fnontify-node
       :hook (Info-selection . info-colors-fontify-node)
       :hook (Info-mode      . mixed-pitch-mode))
-
-(use-package all-the-icons-dired
-      :straight (:build t)
-      :hook (dired-mode . all-the-icons-dired-mode))
-      :config (all-the-icons-dired-mode)

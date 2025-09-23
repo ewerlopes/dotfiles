@@ -53,11 +53,16 @@
    "C-a" nil
    "C-y" nil
    "C-e" nil)
-  
   (evil-mode 1)
   (setq evil-want-fine-undo t) ; more granular undo with evil
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
+
+(use-package evil-collection
+  :after evil
+  :straight (:build t)
+  :config
+  (evil-collection-init))
 
 (use-package hydra
   :straight (:build t)

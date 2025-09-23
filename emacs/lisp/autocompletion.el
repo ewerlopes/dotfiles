@@ -116,27 +116,6 @@
   :after ivy
   :straight (:build t))
 
-(use-package all-the-icons-ivy
-  :straight (:build t)
-  :after (ivy all-the-icons)
-  :init (all-the-icons-ivy-setup)
-  :hook (after-init . all-the-icons-ivy-setup))
-(all-the-icons-ivy-setup)
-
-(use-package ivy-posframe
-  :defer t
-  :after (:any ivy helpful)
-  :hook (ivy-mode . ivy-posframe-mode)
-  :straight (:build t)
-  :init
-  (ivy-posframe-mode 1)
-  :config
-  (setq ivy-fixed-height-minibuffer nil
-        ivy-posframe-border-width   10
-        ivy-posframe-parameters
-        `((min-width  . 90)
-          (min-height . ,ivy-height))))
-
 (use-package ivy-hydra
   :requires (ivy hydra)
   :after ivy

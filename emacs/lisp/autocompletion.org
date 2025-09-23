@@ -5,9 +5,12 @@
 #+property: header-args:emacs-lisp+ :mkdirp yes :noweb no-export
 
 * Autocompletion
+
 ** Code Autocompletion
+
 Company is, in my opinion, the best autocompleting engine for Emacs,
 and it is one of the most popular if not /the/ most popular.
+
 #+begin_src emacs-lisp
 (use-package company
   :straight (:build t)
@@ -214,7 +217,7 @@ course!
 #+end_src
 
 I warned you I'd use too much ~all-the-icons~, I did!
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package all-the-icons-ivy
   :straight (:build t)
   :after (ivy all-the-icons)
@@ -225,7 +228,7 @@ I warned you I'd use too much ~all-the-icons~, I did!
 
 A buffer popping at the bottom of the screen is nice and all, but have
 you considered a floating buffer in the centre of your frame?
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package ivy-posframe
   :defer t
   :after (:any ivy helpful)

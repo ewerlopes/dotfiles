@@ -249,15 +249,3 @@ opinion, easier to read) with this simple package:
 ;            writeroom-mode-line         t
 ;            writeroom-major-modes       '(text-mode org-mode markdown-mode nov-mode Info-mode)))
 ;#+end_src
-
-
-** Dired
-
-Let's add some icons to Dired buffers.
-
-#+begin_src emacs-lisp
-(use-package all-the-icons-dired
-      :straight (:build t)
-      :hook (dired-mode . all-the-icons-dired-mode))
-      :config (all-the-icons-dired-mode)
-#+end_src

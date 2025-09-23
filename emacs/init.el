@@ -3,6 +3,7 @@
     "custom-elisp.el"
     "package-manager.el"
     "keybinding-managers.el"
+    "emacs-builtin.el"
     "autocompletion.el"
     "keybindings.el"
     "visual-config.el"
