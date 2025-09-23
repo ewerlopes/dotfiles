@@ -73,6 +73,13 @@
     "y"   #'dirvish-yank-menu
     "n"   #'dirvish-narrow))
 
+(setopt dired-listing-switches (string-join '("--all"
+                                              "--human-readable"
+                                              "--time-style=long-iso"
+                                              "--group-directories-first"
+                                              "-lv1")
+                                            " "))
+
 (use-package dired-rsync
   :if (executable-find "rsync")
   :defer t

@@ -27,9 +27,7 @@ obsolete!
   :custom
   (dirvish-quick-access-entries
    '(("h" "~/" "Home")
-     ("d" "~/Downloads/" "Downloads")
-     ("c" "~/org/config" "Config")
-     ("C" "~/Documents/conlanging/content" "Conlanging")))
+     ("d" "~/Downloads/" "Downloads")))
   (dirvish-mode-line-format
    '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
   (dirvish-attributes '(all-the-icons file-size collapse subtree-state vc-state git-msg))
@@ -93,7 +91,7 @@ and other applications.
 In Dirvish, it's best to use the long name of flags whenever possible,
 otherwise some commands won't work.
 #+name: dired-listing-flags
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (setopt dired-listing-switches (string-join '("--all"
                                               "--human-readable"
                                               "--time-style=long-iso"
@@ -106,6 +104,7 @@ However, it is possible to instead use =eza= when it is available (it's
 a replacement to the unmaintained =exa=). Instead of making Emacs' main
 thread to the file listing in a directory, we offload it to an
 external thread.
+
 #+name: dirvish-exa-offload
 #+begin_src emacs-lisp :tangle no
 (dirvish-define-preview eza (file)
