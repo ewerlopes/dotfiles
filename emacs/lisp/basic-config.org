@@ -318,3 +318,13 @@ Well, begin with a maximized screen.
 #+begin_src emacs-lisp
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
 #+end_src
+
+*** Buffer Management
+
+#+begin_src emacs-lisp :tangle no
+(use-package buffer-terminator
+  :straight t
+  :config
+  (add-to-list 'buffer-terminator-rules-alist '(kill-buffer-name . ("*Calendar*")))
+  (buffer-terminator-mode 1))
+#+end_src

@@ -1,5 +1,5 @@
 #+title: Emacs — Packages — Autocompletion
-#+setupfile: ../../headers
+#+setupfile: ../headers
 #+property: header-args:emacs-lisp  :mkdirp yes :lexical t :exports code
 #+property: header-args:emacs-lisp+ :tangle ~/.config/emacs/lisp/autocompletion.el
 #+property: header-args:emacs-lisp+ :mkdirp yes :noweb no-export
