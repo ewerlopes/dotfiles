@@ -31,17 +31,17 @@ APPEND and COMPARE-FN, see `add-to-list'."
   (split-window-below)
   (windmove-down))
 
-(with-eval-after-load 'hydra
-  (defhydra windows-adjust-size ()
-    "
-             _t_: shrink
-_c_: enlarge              _r_: right
-             _s_: enlarge
-"
-    ("c" enlarge-window-horizontally)
-    ("t" shrink-window)
-    ("s" enlarge-window)
-    ("r" shrink-window-horizontally)))
+  (with-eval-after-load 'hydra
+    (defhydra windows-adjust-size ()
+      "
+               _t_: shrink
+  _c_: enlarge              _r_: right
+               _s_: enlarge
+  "
+      ("c" enlarge-window-horizontally)
+      ("t" shrink-window)
+      ("s" enlarge-window)
+      ("r" shrink-window-horizontally)))
 
 (defun self-screenshot (&optional type)
   "Save a screenshot of type TYPE of the current Emacs frame.
@@ -76,17 +76,17 @@ and ending with the extension of the requested TYPE."
   (interactive)
   (switch-to-buffer "*scratch*"))
 
-(defvar my/emacs-org-config-directory
-  (expand-file-name ".config/emacs" (getenv "HOME"))
-  "Location of my config as org files.")
+  (defvar my/emacs-org-config-directory
+    (expand-file-name ".config/emacs" (getenv "HOME"))
+    "Location of my config as org files.")
 
-(defun my/tangle-emacs-config ()
-  "Tangle all my Emacs config files from org files."
-  (interactive)
-  (let ((files (f-files my/emacs-org-config-directory
-                (lambda (file) (f-ext-p file "org"))
-                t))
-        (org-confirm-babel-evaluate nil))
-    (dolist (file files)
-      (message "Tangling %s" file)
-      (org-babel-tangle-file file))))
+  (defun my/tangle-emacs-config ()
+    "Tangle all my Emacs config files from org files."
+    (interactive)
+    (let ((files (f-files my/emacs-org-config-directory
+                  (lambda (file) (f-ext-p file "org"))
+                  t))
+          (org-confirm-babel-evaluate nil))
+      (dolist (file files)
+        (message "Tangling %s" file)
+        (org-babel-tangle-file file))))
