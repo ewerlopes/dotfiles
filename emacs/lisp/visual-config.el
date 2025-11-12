@@ -51,6 +51,7 @@
   (setq dashboard-items '((recents  . 15)
                           (agenda   . 10)
                           (projects . 10)))
+  (setq dashboard-icon-type 'all-the-icons)
   (dashboard-setup-startup-hook)
   :init
   (add-hook 'after-init-hook 'dashboard-refresh-buffer))

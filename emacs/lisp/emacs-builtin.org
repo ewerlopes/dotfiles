@@ -30,7 +30,7 @@ obsolete!
      ("d" "~/Downloads/" "Downloads")))
   (dirvish-mode-line-format
    '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
-  (dirvish-attributes '(all-the-icons file-size collapse subtree-state vc-state git-msg))
+  (dirvish-attributes '(file-size collapse subtree-state vc-state git-msg))
   :config
   (when (eq system-type 'darwin)
   (setq insert-directory-program "/opt/homebrew/bin/gls"))
