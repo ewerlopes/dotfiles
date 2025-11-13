@@ -18,12 +18,12 @@ buffer in new Emacs buffers.
   (interactive)
   (let* ((file-list (if files
                         (list files)
-                      (if (equal major-mode "dired-mode")
+                      (if (eq major-mode 'dired-mode)
                           (dired-get-marked-files)
                         (list (buffer-file-name))))))
    (mapc (lambda (file-path)
            (find-file file-path))
-         (file-list))))
+         file-list)))
 #+end_src
 
 ** Extend ~add-to-list~

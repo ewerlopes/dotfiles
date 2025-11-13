@@ -70,7 +70,8 @@
             ))))
 
 (use-package counsel
-  :straight t
+  :straight (:build t)
+  :ensure t
   :after recentf
   :after ivy
   :bind (("M-x"     . counsel-M-x)
@@ -123,9 +124,16 @@
 
 (use-package ivy-rich
   :straight (:build t)
-  :after ivy
-  :init
-  (ivy-rich-mode 1))
+  :after (ivy counsel)
+  :config
+  ;; enable ivy-rich and show docstrings for counsel-M-x candidates
+  (ivy-rich-mode 1)
+  (setq ivy-rich-display-transformers-list
+        (plist-put ivy-rich-display-transformers-list
+                   'counsel-M-x
+                   '(:columns
+                     ((ivy-rich-candidate :width 0.6)
+                      (ivy-rich-function-docstring :face font-lock-doc-face))))))
 
 (use-package yasnippet
   :defer t

@@ -89,7 +89,7 @@ leaders for my keybinds, and I'm way too used to Emacs' ~C-t~, ~C-a~, ~C-e~,
 and ~C-y~.
 
 #+name: evil-undefine-keys
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (evil-global-set-key 'motion "t" 'evil-next-visual-line)
 (evil-global-set-key 'motion "s" 'evil-previous-visual-line)
 

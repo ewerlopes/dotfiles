@@ -58,6 +58,23 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
+(evil-global-set-key 'motion "t" 'evil-next-visual-line)
+(evil-global-set-key 'motion "s" 'evil-previous-visual-line)
+
+(general-define-key
+ :keymaps 'evil-motion-state-map
+ "SPC" nil
+ ","   nil)
+(general-define-key
+ :keymaps 'evil-insert-state-map
+ "C-t" nil)
+(general-define-key
+ :keymaps 'evil-insert-state-map
+ "U"   nil
+ "C-a" nil
+ "C-y" nil
+ "C-e" nil)
+
 (use-package evil-collection
   :after evil
   :straight (:build t)

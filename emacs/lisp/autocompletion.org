@@ -156,7 +156,8 @@ ones I find most useful are ~counsel-M-x~ and ~counsel-find-file~.
 
 #+begin_src emacs-lisp
 (use-package counsel
-  :straight t
+  :straight (:build t)
+  :ensure t
   :after recentf
   :after ivy
   :bind (("M-x"     . counsel-M-x)
@@ -172,6 +173,7 @@ noticed =helm= can be slow, very slow in comparison to =ivy=, so I'll use
 the latter as much as possible. Actually, only =ivy= is installed for
 now. I could have used =ido= too, but I find it to be a bit too
 restricted in terms of features compared to =ivy=.
+
 #+begin_src emacs-lisp
 (use-package ivy
   :straight t
@@ -251,6 +253,7 @@ and ~hashCode~ based on selected members, but with vanilla Ivy, you can
 only select one. Not really useful. ~ivy-hydra~ is a package that offers
 a Hydra interface when in Ivy which allows you to select multiple
 choices among other things.
+
 #+begin_src emacs-lisp
 (use-package ivy-hydra
   :requires (ivy hydra)
@@ -259,18 +262,32 @@ choices among other things.
 #+end_src
 
 Finally, let's make ~ivy~ richer:
+
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :straight (:build t)
+  :init (all-the-icons-ivy-rich-mode 1))
+
 #+begin_src emacs-lisp
 (use-package ivy-rich
   :straight (:build t)
-  :after ivy
-  :init
-  (ivy-rich-mode 1))
+  :after (ivy counsel)
+  :config
+  ;; enable ivy-rich and show docstrings for counsel-M-x candidates
+  (ivy-rich-mode 1)
+  (setq ivy-rich-display-transformers-list
+        (plist-put ivy-rich-display-transformers-list
+                   'counsel-M-x
+                   '(:columns
+                     ((ivy-rich-candidate :width 0.6)
+                      (ivy-rich-function-docstring :face font-lock-doc-face))))))
 #+end_src
 
 ** Yasnippet
 Yasnippet allows you to insert some pre-made code by just typing a few
 characters. It can even generate some string with Elisp expressions
 and ask the user for some input in some precise places.
+
 #+begin_src emacs-lisp
 (use-package yasnippet
   :defer t
@@ -283,6 +300,7 @@ and ask the user for some input in some precise places.
 
 Of course, yasnippet wouldn't be as awesome as it is without pre-made
 snippets.
+
 #+begin_src emacs-lisp
 (use-package yasnippet-snippets
   :defer t
@@ -292,6 +310,7 @@ snippets.
 
 Similarly, yatemplate offers pre-made files rather than just strings.
 That's still yasnippet by the way.
+
 #+begin_src emacs-lisp
 (use-package yatemplate
   :defer t
@@ -301,6 +320,7 @@ That's still yasnippet by the way.
 
 And finally, with ivy you can choose your snippets from a menu if
 you're not sure or if you don't remember what your snippet is.
+
 #+begin_src emacs-lisp
 (use-package ivy-yasnippet
   :defer t

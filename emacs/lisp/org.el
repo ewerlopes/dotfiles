@@ -71,78 +71,97 @@
           ("e" "Email")
           ("ew" "Write Email" entry
             (file+headline org-default-notes-file "Emails")
-            (file "~/org/capture/email.orgcaptmpl"))
+            (file "~/org/capture/email.orgcaptmpl")
+            :empty-lines 1)
           ("i" "Inbox" entry
             (file+headline org-inbox-file "Inbox")
-            (file "~/org/capture/notes.orgcaptmpl"))
-          ("j" "Journal" entry
-            (file+datetree org-journal-file ##)
-            (file "~/org/capture/journal.orgcaptmpl"))
+            (file "~/org/capture/notes.orgcaptmpl")
+            :empty-lines 1)
           ("l" "Link")
           ("ll" "General" entry
             (file+headline org-default-notes-file "General")
-            (file "~/org/capture/link.orgcaptmpl"))
+            (file "~/org/capture/link.orgcaptmpl")
+            :empty-lines 1)
           ("ly" "YouTube" entry
             (file+headline org-default-notes-file "YouTube")
-            (file "~/org/capture/youtube.orgcaptmpl"))
+            (file "~/org/capture/youtube.orgcaptmpl")
+            :empty-lines 1)
           ("L" "Protocol Link" entry
             (file+headline org-default-notes-file "Link")
-            (file "~/org/capture/protocol-link.orgcaptmpl"))
+            (file "~/org/capture/protocol-link.orgcaptmpl")
+            :empty-lines 1)
           ("n" "Notes")
           ("nc" "Conlanging" entry
             (file+headline org-conlanging-file "Note")
-            (file "~/org/capture/notes.orgcaptmpl"))
+            (file "~/org/capture/notes.orgcaptmpl")
+            :empty-lines 1)
           ("nn" "General" entry
             (file+headline org-default-notes-file "General")
-            (file "~/org/capture/notes.orgcaptmpl"))
+            (file "~/org/capture/notes.orgcaptmpl")
+            :empty-lines 1)
           ("nN" "Novel" entry
             (file+headline org-novel-notes-file "Note")
-            (file "~/org/capture/notes.orgcaptmpl"))
+            (file "~/org/capture/notes.orgcaptmpl")
+            :empty-lines 1)
           ("nq" "Quote" entry
             (file+headline org-default-notes-file "Quote")
-            (file "~/org/capture/notes-quote.orgcaptmpl"))
+            (file "~/org/capture/notes-quote.orgcaptmpl")
+            :empty-lines 1)
           ("nw" "Worldbuilding" entry
             (file+headline org-wordbuilding-file "Note")
-            (file "~/org/capture/notes.orgcaptmpl"))
+            (file "~/org/capture/notes.orgcaptmpl")
+            :empty-lines 1)
           ("N" "Novel")
           ("Ni" "Ideas" entry
             (file+headline org-novel-notes-file "Ideas")
-            (file "~/org/capture/notes.orgcaptmpl"))
+            (file "~/org/capture/notes.orgcaptmpl")
+            :empty-lines 1)
           ("p" "Protocol" entry
             (file+headline org-default-notes-file "Link")
-            (file "~/org/capture/protocol.orgcaptmpl"))
+            (file "~/org/capture/protocol.orgcaptmpl")
+            :empty-lines 1)
           ("r" "Resources")
           ("rc" "Conlanging" entry
             (file+headline org-conlanging-file "Resources")
-            (file "~/org/capture/resource.orgcaptmpl"))
+            (file "~/org/capture/resource.orgcaptmpl")
+            :empty-lines 1)
           ("re" "Emacs" entry
             (file+headline org-default-notes-file "Emacs")
-            (file "~/org/capture/resource.orgcaptmpl"))
+            (file "~/org/capture/resource.orgcaptmpl")
+            :empty-lines 1)
           ("ri" "Informatique" entry
             (file+headline org-default-notes-file "Informatique")
-            (file "~/org/capture/resource.orgcaptmpl"))
+            (file "~/org/capture/resource.orgcaptmpl")
+            :empty-lines 1)
           ("rl" "Linguistics" entry
             (file+headline org-default-notes-file "Linguistics")
-            (file "~/org/capture/resource.orgcaptmpl"))
+            (file "~/org/capture/resource.orgcaptmpl")
+            :empty-lines 1)
           ("rL" "Linux" entry
             (file+headline org-default-notes-file "Linux")
-            (file "~/org/capture/resource.orgcaptmpl"))
+            (file "~/org/capture/resource.orgcaptmpl")
+            :empty-lines 1)
           ("rw" "Worldbuilding" entry
             (file+headline org-wordbuilding-file "Resources")
-            (file "~/org/capture/resource.orgcaptmpl"))
+            (file "~/org/capture/resource.orgcaptmpl")
+            :empty-lines 1)
           ("t" "Tasks")
           ("tb" "Birthday" entry
             (file+headline org-private-agenda-file "Birthday")
-            (file "~/org/capture/birthday.orgcaptmpl"))
+            (file "~/org/capture/birthday.orgcaptmpl")
+            :empty-lines 1)
           ("te" "Event" entry
             (file+headline org-private-agenda-file "Event")
-            (file "~/org/capture/event.orgcaptmpl"))
+            (file "~/org/capture/event.orgcaptmpl")
+            :empty-lines 1)
           ("th" "Health" entry
             (file+headline org-private-agenda-file "Health")
-            (file "~/org/capture/health.orgcaptmpl"))
+            (file "~/org/capture/health.orgcaptmpl")
+            :empty-lines 1)
           ("ti" "Informatique" entry
             (file+headline org-private-agenda-file "Informatique")
-            (file "~/org/capture/informatique.orgcaptmpl"))))
+            (file "~/org/capture/informatique.orgcaptmpl")
+            :empty-lines 1)))
   (defun org-emphasize-bold ()
     "Emphasize as bold the current region."
     (interactive)
@@ -561,6 +580,131 @@
                             ("someday.org" :level . 0)
                             ("reading.org" :level . 1)
                             ("projects.org" :maxlevel . 1)))
+
+(use-package org-journal
+  :straight (:build t)
+  :ensure t
+   :init
+   (setq org-journal-dir "~/journal/"))
+
+(let ((entries '(("e" "Email" "" "" "" "") ("ew" "Write Email" "Emails" "file+headline" "org-default-notes-file" "email.orgcaptmpl") ("i" "Inbox" "" "file+headline" "org-inbox-file" "notes.orgcaptmpl") ("l" "Link" "" "" "" "") ("ll" "General" "" "file+headline" "org-default-notes-file" "link.orgcaptmpl") ("ly" "YouTube" "" "file+headline" "org-default-notes-file" "youtube.orgcaptmpl") ("L" "Protocol Link" "Link" "file+headline" "org-default-notes-file" "protocol-link.orgcaptmpl") ("n" "Notes" "" "" "" "") ("nc" "Conlanging" "Note" "file+headline" "org-conlanging-file" "notes.orgcaptmpl") ("nn" "General" "" "file+headline" "org-default-notes-file" "notes.orgcaptmpl") ("nN" "Novel" "Note" "file+headline" "org-novel-notes-file" "notes.orgcaptmpl") ("nq" "Quote" "" "file+headline" "org-default-notes-file" "notes-quote.orgcaptmpl") ("nw" "Worldbuilding" "Note" "file+headline" "org-wordbuilding-file" "notes.orgcaptmpl") ("N" "Novel" "" "" "" "") ("Ni" "Ideas" "" "file+headline" "org-novel-notes-file" "notes.orgcaptmpl") ("p" "Protocol" "Link" "file+headline" "org-default-notes-file" "protocol.orgcaptmpl") ("r" "Resources" "" "" "" "") ("rc" "Conlanging" "Resources" "file+headline" "org-conlanging-file" "resource.orgcaptmpl") ("re" "Emacs" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("ri" "Informatique" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rl" "Linguistics" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rL" "Linux" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rw" "Worldbuilding" "Resources" "file+headline" "org-wordbuilding-file" "resource.orgcaptmpl") ("t" "Tasks" "" "" "" "") ("tb" "Birthday" "" "file+headline" "org-private-agenda-file" "birthday.orgcaptmpl") ("te" "Event" "" "file+headline" "org-private-agenda-file" "event.orgcaptmpl") ("th" "Health" "" "file+headline" "org-private-agenda-file" "health.orgcaptmpl") ("ti" "Informatique" "" "file+headline" "org-private-agenda-file" "informatique.orgcaptmpl"))))
+(mapconcat (lambda (entry)
+             (let ((key      (nth 0 entry))
+                   (name     (nth 1 entry))
+                   (title    (nth 2 entry))
+                   (ins-mode (nth 3 entry))
+                   (file     (nth 4 entry))
+                   (template (nth 5 entry)))
+                (if (string= "" ins-mode)
+                    (format "%S" `(,key ,name))
+      (format "(\"%s\" \"%s\" entry\n  %S\n  %S\n  :empty-lines 1)"
+        key name
+                          (if (string= "file+datetree" ins-mode)
+                              `(,(intern ins-mode) ,(intern file))
+                            `(,(intern ins-mode) ,(intern file) ,(if (string= title "")
+                                                                name
+                                                              title)))
+                          `(file ,(concat "~/org/capture/" template))))))
+           entries
+           "\n")
+)
+
+(setq org-capture-templates
+      '(
+        ("e" "Email")
+        ("ew" "Write Email" entry
+          (file+headline org-default-notes-file "Emails")
+          (file "~/org/capture/email.orgcaptmpl")
+          :empty-lines 1)
+        ("i" "Inbox" entry
+          (file+headline org-inbox-file "Inbox")
+          (file "~/org/capture/notes.orgcaptmpl")
+          :empty-lines 1)
+        ("l" "Link")
+        ("ll" "General" entry
+          (file+headline org-default-notes-file "General")
+          (file "~/org/capture/link.orgcaptmpl")
+          :empty-lines 1)
+        ("ly" "YouTube" entry
+          (file+headline org-default-notes-file "YouTube")
+          (file "~/org/capture/youtube.orgcaptmpl")
+          :empty-lines 1)
+        ("L" "Protocol Link" entry
+          (file+headline org-default-notes-file "Link")
+          (file "~/org/capture/protocol-link.orgcaptmpl")
+          :empty-lines 1)
+        ("n" "Notes")
+        ("nc" "Conlanging" entry
+          (file+headline org-conlanging-file "Note")
+          (file "~/org/capture/notes.orgcaptmpl")
+          :empty-lines 1)
+        ("nn" "General" entry
+          (file+headline org-default-notes-file "General")
+          (file "~/org/capture/notes.orgcaptmpl")
+          :empty-lines 1)
+        ("nN" "Novel" entry
+          (file+headline org-novel-notes-file "Note")
+          (file "~/org/capture/notes.orgcaptmpl")
+          :empty-lines 1)
+        ("nq" "Quote" entry
+          (file+headline org-default-notes-file "Quote")
+          (file "~/org/capture/notes-quote.orgcaptmpl")
+          :empty-lines 1)
+        ("nw" "Worldbuilding" entry
+          (file+headline org-wordbuilding-file "Note")
+          (file "~/org/capture/notes.orgcaptmpl")
+          :empty-lines 1)
+        ("N" "Novel")
+        ("Ni" "Ideas" entry
+          (file+headline org-novel-notes-file "Ideas")
+          (file "~/org/capture/notes.orgcaptmpl")
+          :empty-lines 1)
+        ("p" "Protocol" entry
+          (file+headline org-default-notes-file "Link")
+          (file "~/org/capture/protocol.orgcaptmpl")
+          :empty-lines 1)
+        ("r" "Resources")
+        ("rc" "Conlanging" entry
+          (file+headline org-conlanging-file "Resources")
+          (file "~/org/capture/resource.orgcaptmpl")
+          :empty-lines 1)
+        ("re" "Emacs" entry
+          (file+headline org-default-notes-file "Emacs")
+          (file "~/org/capture/resource.orgcaptmpl")
+          :empty-lines 1)
+        ("ri" "Informatique" entry
+          (file+headline org-default-notes-file "Informatique")
+          (file "~/org/capture/resource.orgcaptmpl")
+          :empty-lines 1)
+        ("rl" "Linguistics" entry
+          (file+headline org-default-notes-file "Linguistics")
+          (file "~/org/capture/resource.orgcaptmpl")
+          :empty-lines 1)
+        ("rL" "Linux" entry
+          (file+headline org-default-notes-file "Linux")
+          (file "~/org/capture/resource.orgcaptmpl")
+          :empty-lines 1)
+        ("rw" "Worldbuilding" entry
+          (file+headline org-wordbuilding-file "Resources")
+          (file "~/org/capture/resource.orgcaptmpl")
+          :empty-lines 1)
+        ("t" "Tasks")
+        ("tb" "Birthday" entry
+          (file+headline org-private-agenda-file "Birthday")
+          (file "~/org/capture/birthday.orgcaptmpl")
+          :empty-lines 1)
+        ("te" "Event" entry
+          (file+headline org-private-agenda-file "Event")
+          (file "~/org/capture/event.orgcaptmpl")
+          :empty-lines 1)
+        ("th" "Health" entry
+          (file+headline org-private-agenda-file "Health")
+          (file "~/org/capture/health.orgcaptmpl")
+          :empty-lines 1)
+        ("ti" "Informatique" entry
+          (file+headline org-private-agenda-file "Informatique")
+          (file "~/org/capture/informatique.orgcaptmpl")
+          :empty-lines 1)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of

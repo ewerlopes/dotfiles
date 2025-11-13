@@ -10,6 +10,8 @@
     "org.el"
     "programming.el"
     "ai-assistant.el"
+    "helpful.el"
+    "applications.el"
     ))
     (load (expand-file-name module
             (expand-file-name "lisp" user-emacs-directory))))

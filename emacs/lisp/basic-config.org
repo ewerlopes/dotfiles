@@ -29,6 +29,7 @@ loaded, speeding Emacs up a bit.
   (menu-bar-mode -1)                 ; disable menubar
   (global-display-line-numbers-mode) ; enable lines globally
   (global-visual-line-mode 1)        ; enable line wrap
+  (desktop-save-mode -1) ; Disables desktop-save-mode
 
 #+end_src
 

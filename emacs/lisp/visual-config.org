@@ -229,6 +229,7 @@ for any language that has delimiters like brackets too.
 ** Y'all want some more /COLOURS/?
 It is possible to make info buffers much more colourful (and, in my
 opinion, easier to read) with this simple package:
+
 #+begin_src emacs-lisp
 (use-package info-colors
       :straight (:build t)
