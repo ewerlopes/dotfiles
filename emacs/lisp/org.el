@@ -53,114 +53,114 @@
         org-src-tab-acts-natively          t
         org-src-preserve-indentation       t
         org-log-done                       'time
-        org-directory                      "~/org"
+        org-directory                      (expand-file-name "org/" (getenv "HOME"))
         org-default-notes-file             (expand-file-name "notes.org" org-directory))
   (with-eval-after-load 'oc
-   (setq org-cite-global-bibliography '("~/org/bibliography/references.bib")))
+   (setq org-cite-global-bibliography (list (expand-file-name "bibliography/references.bib" org-directory))))
   
   (add-hook 'org-mode-hook (lambda ()
                              (interactive)
                              (electric-indent-local-mode -1)))
-  (defvar org-notes-file "~/org/notes.org")
-  (defvar org-journal-file "~/org/journal.org")
-  (defvar org-novel-file "~/org/novel.org")
-  (defvar org-agenda-file "~/org/agenda/private.org")
-  (defvar org-inbox-file "~/org/agenda/inbox.org")
+  (defvar org-notes-file (expand-file-name "notes.org" org-directory))
+  (defvar org-journal-file (expand-file-name "journal.org" org-directory))
+  (defvar org-novel-file (expand-file-name "novel.org" org-directory))
+  (defvar org-agenda-file (expand-file-name "private.org" org-agenda-directory))
+  (defvar org-inbox-file (expand-file-name "inbox.org" org-agenda-directory))
   (setq org-capture-templates
         '(
           ("e" "Email")
           ("ew" "Write Email" entry
             (file+headline org-default-notes-file "Emails")
-            (file "~/org/capture/email.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/email.orgcaptmpl")
             :empty-lines 1)
           ("i" "Inbox" entry
             (file+headline org-inbox-file "Inbox")
-            (file "~/org/capture/notes.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
             :empty-lines 1)
           ("l" "Link")
           ("ll" "General" entry
             (file+headline org-default-notes-file "General")
-            (file "~/org/capture/link.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/link.orgcaptmpl")
             :empty-lines 1)
           ("ly" "YouTube" entry
             (file+headline org-default-notes-file "YouTube")
-            (file "~/org/capture/youtube.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/youtube.orgcaptmpl")
             :empty-lines 1)
           ("L" "Protocol Link" entry
             (file+headline org-default-notes-file "Link")
-            (file "~/org/capture/protocol-link.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/protocol-link.orgcaptmpl")
             :empty-lines 1)
           ("n" "Notes")
           ("nc" "Conlanging" entry
             (file+headline org-conlanging-file "Note")
-            (file "~/org/capture/notes.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
             :empty-lines 1)
           ("nn" "General" entry
             (file+headline org-default-notes-file "General")
-            (file "~/org/capture/notes.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
             :empty-lines 1)
           ("nN" "Novel" entry
             (file+headline org-novel-notes-file "Note")
-            (file "~/org/capture/notes.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
             :empty-lines 1)
           ("nq" "Quote" entry
             (file+headline org-default-notes-file "Quote")
-            (file "~/org/capture/notes-quote.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/notes-quote.orgcaptmpl")
             :empty-lines 1)
           ("nw" "Worldbuilding" entry
             (file+headline org-wordbuilding-file "Note")
-            (file "~/org/capture/notes.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
             :empty-lines 1)
           ("N" "Novel")
           ("Ni" "Ideas" entry
             (file+headline org-novel-notes-file "Ideas")
-            (file "~/org/capture/notes.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
             :empty-lines 1)
           ("p" "Protocol" entry
             (file+headline org-default-notes-file "Link")
-            (file "~/org/capture/protocol.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/protocol.orgcaptmpl")
             :empty-lines 1)
           ("r" "Resources")
           ("rc" "Conlanging" entry
             (file+headline org-conlanging-file "Resources")
-            (file "~/org/capture/resource.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
             :empty-lines 1)
           ("re" "Emacs" entry
             (file+headline org-default-notes-file "Emacs")
-            (file "~/org/capture/resource.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
             :empty-lines 1)
           ("ri" "Informatique" entry
             (file+headline org-default-notes-file "Informatique")
-            (file "~/org/capture/resource.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
             :empty-lines 1)
           ("rl" "Linguistics" entry
             (file+headline org-default-notes-file "Linguistics")
-            (file "~/org/capture/resource.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
             :empty-lines 1)
           ("rL" "Linux" entry
             (file+headline org-default-notes-file "Linux")
-            (file "~/org/capture/resource.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
             :empty-lines 1)
           ("rw" "Worldbuilding" entry
             (file+headline org-wordbuilding-file "Resources")
-            (file "~/org/capture/resource.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
             :empty-lines 1)
           ("t" "Tasks")
           ("tb" "Birthday" entry
             (file+headline org-private-agenda-file "Birthday")
-            (file "~/org/capture/birthday.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/birthday.orgcaptmpl")
             :empty-lines 1)
           ("te" "Event" entry
             (file+headline org-private-agenda-file "Event")
-            (file "~/org/capture/event.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/event.orgcaptmpl")
             :empty-lines 1)
           ("th" "Health" entry
             (file+headline org-private-agenda-file "Health")
-            (file "~/org/capture/health.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/health.orgcaptmpl")
             :empty-lines 1)
           ("ti" "Informatique" entry
             (file+headline org-private-agenda-file "Informatique")
-            (file "~/org/capture/informatique.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/informatique.orgcaptmpl")
             :empty-lines 1)))
   (defun org-emphasize-bold ()
     "Emphasize as bold the current region."
@@ -198,28 +198,12 @@
      (shell . t)
      (sql . t)))
   (setq org-use-sub-superscripts (quote {}))
-  (setq org-latex-compiler "xelatex"
-        org-latex-prefer-user-labels t)
-  (require 'engrave-faces)
-  (setq org-latex-src-block-backend 'engraved)
-  (dolist (package '(("AUTO" "inputenc" t ("pdflatex"))
-                     ("T1"   "fontenc"  t ("pdflatex"))
-                     (""     "grffile"  t)))
-    (delete package org-latex-default-packages-alist))
   
-  (dolist (package '(("AUTO" "babel" nil ("pdflatex"))
-                     ("AUTO" "polyglossia" nil ("xelatex" "lualatex"))
-                     ("capitalize" "cleveref")
-                     (""           "booktabs")
-                     (""           "tabularx")))
-    (add-to-list 'org-latex-default-packages-alist package t))
   
-  (setq org-latex-reference-command "\\cref{%s}")
-  (setq org-export-latex-hyperref-format "\\ref{%s}")
-  (setq org-latex-pdf-process
-        '("tectonic -Z shell-escape --synctex --outdir=%o %f"))
-  (dolist (ext '("bbl" "lot"))
-    (add-to-list 'org-latex-logfiles-extensions ext t))
+  
+  
+  
+  
   
   
   (eval-after-load "ox-latex"
@@ -471,13 +455,13 @@
 (setq org-habit-show-all-today t
       org-habit-show-habits-only-for-today nil)
 
-(setq jethro/org-agenda-directory "~/org/agenda/")
+(setq org-agenda-directory (expand-file-name "agenda/" org-directory))
 (setq org-agenda-files (apply 'append
       (mapcar
        (lambda (directory)
          (directory-files-recursively
            directory org-agenda-file-regexp))
-           '("~/org/agenda"))))
+           (list org-agenda-directory))))
 
 ;;(setq org-agenda-block-separator nil)
 (setq org-agenda-start-with-log-mode t)
@@ -489,26 +473,26 @@
                   (org-deadline-warning-days 365)))
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "inbox.org")))))
+                (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))))
         (todo "WAITING|HOLD"
               ((org-agenda-overriding-header "On Hold / Waiting")
-              (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
-                                  ,(concat jethro/org-agenda-directory "projects.org")
-                                  ,(concat jethro/org-agenda-directory "next.org")))
+              (org-agenda-files '(,(concat org-agenda-directory "someday.org")
+                                  ,(concat org-agenda-directory "projects.org")
+                                  ,(concat org-agenda-directory "next.org")))
               ))
          (todo "NEXT"
                ((org-agenda-overriding-header "In Progress")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
-                                    ,(concat jethro/org-agenda-directory "projects.org")
-                                    ,(concat jethro/org-agenda-directory "next.org")))
+                (org-agenda-files '(,(concat org-agenda-directory "someday.org")
+                                    ,(concat org-agenda-directory "projects.org")
+                                    ,(concat org-agenda-directory "next.org")))
                 ))
          (todo "TODO"
                ((org-agenda-overriding-header "Projects")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "projects.org")))
+                (org-agenda-files '(,(concat org-agenda-directory "projects.org")))
                 ))
          (todo "TODO"
                ((org-agenda-overriding-header "One-off Tasks")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "next.org")))
+                (org-agenda-files '(,(concat org-agenda-directory "next.org")))
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))
          nil)))
 
@@ -588,6 +572,7 @@
    (setq org-journal-dir "~/journal/"))
 
 (let ((entries '(("e" "Email" "" "" "" "") ("ew" "Write Email" "Emails" "file+headline" "org-default-notes-file" "email.orgcaptmpl") ("i" "Inbox" "" "file+headline" "org-inbox-file" "notes.orgcaptmpl") ("l" "Link" "" "" "" "") ("ll" "General" "" "file+headline" "org-default-notes-file" "link.orgcaptmpl") ("ly" "YouTube" "" "file+headline" "org-default-notes-file" "youtube.orgcaptmpl") ("L" "Protocol Link" "Link" "file+headline" "org-default-notes-file" "protocol-link.orgcaptmpl") ("n" "Notes" "" "" "" "") ("nc" "Conlanging" "Note" "file+headline" "org-conlanging-file" "notes.orgcaptmpl") ("nn" "General" "" "file+headline" "org-default-notes-file" "notes.orgcaptmpl") ("nN" "Novel" "Note" "file+headline" "org-novel-notes-file" "notes.orgcaptmpl") ("nq" "Quote" "" "file+headline" "org-default-notes-file" "notes-quote.orgcaptmpl") ("nw" "Worldbuilding" "Note" "file+headline" "org-wordbuilding-file" "notes.orgcaptmpl") ("N" "Novel" "" "" "" "") ("Ni" "Ideas" "" "file+headline" "org-novel-notes-file" "notes.orgcaptmpl") ("p" "Protocol" "Link" "file+headline" "org-default-notes-file" "protocol.orgcaptmpl") ("r" "Resources" "" "" "" "") ("rc" "Conlanging" "Resources" "file+headline" "org-conlanging-file" "resource.orgcaptmpl") ("re" "Emacs" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("ri" "Informatique" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rl" "Linguistics" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rL" "Linux" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rw" "Worldbuilding" "Resources" "file+headline" "org-wordbuilding-file" "resource.orgcaptmpl") ("t" "Tasks" "" "" "" "") ("tb" "Birthday" "" "file+headline" "org-private-agenda-file" "birthday.orgcaptmpl") ("te" "Event" "" "file+headline" "org-private-agenda-file" "event.orgcaptmpl") ("th" "Health" "" "file+headline" "org-private-agenda-file" "health.orgcaptmpl") ("ti" "Informatique" "" "file+headline" "org-private-agenda-file" "informatique.orgcaptmpl"))))
+(setq org-agenda-capture-template-directory (expand-file-name "capture/" org-directory))
 (mapconcat (lambda (entry)
              (let ((key      (nth 0 entry))
                    (name     (nth 1 entry))
@@ -604,7 +589,7 @@
                             `(,(intern ins-mode) ,(intern file) ,(if (string= title "")
                                                                 name
                                                               title)))
-                          `(file ,(concat "~/org/capture/" template))))))
+                          `(file ,(concat org-agenda-capture-template-directory template))))))
            entries
            "\n")
 )
@@ -614,96 +599,96 @@
         ("e" "Email")
         ("ew" "Write Email" entry
           (file+headline org-default-notes-file "Emails")
-          (file "~/org/capture/email.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/email.orgcaptmpl")
           :empty-lines 1)
         ("i" "Inbox" entry
           (file+headline org-inbox-file "Inbox")
-          (file "~/org/capture/notes.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
           :empty-lines 1)
         ("l" "Link")
         ("ll" "General" entry
           (file+headline org-default-notes-file "General")
-          (file "~/org/capture/link.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/link.orgcaptmpl")
           :empty-lines 1)
         ("ly" "YouTube" entry
           (file+headline org-default-notes-file "YouTube")
-          (file "~/org/capture/youtube.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/youtube.orgcaptmpl")
           :empty-lines 1)
         ("L" "Protocol Link" entry
           (file+headline org-default-notes-file "Link")
-          (file "~/org/capture/protocol-link.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/protocol-link.orgcaptmpl")
           :empty-lines 1)
         ("n" "Notes")
         ("nc" "Conlanging" entry
           (file+headline org-conlanging-file "Note")
-          (file "~/org/capture/notes.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
           :empty-lines 1)
         ("nn" "General" entry
           (file+headline org-default-notes-file "General")
-          (file "~/org/capture/notes.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
           :empty-lines 1)
         ("nN" "Novel" entry
           (file+headline org-novel-notes-file "Note")
-          (file "~/org/capture/notes.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
           :empty-lines 1)
         ("nq" "Quote" entry
           (file+headline org-default-notes-file "Quote")
-          (file "~/org/capture/notes-quote.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/notes-quote.orgcaptmpl")
           :empty-lines 1)
         ("nw" "Worldbuilding" entry
           (file+headline org-wordbuilding-file "Note")
-          (file "~/org/capture/notes.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
           :empty-lines 1)
         ("N" "Novel")
         ("Ni" "Ideas" entry
           (file+headline org-novel-notes-file "Ideas")
-          (file "~/org/capture/notes.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
           :empty-lines 1)
         ("p" "Protocol" entry
           (file+headline org-default-notes-file "Link")
-          (file "~/org/capture/protocol.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/protocol.orgcaptmpl")
           :empty-lines 1)
         ("r" "Resources")
         ("rc" "Conlanging" entry
           (file+headline org-conlanging-file "Resources")
-          (file "~/org/capture/resource.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
           :empty-lines 1)
         ("re" "Emacs" entry
           (file+headline org-default-notes-file "Emacs")
-          (file "~/org/capture/resource.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
           :empty-lines 1)
         ("ri" "Informatique" entry
           (file+headline org-default-notes-file "Informatique")
-          (file "~/org/capture/resource.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
           :empty-lines 1)
         ("rl" "Linguistics" entry
           (file+headline org-default-notes-file "Linguistics")
-          (file "~/org/capture/resource.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
           :empty-lines 1)
         ("rL" "Linux" entry
           (file+headline org-default-notes-file "Linux")
-          (file "~/org/capture/resource.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
           :empty-lines 1)
         ("rw" "Worldbuilding" entry
           (file+headline org-wordbuilding-file "Resources")
-          (file "~/org/capture/resource.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
           :empty-lines 1)
         ("t" "Tasks")
         ("tb" "Birthday" entry
           (file+headline org-private-agenda-file "Birthday")
-          (file "~/org/capture/birthday.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/birthday.orgcaptmpl")
           :empty-lines 1)
         ("te" "Event" entry
           (file+headline org-private-agenda-file "Event")
-          (file "~/org/capture/event.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/event.orgcaptmpl")
           :empty-lines 1)
         ("th" "Health" entry
           (file+headline org-private-agenda-file "Health")
-          (file "~/org/capture/health.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/health.orgcaptmpl")
           :empty-lines 1)
         ("ti" "Informatique" entry
           (file+headline org-private-agenda-file "Informatique")
-          (file "~/org/capture/informatique.orgcaptmpl")
+          (file "/Users/ewerlopes/org/capture/informatique.orgcaptmpl")
           :empty-lines 1)))
 
 (defun phundrak/toggle-org-src-window-split ()
@@ -823,14 +808,11 @@ the value `split-window-right', then it will be changed to
   :after ox
   :straight t)
 
-(use-package engrave-faces
-  :straight (:build t))
-
 (use-package org-roam
   :straight (:build t)
   :defer t
   :custom
-  (org-roam-directory (expand-file-name "org/library/" (getenv "HOME")))
+  (org-roam-directory (expand-file-name "/Google Drive/My Drive/org/library/" (getenv "HOME")))
   (org-roam-completion-everywhere t)
   :config
   (org-roam-db-autosync-mode 1)
@@ -856,7 +838,7 @@ the value `split-window-right', then it will be changed to
 
 (use-package reftex
   :commands turn-on-reftex
-  :init (setq reftex-default-bibliography "~/org/bibliography/references.bib"
+  :init (setq reftex-default-bibliography (expand-file-name "bibliography/references.bib" org-directory)
               reftex-plug-into-AUCTeX     t)
   :straight t)
 
@@ -875,9 +857,9 @@ the value `split-window-right', then it will be changed to
   (add-hook 'org-mode-hook (lambda () (require 'org-ref)))
   :config
   (setq bibtex-completion-pdf-field    "file"
-        bibtex-completion-notes-path   "~/org/bibliography/notes/"
-        bibtex-completion-bibliography "~/org/bibliography/references.bib"
-        bibtex-completion-library-path "~/org/bibliography/bibtex-pdfs/"
+        bibtex-completion-notes-path   (expand-file-name "bibliography/notes/" org-directory)
+        bibtex-completion-bibliography (expand-file-name "bibliography/references.bib" org-directory)
+        bibtex-completion-library-path (expand-file-name "bibliography/bibtex-pdfs/" org-directory)
         bibtex-completion-pdf-symbol   "⌘"
         bibtex-completion-notes-symbol "✎")
   :general

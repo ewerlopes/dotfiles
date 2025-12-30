@@ -84,10 +84,10 @@ extended however we like!
         org-src-tab-acts-natively          t
         org-src-preserve-indentation       t
         org-log-done                       'time
-        org-directory                      "~/org"
+        org-directory                      (expand-file-name "org/" (getenv "HOME"))
         org-default-notes-file             (expand-file-name "notes.org" org-directory))
   (with-eval-after-load 'oc
-   (setq org-cite-global-bibliography '("~/org/bibliography/references.bib")))
+   (setq org-cite-global-bibliography (list (expand-file-name "bibliography/references.bib" org-directory))))
   <<org-agenda-files>>
   <<org-behavior-electric>>
   <<org-capture-target-files>>
@@ -259,13 +259,13 @@ I like keeping repeaters around:
 Adding the proper files to pull agenda from. This adds in the project-based files in addition, since each could/can have their own todo.org file.
 
 #+begin_src emacs-lisp
-(setq jethro/org-agenda-directory "~/org/agenda/")
+(setq org-agenda-directory (expand-file-name "agenda/" org-directory))
 (setq org-agenda-files (apply 'append
       (mapcar
        (lambda (directory)
          (directory-files-recursively
            directory org-agenda-file-regexp))
-           '("~/org/agenda"))))
+           (list org-agenda-directory))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -279,26 +279,26 @@ Adding the proper files to pull agenda from. This adds in the project-based file
                   (org-deadline-warning-days 365)))
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "inbox.org")))))
+                (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))))
         (todo "WAITING|HOLD"
               ((org-agenda-overriding-header "On Hold / Waiting")
-              (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
-                                  ,(concat jethro/org-agenda-directory "projects.org")
-                                  ,(concat jethro/org-agenda-directory "next.org")))
+              (org-agenda-files '(,(concat org-agenda-directory "someday.org")
+                                  ,(concat org-agenda-directory "projects.org")
+                                  ,(concat org-agenda-directory "next.org")))
               ))
          (todo "NEXT"
                ((org-agenda-overriding-header "In Progress")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "someday.org")
-                                    ,(concat jethro/org-agenda-directory "projects.org")
-                                    ,(concat jethro/org-agenda-directory "next.org")))
+                (org-agenda-files '(,(concat org-agenda-directory "someday.org")
+                                    ,(concat org-agenda-directory "projects.org")
+                                    ,(concat org-agenda-directory "next.org")))
                 ))
          (todo "TODO"
                ((org-agenda-overriding-header "Projects")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "projects.org")))
+                (org-agenda-files '(,(concat org-agenda-directory "projects.org")))
                 ))
          (todo "TODO"
                ((org-agenda-overriding-header "One-off Tasks")
-                (org-agenda-files '(,(concat jethro/org-agenda-directory "next.org")))
+                (org-agenda-files '(,(concat org-agenda-directory "next.org")))
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))))
          nil)))
 
@@ -481,11 +481,11 @@ text, links, resources, or reminders. They are all organised in
 specified org files which are described below.
 #+name: org-capture-target-files
 #+begin_src emacs-lisp :tangle no
-(defvar org-notes-file "~/org/notes.org")
-(defvar org-journal-file "~/org/journal.org")
-(defvar org-novel-file "~/org/novel.org")
-(defvar org-agenda-file "~/org/agenda/private.org")
-(defvar org-inbox-file "~/org/agenda/inbox.org")
+(defvar org-notes-file (expand-file-name "notes.org" org-directory))
+(defvar org-journal-file (expand-file-name "journal.org" org-directory))
+(defvar org-novel-file (expand-file-name "novel.org" org-directory))
+(defvar org-agenda-file (expand-file-name "private.org" org-agenda-directory))
+(defvar org-inbox-file (expand-file-name "inbox.org" org-agenda-directory))
 #+end_src
 
 When ~org-capture~ is invoked, it will ask which template we wish to
@@ -533,6 +533,7 @@ All templates can be found [[https://labs.phundrak.com/phundrak/dotfiles/src/bra
 #+name: org-capture-shortcuts-gen
 #+header: :exports none :cache yes :tangle yes
 #+begin_src emacs-lisp :var entries=org-capture-shortcuts-table
+(setq org-agenda-capture-template-directory (expand-file-name "capture/" org-directory))
 (mapconcat (lambda (entry)
              (let ((key      (nth 0 entry))
                    (name     (nth 1 entry))
@@ -549,7 +550,7 @@ All templates can be found [[https://labs.phundrak.com/phundrak/dotfiles/src/bra
                             `(,(intern ins-mode) ,(intern file) ,(if (string= title "")
                                                                 name
                                                               title)))
-                          `(file ,(concat "~/org/capture/" template))))))
+                          `(file ,(concat org-agenda-capture-template-directory template))))))
            entries
            "\n")
 #+end_src
@@ -559,75 +560,72 @@ All templates can be found [[https://labs.phundrak.com/phundrak/dotfiles/src/bra
 ("e" "Email")
 ("ew" "Write Email" entry
   (file+headline org-default-notes-file "Emails")
-  (file "~/org/capture/email.orgcaptmpl"))
+  (file (expand-file-name "email.orgcaptmpl" org-agenda-capture-template-directory)))
 ("j" "Journal" entry
   (file+datetree org-journal-file ##)
-  (file "~/org/capture/journal.orgcaptmpl"))
+  (file (expand-file-name "journal.orgcaptmpl" org-agenda-capture-template-directory)))
 ("l" "Link")
 ("ll" "General" entry
   (file+headline org-default-notes-file "General")
-  (file "~/org/capture/link.orgcaptmpl"))
+  (file (expand-file-name "link.orgcaptmpl" org-agenda-capture-template-directory)))
 ("ly" "YouTube" entry
   (file+headline org-default-notes-file "YouTube")
-  (file "~/org/capture/youtube.orgcaptmpl"))
+  (file (expand-file-name "youtube.orgcaptmpl" org-agenda-capture-template-directory)))
 ("L" "Protocol Link" entry
   (file+headline org-default-notes-file "Link")
-  (file "~/org/capture/protocol-link.orgcaptmpl"))
+  (file (expand-file-name "protocol-link.orgcaptmpl" org-agenda-capture-template-directory)))
 ("n" "Notes")
 ("nc" "Conlanging" entry
   (file+headline org-conlanging-file "Note")
-  (file "~/org/capture/notes.orgcaptmpl"))
+  (file (expand-file-name "notes.orgcaptmpl" org-agenda-capture-template-directory)))
 ("nn" "General" entry
   (file+headline org-default-notes-file "General")
-  (file "~/org/capture/notes.orgcaptmpl"))
+  (file (expand-file-name "notes.orgcaptmpl" org-agenda-capture-template-directory)))
 ("nN" "Novel" entry
   (file+headline org-novel-notes-file "Note")
-  (file "~/org/capture/notes.orgcaptmpl"))
+  (file (expand-file-name "notes.orgcaptmpl" org-agenda-capture-template-directory)))
 ("nq" "Quote" entry
   (file+headline org-default-notes-file "Quote")
-  (file "~/org/capture/notes-quote.orgcaptmpl"))
+  (file (expand-file-name "notes-quote.orgcaptmpl" org-agenda-capture-template-directory)))
 ("nw" "Worldbuilding" entry
   (file+headline org-wordbuilding-file "Note")
-  (file "~/org/capture/notes.orgcaptmpl"))
+  (file (expand-file-name "notes.orgcaptmpl" org-agenda-capture-template-directory)))
 ("N" "Novel")
 ("Ni" "Ideas" entry
   (file+headline org-novel-notes-file "Ideas")
-  (file "~/org/capture/notes.orgcaptmpl"))
+  (file (expand-file-name "notes.orgcaptmpl" org-agenda-capture-template-directory)))
 ("p" "Protocol" entry
   (file+headline org-default-notes-file "Link")
-  (file "~/org/capture/protocol.orgcaptmpl"))
+  (file (expand-file-name "protocol.orgcaptmpl" org-agenda-capture-template-directory)))
 ("r" "Resources")
 ("rc" "Conlanging" entry
   (file+headline org-conlanging-file "Resources")
-  (file "~/org/capture/resource.orgcaptmpl"))
+  (file (expand-file-name "resource.orgcaptmpl" org-agenda-capture-template-directory)))
 ("re" "Emacs" entry
   (file+headline org-default-notes-file "Emacs")
-  (file "~/org/capture/resource.orgcaptmpl"))
+  (file (expand-file-name "resource.orgcaptmpl" org-agenda-capture-template-directory)))
 ("ri" "Informatique" entry
   (file+headline org-default-notes-file "Informatique")
-  (file "~/org/capture/resource.orgcaptmpl"))
+  (file (expand-file-name "resource.orgcaptmpl" org-agenda-capture-template-directory)))
 ("rl" "Linguistics" entry
   (file+headline org-default-notes-file "Linguistics")
-  (file "~/org/capture/resource.orgcaptmpl"))
+  (file (expand-file-name "resource.orgcaptmpl" org-agenda-capture-template-directory)))
 ("rL" "Linux" entry
   (file+headline org-default-notes-file "Linux")
-  (file "~/org/capture/resource.orgcaptmpl"))
+  (file (expand-file-name "resource.orgcaptmpl" org-agenda-capture-template-directory)))
 ("rw" "Worldbuilding" entry
   (file+headline org-wordbuilding-file "Resources")
-  (file "~/org/capture/resource.orgcaptmpl"))
+  (file (expand-file-name "resource.orgcaptmpl" org-agenda-capture-template-directory)))
 ("t" "Tasks")
 ("tb" "Birthday" entry
   (file+headline org-private-agenda-file "Birthday")
-  (file "~/org/capture/birthday.orgcaptmpl"))
+  (file (expand-file-name "birthday.orgcaptmpl" org-agenda-capture-template-directory)))
 ("te" "Event" entry
   (file+headline org-private-agenda-file "Event")
-  (file "~/org/capture/event.orgcaptmpl"))
+  (file (expand-file-name "event.orgcaptmpl" org-agenda-capture-template-directory)))
 ("th" "Health" entry
   (file+headline org-private-agenda-file "Health")
-  (file "~/org/capture/health.orgcaptmpl"))
-("ti" "Informatique" entry
-  (file+headline org-private-agenda-file "Informatique")
-  (file "~/org/capture/informatique.orgcaptmpl"))
+  (file (expand-file-name "health.orgcaptmpl" org-agenda-capture-template-directory)))
 #+end_example
 
 The capture templates are set like so:
@@ -852,79 +850,6 @@ let's directly export our org files as markdown files and let Hugo do the rest o
   :straight t)
 #+end_src
 
-*** LaTeX
-When it comes to exports, I want the LaTeX and PDF exports to be done
-with XeTeX only. I also want LaTeX exports to use my labels rather
-than org-generated labels.
-#+NAME: org-latex-compiler
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq org-latex-compiler "xelatex"
-      org-latex-prefer-user-labels t)
-#+END_SRC
-
-A new backend that was introduced in org-mode for LaTeX source block
-coloring is ~engraved~.
-#+BEGIN_SRC emacs-lisp
-(use-package engrave-faces
-  :straight (:build t))
-#+END_SRC
-
-#+name: org-latex-src-block-backend
-#+begin_src emacs-lisp :tangle no
-(require 'engrave-faces)
-(setq org-latex-src-block-backend 'engraved)
-#+end_src
-
-The default packages break my LaTeX exports: for some reason, images
-are not loaded and exported in PDFs, so I needed to redefine the
-default packages excluding the one that broke my exports; namely, I
-need to remove ~inputenc~, ~fontenc~ and ~grffile~. I also added some
-default packages:
-- ~cleveref~ for better references to various elements.
-- ~svg~ for inserting SVG files in PDF outputs
-- ~booktabs~ for nicer tables
-- and ~tabularx~ for tabulars with adjustable columns
-#+NAME: org-latex-default-packages
-#+BEGIN_SRC emacs-lisp :tangle no
-(dolist (package '(("AUTO" "inputenc" t ("pdflatex"))
-                   ("T1"   "fontenc"  t ("pdflatex"))
-                   (""     "grffile"  t)))
-  (delete package org-latex-default-packages-alist))
-
-(dolist (package '(("AUTO" "babel" nil ("pdflatex"))
-                   ("AUTO" "polyglossia" nil ("xelatex" "lualatex"))
-                   ("capitalize" "cleveref")
-                   (""           "booktabs")
-                   (""           "tabularx")))
-  (add-to-list 'org-latex-default-packages-alist package t))
-
-(setq org-latex-reference-command "\\cref{%s}")
-#+END_SRC
-
-By the way, reference links in LaTeX should be written in this format,
-since we are using ~cleveref~:
-#+NAME: org-export-latex-hyperref-format
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq org-export-latex-hyperref-format "\\ref{%s}")
-#+END_SRC
-
-[[https://tectonic-typesetting.github.io/en-US/][Tectonic]] is awesome for processing LaTeX documents! Look how simple it
-is!
-#+NAME: org-latex-pdf-process
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq org-latex-pdf-process
-      '("tectonic -Z shell-escape --synctex --outdir=%o %f"))
-#+END_SRC
-
-Finally, org-mode is supposed to automatically clean logfiles after it
-exports an org file to LaTeX. However, it misses a few, so I need to
-add their extension like so:
-#+name: org-latex-logfiles-add-extensions
-#+begin_src emacs-lisp :tangle no
-(dolist (ext '("bbl" "lot"))
-  (add-to-list 'org-latex-logfiles-extensions ext t))
-#+end_src
-
 ** Keybindings
 Be prepared, I have a lot of keybindings for org-mode! They are all
 prefixed with a comma ~,~ in normal mode.
@@ -1133,7 +1058,7 @@ org-roam is a Zettelkasten-style knowledge management system based on org-mode.
   :straight (:build t)
   :defer t
   :custom
-  (org-roam-directory (expand-file-name "org/library/" (getenv "HOME")))
+  (org-roam-directory (expand-file-name "/Google Drive/My Drive/org/library/" (getenv "HOME")))
   (org-roam-completion-everywhere t)
   :config
   (org-roam-db-autosync-mode 1)
@@ -1164,7 +1089,7 @@ org-roam is a Zettelkasten-style knowledge management system based on org-mode.
 #+begin_src emacs-lisp
 (use-package reftex
   :commands turn-on-reftex
-  :init (setq reftex-default-bibliography "~/org/bibliography/references.bib"
+  :init (setq reftex-default-bibliography (expand-file-name "bibliography/references.bib" org-directory)
               reftex-plug-into-AUCTeX     t)
   :straight t)
 #+end_src
@@ -1185,9 +1110,9 @@ org-roam is a Zettelkasten-style knowledge management system based on org-mode.
   (add-hook 'org-mode-hook (lambda () (require 'org-ref)))
   :config
   (setq bibtex-completion-pdf-field    "file"
-        bibtex-completion-notes-path   "~/org/bibliography/notes/"
-        bibtex-completion-bibliography "~/org/bibliography/references.bib"
-        bibtex-completion-library-path "~/org/bibliography/bibtex-pdfs/"
+        bibtex-completion-notes-path   (expand-file-name "bibliography/notes/" org-directory)
+        bibtex-completion-bibliography (expand-file-name "bibliography/references.bib" org-directory)
+        bibtex-completion-library-path (expand-file-name "bibliography/bibtex-pdfs/" org-directory)
         bibtex-completion-pdf-symbol   "⌘"
         bibtex-completion-notes-symbol "✎")
   :general
