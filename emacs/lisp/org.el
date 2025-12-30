@@ -812,7 +812,8 @@ the value `split-window-right', then it will be changed to
   :straight (:build t)
   :defer t
   :custom
-  (org-roam-directory (expand-file-name "/Google Drive/My Drive/org/library/" (getenv "HOME")))
+  (org-roam-directory (expand-file-name "org-roam/" org-directory))
+  (setq org-roam-db-location (expand-file-name "org-roam.db" org-roam-directory)
   (org-roam-completion-everywhere t)
   :config
   (org-roam-db-autosync-mode 1)
