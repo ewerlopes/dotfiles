@@ -1059,7 +1059,7 @@ org-roam is a Zettelkasten-style knowledge management system based on org-mode.
   :defer t
   :custom
   (org-roam-directory (expand-file-name "org-roam/" org-directory))
-  (setq org-roam-db-location (expand-file-name "org-roam.db" org-roam-directory)
+  (setq org-roam-db-location (expand-file-name "org-roam.db" org-roam-directory))
   (org-roam-completion-everywhere t)
   :config
   (org-roam-db-autosync-mode 1)

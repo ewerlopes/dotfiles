@@ -813,7 +813,7 @@ the value `split-window-right', then it will be changed to
   :defer t
   :custom
   (org-roam-directory (expand-file-name "org-roam/" org-directory))
-  (setq org-roam-db-location (expand-file-name "org-roam.db" org-roam-directory)
+  (setq org-roam-db-location (expand-file-name "org-roam.db" org-roam-directory))
   (org-roam-completion-everywhere t)
   :config
   (org-roam-db-autosync-mode 1)
