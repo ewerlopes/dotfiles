@@ -468,11 +468,11 @@ Adding some refile config
   anything else:
 
   #+BEGIN_SRC emacs-lisp
-    (use-package org-journal
-      :straight (:build t)
-      :ensure t
-       :init
-       (setq org-journal-dir "~/journal/"))
+  (use-package org-journal
+    :straight (:build t)
+    :ensure t
+      :init
+      (setq org-journal-dir (expand-file-name "journal/" org-directory)))
   #+END_SRC
 
 ** Capture
