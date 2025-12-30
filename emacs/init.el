@@ -8,6 +8,7 @@
     "keybindings.el"
     "visual-config.el"
     "org.el"
+    "latex.el"
     "programming.el"
     "ai-assistant.el"
     "helpful.el"
