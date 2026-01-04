@@ -8,8 +8,7 @@
 
 ** Code Autocompletion
 
-Company is, in my opinion, the best autocompleting engine for Emacs,
-and it is one of the most popular if not /the/ most popular.
+Company is, in my opinion, the best autocompleting engine for Emacs, and it is one of the most popular if not /the/ most popular.
 
 #+begin_src emacs-lisp
 (use-package company
@@ -34,9 +33,7 @@ and it is one of the most popular if not /the/ most popular.
         company-dabbrev-downcase    nil))
 #+end_src
 
-This package is a backend for company. It emulates
-~ac-source-dictionary~ by proposing text related to the current
-major-mode.
+This package is a backend for company. It emulates ~ac-source-dictionary~ by proposing text related to the current major-mode.
 
 #+begin_src emacs-lisp
 (use-package company-dict
@@ -46,12 +43,10 @@ major-mode.
   (setq company-dict-dir (expand-file-name "dicts" user-emacs-directory)))
 #+end_src
 
-On the other hand, ~company-box~ is a Company front-end which offers
-colours, icons, documentation and so on. Very nice.
+On the other hand, ~company-box~ is a Company front-end which offers colours, icons, documentation and so on. Very nice.
 
-Declaring all the icons for the variable
-~company-box-icons-all-the-icons~ is quite verbose in Elisp, so I do it
-with an org-table.
+Declaring all the icons for the variable ~company-box-icons-all-the-icons~ is quite verbose in Elisp, so I do it with an org-table.
+
 #+name: company-box-icons
 | Type          | Icon                     | Color  |
 |---------------+--------------------------+--------|
@@ -151,8 +146,8 @@ with an org-table.
 #+end_src
 
 ** Counsel
-counsel is a package that provides loads of completion functions for ivy. The
-ones I find most useful are ~counsel-M-x~ and ~counsel-find-file~.
+
+Counsel is a package that provides loads of completion functions for ivy. The ones I find most useful are ~counsel-M-x~ and ~counsel-find-file~.
 
 #+begin_src emacs-lisp
 (use-package counsel
@@ -168,11 +163,8 @@ ones I find most useful are ~counsel-M-x~ and ~counsel-find-file~.
 #+end_src
 
 ** Ivy
-My main menu package is =ivy= which I use as much as possible - I've
-noticed =helm= can be slow, very slow in comparison to =ivy=, so I'll use
-the latter as much as possible. Actually, only =ivy= is installed for
-now. I could have used =ido= too, but I find it to be a bit too
-restricted in terms of features compared to =ivy=.
+
+My main menu package is =ivy= which I use as much as possible - I've noticed =helm= can be slow, very slow in comparison to =ivy=, so I'll use the latter as much as possible. Actually, only =ivy= is installed for now. I could have used =ido= too, but I find it to be a bit too restricted in terms of features compared to =ivy=.
 
 #+begin_src emacs-lisp
 (use-package ivy
@@ -209,9 +201,8 @@ restricted in terms of features compared to =ivy=.
         ivy-use-selectable-prompt       t))
 #+end_src
 
-There is also [[https://github.com/raxod502/prescient.el][~prescient.el~]] that offers some nice features when
-coupled with ~ivy~, guess what was born out of it? ~ivy-prescient~, of
-course!
+There is also [[https://github.com/raxod502/prescient.el][~prescient.el~]] that offers some nice features when coupled with ~ivy~, guess what was born out of it? ~ivy-prescient~, of course!
+
 #+begin_src emacs-lisp
 (use-package ivy-prescient
   :after ivy
@@ -219,6 +210,7 @@ course!
 #+end_src
 
 I warned you I'd use too much ~all-the-icons~, I did!
+
 #+begin_src emacs-lisp :tangle no
 (use-package all-the-icons-ivy
   :straight (:build t)
@@ -228,8 +220,8 @@ I warned you I'd use too much ~all-the-icons~, I did!
 (all-the-icons-ivy-setup)
 #+end_src
 
-A buffer popping at the bottom of the screen is nice and all, but have
-you considered a floating buffer in the centre of your frame?
+A buffer popping at the bottom of the screen is nice and all, but have you considered a floating buffer in the centre of your frame?
+
 #+begin_src emacs-lisp :tangle no
 (use-package ivy-posframe
   :defer t
@@ -246,13 +238,7 @@ you considered a floating buffer in the centre of your frame?
           (min-height . ,ivy-height))))
 #+end_src
 
-Something that can be missing sometimes in Ivy is the ability to
-select multiple entries at once. For instance, when programming in
-Java, LPS can offer you to automatically generate the methods ~equals~
-and ~hashCode~ based on selected members, but with vanilla Ivy, you can
-only select one. Not really useful. ~ivy-hydra~ is a package that offers
-a Hydra interface when in Ivy which allows you to select multiple
-choices among other things.
+Something that can be missing sometimes in Ivy is the ability to select multiple entries at once. For instance, when programming in Java, LPS can offer you to automatically generate the methods ~equals~ and ~hashCode~ based on selected members, but with vanilla Ivy, you can only select one. Not really useful. ~ivy-hydra~ is a package that offers a Hydra interface when in Ivy which allows you to select multiple choices among other things.
 
 #+begin_src emacs-lisp
 (use-package ivy-hydra
@@ -263,10 +249,12 @@ choices among other things.
 
 Finally, let's make ~ivy~ richer:
 
+#+begin_src emacs-lisp :tangle no
 (use-package all-the-icons-ivy-rich
   :ensure t
   :straight (:build t)
   :init (all-the-icons-ivy-rich-mode 1))
+#+end_src
 
 #+begin_src emacs-lisp
 (use-package ivy-rich
@@ -284,9 +272,7 @@ Finally, let's make ~ivy~ richer:
 #+end_src
 
 ** Yasnippet
-Yasnippet allows you to insert some pre-made code by just typing a few
-characters. It can even generate some string with Elisp expressions
-and ask the user for some input in some precise places.
+Yasnippet allows you to insert some pre-made code by just typing a few characters. It can even generate some string with Elisp expressions and ask the user for some input in some precise places.
 
 #+begin_src emacs-lisp
 (use-package yasnippet
@@ -298,8 +284,7 @@ and ask the user for some input in some precise places.
          (text-mode . yas-minor-mode)))
 #+end_src
 
-Of course, yasnippet wouldn't be as awesome as it is without pre-made
-snippets.
+Of course, yasnippet wouldn't be as awesome as it is without pre-made snippets.
 
 #+begin_src emacs-lisp
 (use-package yasnippet-snippets
@@ -308,8 +293,7 @@ snippets.
   :straight (:build t))
 #+end_src
 
-Similarly, yatemplate offers pre-made files rather than just strings.
-That's still yasnippet by the way.
+Similarly, yatemplate offers pre-made files rather than just strings. That's still yasnippet by the way.
 
 #+begin_src emacs-lisp
 (use-package yatemplate
@@ -318,8 +302,7 @@ That's still yasnippet by the way.
   :straight (:build t))
 #+end_src
 
-And finally, with ivy you can choose your snippets from a menu if
-you're not sure or if you don't remember what your snippet is.
+And finally, with ivy you can choose your snippets from a menu if you're not sure or if you don't remember what your snippet is.
 
 #+begin_src emacs-lisp
 (use-package ivy-yasnippet
