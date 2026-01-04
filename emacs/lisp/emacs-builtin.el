@@ -32,18 +32,19 @@
             image-dired-gallery-dir            (funcall my/dir "gallery")
             image-dired-temp-image-file        (funcall my/file "temp-image" image-dired-dir)
             image-dired-temp-rotate-image-file (funcall my/file "temp-rotate-image" image-dired-dir)))
-  (dirvish-define-preview eza (file)
-    "Use `eza' to generate directory preview."
-    :require ("eza")
-    (when (file-directory-p file)
-      `(shell . ("eza" "--color=always" "-al" ,file))))
-  
-  (add-to-list 'dirvish-preview-dispatchers 'eza)
+  ; (dirvish-define-preview eza (file)
+  ;   "Use `eza' to generate directory preview."
+  ;   :require ("eza")
+  ;   (when (file-directory-p file)
+  ;     `(shell . ("eza" "--color=always" "-al" ,file))))
+  ; 
+  ; (add-to-list 'dirvish-preview-dispatchers 'eza)
   (setq dired-dwim-target         t
         dired-recursive-copies    'always
         dired-recursive-deletes   'top
         delete-by-moving-to-trash t
-        dirvish-preview-dispatchers (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers))
+        ; dirvish-preview-dispatchers (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers)
+  )
   :general
   (phundrak/evil
     :keymaps 'dirvish-mode-map

@@ -38,12 +38,13 @@ obsolete!
   <<dired-drag-and-drop>>
   <<dired-listing-flags>>
   <<dired-files-and-dirs>>
-  <<dirvish-exa-offload>>
+  ; <<dirvish-exa-offload>>
   (setq dired-dwim-target         t
         dired-recursive-copies    'always
         dired-recursive-deletes   'top
         delete-by-moving-to-trash t
-        dirvish-preview-dispatchers (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers))
+        ; dirvish-preview-dispatchers (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers)
+  )
   :general
   (phundrak/evil
     :keymaps 'dirvish-mode-map
