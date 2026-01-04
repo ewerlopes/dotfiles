@@ -27,3 +27,28 @@ Bufler is a package that organises and lists buffers in a much better way than h
    "s"   #'bufler-list-buffer-save
    "RET" #'bufler-list-buffer-switch))
 #+end_src
+
+** Beancount
+
+~beancount-mode~ an Emacs major-mode implementing syntax highlighting, indentation, completion , and other facilities to edit and work with Beancount ledger files.
+
+Let's instruct Emacs to activate beancount-mode when opening files with a ~.beancount~ extension
+
+#+begin_src emacs-lisp
+  (use-package beancount
+    :straight (:build t)
+    :ensure t
+    :mode (("\\.beancount\\'" . beancount-mode))
+    :config
+    ;; Optional: Add configuration settings here.
+    ;; Example: Align numbers to a specific column
+    (setq beancount-number-alignment-column 52)
+
+    ;; Optional: Define custom keybindings, e.g. for inserting the current date
+    ;; (global-set-key (kbd "C-c d") 'beancount-insert-date)
+
+    ;; Ensure beancount executable is in the Emacs PATH for tools like bean-check
+    (setenv "PATH" (concat (getenv "PATH") ":/Users/ewerlopes/coding/contas/.venv/bin"))
+    (add-to-list 'exec-path "/Users/ewerlopes/coding/contas/.venv/bin")
+  )
+#+end_src
