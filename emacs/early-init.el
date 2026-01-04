@@ -9,5 +9,6 @@
 (set-fringe-mode 10)               ; give some breathing room
 (menu-bar-mode -1)                 ; disable menubar
 (global-display-line-numbers-mode) ; enable lines globally
+(setq display-line-numbers-type 'relative) ; enable relative line numbers
 (global-visual-line-mode 1)        ; enable line wrap
 (desktop-save-mode -1) ; Disables desktop-save-mode
