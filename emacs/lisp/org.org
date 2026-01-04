@@ -26,15 +26,14 @@
            "\n")
 #+end_src
 
-Since recently, in order to make ~org-cite~ compile properly, we need
-the ~citeproc~ package, a citation processor.
+~SUPER ODD~:A new backend that was introduced in org-mode for LaTeX source block
+coloring is ~engraved~. I don't need this package at the moment. But, if I don't use it, it will 
+not enable the keybindings. SUPER STRANGEEEE! I will investigate this later.
 
-#+begin_src emacs-lisp
-(use-package citeproc
-  :after (org)
-  :defer t
+#+BEGIN_SRC emacs-lisp
+(use-package engrave-faces
   :straight (:build t))
-#+end_src
+#+END_SRC
 
 Org is the main reason I am using Emacs. It is an extremely powerful
 tool when you want to write anything that is not necessarily primarily
@@ -95,15 +94,8 @@ extended however we like!
   <<org-create-emphasis-functions()>>
   <<org-babel-load-languages>>
   <<org-use-sub-superscripts>>
-  <<org-latex-compiler>>
-  <<org-latex-src-block-backend>>
-  <<org-latex-default-packages>>
-  <<org-export-latex-hyperref-format>>
-  <<org-latex-pdf-process>>
-  <<org-latex-logfiles-add-extensions>>
   <<org-re-reveal>>
   <<org-html-validation>>
-  <<org-latex-classes>>
   <<org-publish-projects>>
   <<org-mode-visual-prettify-symbols>>
   :general
@@ -258,6 +250,7 @@ I like keeping repeaters around:
 
 Adding the proper files to pull agenda from. This adds in the project-based files in addition, since each could/can have their own todo.org file.
 
+#+name: org-agenda-files
 #+begin_src emacs-lisp
 (setq org-agenda-directory (expand-file-name "agenda/" org-directory))
 (setq org-agenda-files (apply 'append
@@ -366,26 +359,6 @@ Some languages can run asynchronously with the help of ~ob-async~.
   :after (org ob))
 #+end_src
 
-A package I use from time to time is ~ob-latex-as-png~ which allows me
-to easily convert a LaTeX snippet into a PNG, regardless of the
-exporter I use afterwards. Its installation is pretty simple:
-#+begin_src emacs-lisp
-(use-package ob-latex-as-png
-  :after org
-  :straight (:build t))
-#+end_src
-
-A nice thing to have when working with REST APIs is to have a REST
-client. Even better if it can work inside org-mode!
-#+begin_src emacs-lisp
-(use-package ob-restclient
-  :straight (:build t)
-  :defer t
-  :after (org ob)
-  :init
-  (add-to-list 'org-babel-load-languages '(restclient . t)))
-#+end_src
-
 ** Behavior
 
 A useful package I like is ~toc-org~ which creates automatically a table
@@ -415,6 +388,7 @@ for org files that will be hosted and viewable on GitHub.
 
 As explained in my [[https://blog.phundrak.com/better-custom-ids-orgmode/][blog post]], org-mode is terrible with coming up with
 meaningful IDs for its headings. I actually wrote a package for this!
+
 #+begin_src emacs-lisp
 (use-package org-unique-id
   :straight (org-unique-id :build t
@@ -494,8 +468,6 @@ represents which keychord we need to hit, titled with /name/, we need to
 hit in order to use the /template/, inserted in the designated /file/ in
 the manner described by /insertion mode/.
 
-;| j        | Journal       |           | file+datetree  | org-journal-file        | journal.orgcaptmpl       |
-
 #+name: org-capture-shortcuts-table
 | Shortcut | Name          | Title     | Insertion mode | file                    | template                 |
 |----------+---------------+-----------+----------------+-------------------------+--------------------------|
@@ -531,7 +503,7 @@ the manner described by /insertion mode/.
 All templates can be found [[https://labs.phundrak.com/phundrak/dotfiles/src/branch/master/org/capture][in my dotfiles' repository]].
 
 #+name: org-capture-shortcuts-gen
-#+header: :exports none :cache yes :tangle yes
+#+header: :exports none :cache yes :tangle no
 #+begin_src emacs-lisp :var entries=org-capture-shortcuts-table
 (setq org-agenda-capture-template-directory (expand-file-name "capture/" org-directory))
 (mapconcat (lambda (entry)
@@ -630,7 +602,7 @@ All templates can be found [[https://labs.phundrak.com/phundrak/dotfiles/src/bra
 
 The capture templates are set like so:
 #+name: org-capture-templates
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :tangle no :results silent
 (setq org-capture-templates
       '(
         <<org-capture-shortcuts-gen()>>))
@@ -870,6 +842,7 @@ prefixed with a comma ~,~ in normal mode.
 | r         | org-reload          |             |
 
 I then have a couple of babel-related functions.
+
 #+name: org-keybinds-babel
 | Key chord | Function                            | Description |
 |-----------+-------------------------------------+-------------|
@@ -924,35 +897,29 @@ can schedule a todo header for some dates, or set a deadline.
 
 Let's now define some keybinds for inserting stuff in our org buffer:
 #+name: org-keybinds-insert
-| Key chord | Function                                          | Description         | Package    |
-|-----------+---------------------------------------------------+---------------------+------------|
-| i         | nil                                               | insert              |            |
-| ib        | org-insert-structure-template                     |                     |            |
-| ic        |                                                   | conlanging          |            |
-| ica       | conlanging-eittlandic-insert-adjective-declension | adjective           | conlanging |
-| icn       | conlanging-eittlandic-insert-noun-declensions     | noun                | conlanging |
-| icv       | conlanging-eittlandic-insert-verb-declension      | verb                | conlanging |
-| id        | org-insert-drawer                                 |                     |            |
-| ie        | nil                                               | emphasis            |            |
-| ieb       | org-emphasize-bold                                |                     |            |
-| iec       | org-emphasize-code                                |                     |            |
-| ifh       | org-insert-ultra-fancy-habit-summary              |                     |            |
-| iei       | org-emphasize-italic                              |                     |            |
-| ies       | org-emphasize-strike-through                      |                     |            |
-| ieu       | org-emphasize-underline                           |                     |            |
-| iev       | org-emphasize-verbatim                            |                     |            |
-| iE        | org-set-effort                                    |                     |            |
-| if        | org-footnote-new                                  |                     |            |
-| ih        | org-insert-heading                                |                     |            |
-| iH        | counsel-org-link                                  |                     |            |
-| ii        | org-insert-item                                   |                     |            |
-| il        | org-insert-link                                   |                     |            |
-| in        | org-add-note                                      |                     |            |
-| ip        | org-set-property                                  |                     |            |
-| is        | org-insert-subheading                             |                     |            |
-| it        | org-set-tags-command                              |                     |            |
-| iV        | conlang-store-heading-vuepress                    | store Vuepress link | conlanging |
-| iv        | conlanging-insert-heading-vuepress                | vuepress link       | conlanging |
+| Key chord | Function                             | Description | Package |
+|-----------+--------------------------------------+-------------+---------|
+| i         | nil                                  | insert      |         |
+| ib        | org-insert-structure-template        |             |         |
+| id        | org-insert-drawer                    |             |         |
+| ie        | nil                                  | emphasis    |         |
+| ieb       | org-emphasize-bold                   |             |         |
+| iec       | org-emphasize-code                   |             |         |
+| ifh       | org-insert-ultra-fancy-habit-summary |             |         |
+| iei       | org-emphasize-italic                 |             |         |
+| ies       | org-emphasize-strike-through         |             |         |
+| ieu       | org-emphasize-underline              |             |         |
+| iev       | org-emphasize-verbatim               |             |         |
+| iE        | org-set-effort                       |             |         |
+| if        | org-footnote-new                     |             |         |
+| ih        | org-insert-heading                   |             |         |
+| iH        | counsel-org-link                     |             |         |
+| ii        | org-insert-item                      |             |         |
+| il        | org-insert-link                      |             |         |
+| in        | org-add-note                         |             |         |
+| ip        | org-set-property                     |             |         |
+| is        | org-insert-subheading                |             |         |
+| it        | org-set-tags-command                 |             |         |
 
 There isn't a lot of stuff I can jump to yet, but there's still some:
 #+name: org-keybinds-jump
@@ -1007,49 +974,6 @@ Finally, let's make enabling and disabling stuff accessible:
 | Tt        | org-show-todo-tree                   |             |
 | TT        | org-todo                             |             |
 
-** LaTeX formats
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle no :exports code :results silent
-:END:
-I currently have two custom formats for my Org-mode exports: one for
-general use (initially for my conlanging files, hence its ~conlang~
-name), and one for beamer exports.
-
-Below is the declaration of the ~conlang~ LaTeX class:
-#+NAME: org-latex-class-conlang
-#+BEGIN_SRC emacs-lisp
-'("conlang"
-  "\\documentclass{book}"
-  ("\\chapter{%s}" . "\\chapter*{%s}")
-  ("\\section{%s}" . "\\section*{%s}")
-  ("\\subsection{%s}" . "\\subsection*{%s}")
-  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
-#+END_SRC
-
-And here is the declaration of the ~beamer~ class:
-#+NAME: org-latex-class-beamer
-#+BEGIN_SRC emacs-lisp
-`("beamer"
-  ,(concat "\\documentclass[presentation]{beamer}\n"
-           "[DEFAULT-PACKAGES]"
-           "[PACKAGES]"
-           "[EXTRA]\n")
-  ("\\section{%s}" . "\\section*{%s}")
-  ("\\subsection{%s}" . "\\subsection*{%s}")
-  ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
-#+END_SRC
-
-Both these classes have to be added to ~org-latex-classes~ like so:
-#+NAME: org-latex-classes
-#+BEGIN_SRC emacs-lisp :noweb yes
-(eval-after-load "ox-latex"
-  '(progn
-     (add-to-list 'org-latex-classes
-                  <<org-latex-class-conlang>>)
-     (add-to-list 'org-latex-classes
-                  <<org-latex-class-beamer>>)))
-#+END_SRC
-
 ** Org-roam
 org-roam is a Zettelkasten-style knowledge management system based on org-mode.
 
@@ -1084,89 +1008,6 @@ org-roam is a Zettelkasten-style knowledge management system based on org-mode.
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
-#+end_src
-
-** Org-ref and Bibtex configuration
-#+begin_src emacs-lisp
-(use-package reftex
-  :commands turn-on-reftex
-  :init (setq reftex-default-bibliography (expand-file-name "bibliography/references.bib" org-directory)
-              reftex-plug-into-AUCTeX     t)
-  :straight t)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package org-ref
-  ;; :after (org ox-bibtex pdf-tools)
-  :after org
-  :defer t
-  :straight (:build t)
-  :custom-face
-  (org-ref-cite-face ((t (:weight bold))))
-  :init
-  (setq org-ref-completion-library    'org-ref-ivy-cite
-        org-latex-logfiles-extensions '("lof" "lot" "aux" "idx" "out" "log" "fbd_latexmk"
-                                        "toc" "nav" "snm" "vrb" "dvi" "blg" "brf" "bflsb"
-                                        "entoc" "ps" "spl" "bbl" "pygtex" "pygstyle"))
-  (add-hook 'org-mode-hook (lambda () (require 'org-ref)))
-  :config
-  (setq bibtex-completion-pdf-field    "file"
-        bibtex-completion-notes-path   (expand-file-name "bibliography/notes/" org-directory)
-        bibtex-completion-bibliography (expand-file-name "bibliography/references.bib" org-directory)
-        bibtex-completion-library-path (expand-file-name "bibliography/bibtex-pdfs/" org-directory)
-        bibtex-completion-pdf-symbol   "⌘"
-        bibtex-completion-notes-symbol "✎")
-  :general
-  (phundrak/evil
-   :keymaps 'bibtex-mode-map
-   :packages 'org-ref
-   "C-t" #'org-ref-bibtex-next-entry
-   "C-s" #'org-ref-bibtex-previous-entry
-   "gt"  #'org-ref-bibtex-next-entry
-   "gs"  #'org-ref-bibtex-previous-entry)
-  (phundrak/major-leader-key
-   :keymaps '(bibtex-mode-map)
-   :packages 'org-ref
-   ;; Navigation
-   "t" #'org-ref-bibtex-next-entry
-   "s" #'org-ref-bibtex-previous-entry
-
-   ;; Open
-   "b" #'org-ref-open-in-browser
-   "n" #'org-ref-open-bibtex-notes
-   "p" #'org-ref-open-bibtex-pdf
-
-   ;; Misc
-   "h" #'org-ref-bibtex-hydra/body
-   "i" #'org-ref-bibtex-hydra/org-ref-bibtex-new-entry/body-and-exit
-   "s" #'org-ref-sort-bibtex-entry
-
-   "l" '(:ignore t :which-key "lookup")
-   "la" #'arxiv-add-bibtex-entry
-   "lA" #'arxiv-get-pdf-add-bibtex-entry
-   "ld" #'doi-utils-add-bibtex-entry-from-doi
-   "li" #'isbn-to-bibtex
-   "lp" #'pubmed-insert-bibtex-from-pmid)
-  (phundrak/major-leader-key
-   :keymaps 'org-mode-map
-   :pakages 'org-ref
-   "iC" #'org-ref-insert-link
-   "iL" #'org-ref-insert-ref-link
-   "ir" #'org-ref-insert-link-hydra/body
-   "iB" #'org-ref-bibtex-hydra/body))
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package ivy-bibtex
-  :defer t
-  :straight (:build t)
-  :config
-  (setq bibtex-completion-pdf-open-function #'find-file)
-  :general
-  (phundrak/leader-key
-    :keymaps '(bibtex-mode-map)
-    :packages 'ivy-bibtex
-    "m" #'ivy-bibtex))
 #+end_src
 
 ** Tangle config org files on save

@@ -1,6 +1,4 @@
-(use-package citeproc
-  :after (org)
-  :defer t
+(use-package engrave-faces
   :straight (:build t))
 
 (use-package org
@@ -57,7 +55,13 @@
         org-default-notes-file             (expand-file-name "notes.org" org-directory))
   (with-eval-after-load 'oc
    (setq org-cite-global-bibliography (list (expand-file-name "bibliography/references.bib" org-directory))))
-  
+  (setq org-agenda-directory (expand-file-name "agenda/" org-directory))
+  (setq org-agenda-files (apply 'append
+        (mapcar
+         (lambda (directory)
+           (directory-files-recursively
+             directory org-agenda-file-regexp))
+             (list org-agenda-directory))))
   (add-hook 'org-mode-hook (lambda ()
                              (interactive)
                              (electric-indent-local-mode -1)))
@@ -201,30 +205,6 @@
   
   
   
-  
-  
-  
-  
-  
-  (eval-after-load "ox-latex"
-    '(progn
-       (add-to-list 'org-latex-classes
-                    '("conlang"
-                      "\\documentclass{book}"
-                      ("\\chapter{%s}" . "\\chapter*{%s}")
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-       (add-to-list 'org-latex-classes
-                    `("beamer"
-                      ,(concat "\\documentclass[presentation]{beamer}\n"
-                               "[DEFAULT-PACKAGES]"
-                               "[PACKAGES]"
-                               "[EXTRA]\n")
-                      ("\\section{%s}" . "\\section*{%s}")
-                      ("\\subsection{%s}" . "\\subsection*{%s}")
-                      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))))
-  
   (add-hook 'org-mode-hook
             (lambda ()
               (dolist (pair '(("[ ]"         . ?☐)
@@ -285,10 +265,6 @@
     "dT" #'org-time-stamp-inactive
     "i" '(:ignore t :wk t)
     "ib" #'org-insert-structure-template
-    "ic" '(:ignore t :wk "conlanging")
-    "ica" '(conlanging-eittlandic-insert-adjective-declension :wk "adjective":package conlanging)
-    "icn" '(conlanging-eittlandic-insert-noun-declensions :wk "noun":package conlanging)
-    "icv" '(conlanging-eittlandic-insert-verb-declension :wk "verb":package conlanging)
     "id" #'org-insert-drawer
     "ie" '(:ignore t :wk t)
     "ieb" #'org-emphasize-bold
@@ -308,8 +284,6 @@
     "ip" #'org-set-property
     "is" #'org-insert-subheading
     "it" #'org-set-tags-command
-    "iV" '(conlang-store-heading-vuepress :wk "store Vuepress link":package conlanging)
-    "iv" '(conlanging-insert-heading-vuepress :wk "vuepress link":package conlanging)
     "j" '(:ignore t :wk t)
     "ja" #'counsel-org-goto-all
     "jh" #'counsel-org-goto
@@ -510,17 +484,6 @@
   :defer t
   :after (org ob))
 
-(use-package ob-latex-as-png
-  :after org
-  :straight (:build t))
-
-(use-package ob-restclient
-  :straight (:build t)
-  :defer t
-  :after (org ob)
-  :init
-  (add-to-list 'org-babel-load-languages '(restclient . t)))
-
 (use-package toc-org
   :after (org markdown-mode)
   :straight (:build t)
@@ -570,126 +533,6 @@
   :ensure t
     :init
     (setq org-journal-dir (expand-file-name "journal/" org-directory)))
-
-(let ((entries '(("e" "Email" "" "" "" "") ("ew" "Write Email" "Emails" "file+headline" "org-default-notes-file" "email.orgcaptmpl") ("i" "Inbox" "" "file+headline" "org-inbox-file" "notes.orgcaptmpl") ("l" "Link" "" "" "" "") ("ll" "General" "" "file+headline" "org-default-notes-file" "link.orgcaptmpl") ("ly" "YouTube" "" "file+headline" "org-default-notes-file" "youtube.orgcaptmpl") ("L" "Protocol Link" "Link" "file+headline" "org-default-notes-file" "protocol-link.orgcaptmpl") ("n" "Notes" "" "" "" "") ("nc" "Conlanging" "Note" "file+headline" "org-conlanging-file" "notes.orgcaptmpl") ("nn" "General" "" "file+headline" "org-default-notes-file" "notes.orgcaptmpl") ("nN" "Novel" "Note" "file+headline" "org-novel-notes-file" "notes.orgcaptmpl") ("nq" "Quote" "" "file+headline" "org-default-notes-file" "notes-quote.orgcaptmpl") ("nw" "Worldbuilding" "Note" "file+headline" "org-wordbuilding-file" "notes.orgcaptmpl") ("N" "Novel" "" "" "" "") ("Ni" "Ideas" "" "file+headline" "org-novel-notes-file" "notes.orgcaptmpl") ("p" "Protocol" "Link" "file+headline" "org-default-notes-file" "protocol.orgcaptmpl") ("r" "Resources" "" "" "" "") ("rc" "Conlanging" "Resources" "file+headline" "org-conlanging-file" "resource.orgcaptmpl") ("re" "Emacs" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("ri" "Informatique" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rl" "Linguistics" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rL" "Linux" "" "file+headline" "org-default-notes-file" "resource.orgcaptmpl") ("rw" "Worldbuilding" "Resources" "file+headline" "org-wordbuilding-file" "resource.orgcaptmpl") ("t" "Tasks" "" "" "" "") ("tb" "Birthday" "" "file+headline" "org-private-agenda-file" "birthday.orgcaptmpl") ("te" "Event" "" "file+headline" "org-private-agenda-file" "event.orgcaptmpl") ("th" "Health" "" "file+headline" "org-private-agenda-file" "health.orgcaptmpl") ("ti" "Informatique" "" "file+headline" "org-private-agenda-file" "informatique.orgcaptmpl"))))
-(setq org-agenda-capture-template-directory (expand-file-name "capture/" org-directory))
-(mapconcat (lambda (entry)
-             (let ((key      (nth 0 entry))
-                   (name     (nth 1 entry))
-                   (title    (nth 2 entry))
-                   (ins-mode (nth 3 entry))
-                   (file     (nth 4 entry))
-                   (template (nth 5 entry)))
-                (if (string= "" ins-mode)
-                    (format "%S" `(,key ,name))
-      (format "(\"%s\" \"%s\" entry\n  %S\n  %S\n  :empty-lines 1)"
-        key name
-                          (if (string= "file+datetree" ins-mode)
-                              `(,(intern ins-mode) ,(intern file))
-                            `(,(intern ins-mode) ,(intern file) ,(if (string= title "")
-                                                                name
-                                                              title)))
-                          `(file ,(concat org-agenda-capture-template-directory template))))))
-           entries
-           "\n")
-)
-
-(setq org-capture-templates
-      '(
-        ("e" "Email")
-        ("ew" "Write Email" entry
-          (file+headline org-default-notes-file "Emails")
-          (file "/Users/ewerlopes/org/capture/email.orgcaptmpl")
-          :empty-lines 1)
-        ("i" "Inbox" entry
-          (file+headline org-inbox-file "Inbox")
-          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
-          :empty-lines 1)
-        ("l" "Link")
-        ("ll" "General" entry
-          (file+headline org-default-notes-file "General")
-          (file "/Users/ewerlopes/org/capture/link.orgcaptmpl")
-          :empty-lines 1)
-        ("ly" "YouTube" entry
-          (file+headline org-default-notes-file "YouTube")
-          (file "/Users/ewerlopes/org/capture/youtube.orgcaptmpl")
-          :empty-lines 1)
-        ("L" "Protocol Link" entry
-          (file+headline org-default-notes-file "Link")
-          (file "/Users/ewerlopes/org/capture/protocol-link.orgcaptmpl")
-          :empty-lines 1)
-        ("n" "Notes")
-        ("nc" "Conlanging" entry
-          (file+headline org-conlanging-file "Note")
-          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
-          :empty-lines 1)
-        ("nn" "General" entry
-          (file+headline org-default-notes-file "General")
-          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
-          :empty-lines 1)
-        ("nN" "Novel" entry
-          (file+headline org-novel-notes-file "Note")
-          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
-          :empty-lines 1)
-        ("nq" "Quote" entry
-          (file+headline org-default-notes-file "Quote")
-          (file "/Users/ewerlopes/org/capture/notes-quote.orgcaptmpl")
-          :empty-lines 1)
-        ("nw" "Worldbuilding" entry
-          (file+headline org-wordbuilding-file "Note")
-          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
-          :empty-lines 1)
-        ("N" "Novel")
-        ("Ni" "Ideas" entry
-          (file+headline org-novel-notes-file "Ideas")
-          (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
-          :empty-lines 1)
-        ("p" "Protocol" entry
-          (file+headline org-default-notes-file "Link")
-          (file "/Users/ewerlopes/org/capture/protocol.orgcaptmpl")
-          :empty-lines 1)
-        ("r" "Resources")
-        ("rc" "Conlanging" entry
-          (file+headline org-conlanging-file "Resources")
-          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
-          :empty-lines 1)
-        ("re" "Emacs" entry
-          (file+headline org-default-notes-file "Emacs")
-          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
-          :empty-lines 1)
-        ("ri" "Informatique" entry
-          (file+headline org-default-notes-file "Informatique")
-          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
-          :empty-lines 1)
-        ("rl" "Linguistics" entry
-          (file+headline org-default-notes-file "Linguistics")
-          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
-          :empty-lines 1)
-        ("rL" "Linux" entry
-          (file+headline org-default-notes-file "Linux")
-          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
-          :empty-lines 1)
-        ("rw" "Worldbuilding" entry
-          (file+headline org-wordbuilding-file "Resources")
-          (file "/Users/ewerlopes/org/capture/resource.orgcaptmpl")
-          :empty-lines 1)
-        ("t" "Tasks")
-        ("tb" "Birthday" entry
-          (file+headline org-private-agenda-file "Birthday")
-          (file "/Users/ewerlopes/org/capture/birthday.orgcaptmpl")
-          :empty-lines 1)
-        ("te" "Event" entry
-          (file+headline org-private-agenda-file "Event")
-          (file "/Users/ewerlopes/org/capture/event.orgcaptmpl")
-          :empty-lines 1)
-        ("th" "Health" entry
-          (file+headline org-private-agenda-file "Health")
-          (file "/Users/ewerlopes/org/capture/health.orgcaptmpl")
-          :empty-lines 1)
-        ("ti" "Informatique" entry
-          (file+headline org-private-agenda-file "Informatique")
-          (file "/Users/ewerlopes/org/capture/informatique.orgcaptmpl")
-          :empty-lines 1)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of
@@ -836,82 +679,6 @@ the value `split-window-right', then it will be changed to
         org-roam-ui-follow t
         org-roam-ui-update-on-save t
         org-roam-ui-open-on-start t))
-
-(use-package reftex
-  :commands turn-on-reftex
-  :init (setq reftex-default-bibliography (expand-file-name "bibliography/references.bib" org-directory)
-              reftex-plug-into-AUCTeX     t)
-  :straight t)
-
-(use-package org-ref
-  ;; :after (org ox-bibtex pdf-tools)
-  :after org
-  :defer t
-  :straight (:build t)
-  :custom-face
-  (org-ref-cite-face ((t (:weight bold))))
-  :init
-  (setq org-ref-completion-library    'org-ref-ivy-cite
-        org-latex-logfiles-extensions '("lof" "lot" "aux" "idx" "out" "log" "fbd_latexmk"
-                                        "toc" "nav" "snm" "vrb" "dvi" "blg" "brf" "bflsb"
-                                        "entoc" "ps" "spl" "bbl" "pygtex" "pygstyle"))
-  (add-hook 'org-mode-hook (lambda () (require 'org-ref)))
-  :config
-  (setq bibtex-completion-pdf-field    "file"
-        bibtex-completion-notes-path   (expand-file-name "bibliography/notes/" org-directory)
-        bibtex-completion-bibliography (expand-file-name "bibliography/references.bib" org-directory)
-        bibtex-completion-library-path (expand-file-name "bibliography/bibtex-pdfs/" org-directory)
-        bibtex-completion-pdf-symbol   "⌘"
-        bibtex-completion-notes-symbol "✎")
-  :general
-  (phundrak/evil
-   :keymaps 'bibtex-mode-map
-   :packages 'org-ref
-   "C-t" #'org-ref-bibtex-next-entry
-   "C-s" #'org-ref-bibtex-previous-entry
-   "gt"  #'org-ref-bibtex-next-entry
-   "gs"  #'org-ref-bibtex-previous-entry)
-  (phundrak/major-leader-key
-   :keymaps '(bibtex-mode-map)
-   :packages 'org-ref
-   ;; Navigation
-   "t" #'org-ref-bibtex-next-entry
-   "s" #'org-ref-bibtex-previous-entry
-
-   ;; Open
-   "b" #'org-ref-open-in-browser
-   "n" #'org-ref-open-bibtex-notes
-   "p" #'org-ref-open-bibtex-pdf
-
-   ;; Misc
-   "h" #'org-ref-bibtex-hydra/body
-   "i" #'org-ref-bibtex-hydra/org-ref-bibtex-new-entry/body-and-exit
-   "s" #'org-ref-sort-bibtex-entry
-
-   "l" '(:ignore t :which-key "lookup")
-   "la" #'arxiv-add-bibtex-entry
-   "lA" #'arxiv-get-pdf-add-bibtex-entry
-   "ld" #'doi-utils-add-bibtex-entry-from-doi
-   "li" #'isbn-to-bibtex
-   "lp" #'pubmed-insert-bibtex-from-pmid)
-  (phundrak/major-leader-key
-   :keymaps 'org-mode-map
-   :pakages 'org-ref
-   "iC" #'org-ref-insert-link
-   "iL" #'org-ref-insert-ref-link
-   "ir" #'org-ref-insert-link-hydra/body
-   "iB" #'org-ref-bibtex-hydra/body))
-
-(use-package ivy-bibtex
-  :defer t
-  :straight (:build t)
-  :config
-  (setq bibtex-completion-pdf-open-function #'find-file)
-  :general
-  (phundrak/leader-key
-    :keymaps '(bibtex-mode-map)
-    :packages 'ivy-bibtex
-    "m" #'ivy-bibtex))
 
 (defun my/tangle-config-file ()
   (when (and (eq major-mode 'org-mode)
