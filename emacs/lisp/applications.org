@@ -32,7 +32,7 @@
 Magit is an awesome wrapper around Git for Emacs! Very often, I go
 from disliking to really hating Git GUI clients because they often
 obfuscate which Git commands are used to make things happen. Such a
-        thing doesn’t happen with Magit, it’s pretty transparent, but it still
+        thing doesn't happen with Magit, it's pretty transparent, but it still
 provides some awesome features and visualizations of what you are
 doing and what Git is doing! In short, I absolutely love it!
 
@@ -94,10 +94,10 @@ I also want to highlight these angular-style keywords in commit messages.
 display in the Magit buffer a list of TODOs found in the current
 project to remind you of what to do next.
 
-        First, let’s setup our todo keywords with =hl-todo=. A good few todo
+        First, let's setup our todo keywords with =hl-todo=. A good few todo
 keywords are already defined in the =hl-todo-keyword-faces= variable.
 Why not use them? =hl-todo-mode= enables fontlock highlight of these
-        keywords in a buffer. Let’s enable this mode globally.
+        keywords in a buffer. Let's enable this mode globally.
 
 #+begin_src emacs-lisp
 (use-package hl-todo
@@ -108,7 +108,7 @@ Why not use them? =hl-todo-mode= enables fontlock highlight of these
 
 We can now configure properly =magit-todos=. Notice my custom function
 hooked to =magit-mode-hook=. This is because this package tries to find
-        TODOs in all files in the current project, and my yadm repository’s
+        TODOs in all files in the current project, and my yadm repository's
 root is my =$HOME=. So, yeah, no =magit-todos= in yadm.
 
 #+begin_src emacs-lisp
@@ -140,7 +140,7 @@ which will be very useful when managing projects.
 #+end_src
 
 Now, I can use projectile, which is sort of the /de facto/ standard
-        project manager in Emacs. I know there’s ~project.el~, but… Eh… I’m used
+        project manager in Emacs. I know there's ~project.el~, but… Eh… I'm used
 to projectile.
 
 #+begin_src emacs-lisp
@@ -170,22 +170,24 @@ And of course, there is a counsel package dedicated to projectile.
 *** Recentf
 The built-in package ~recentf~ keeps track of recently opened files. But
 by default, it only follows the twenty most recent files, that not nearly enough for me, so I raise it to two hundred.
+
 #+begin_src emacs-lisp
 (use-package recentf
   :straight (:build t :type built-in)
-  :custom ((recentf-max-saved-items 2000))
+  :custom ((recentf-max-saved-items 200))
   :config
   (add-all-to-list 'recentf-exclude
-                   `(,(rx (* any)
+                  `(,(rx (* any)
                           (or "org/config"
                               ".cache/")
                           (* any)
                           (? (or "html" "pdf" "tex" "epub")))
-                     ,(rx (* any)
+                    ,(rx (* any)
                           ".elc"
                           eol)
-                     ,(rx "/"
+                    ,(rx "/"
                           (or "rsync" "ssh" "tmp" "yadm" "sudoedit" "sudo")
                           (* any))
-                     "/nix/.*")))
+                    "/nix/.*"
+                    ,(rx "/" "org" "/" "agenda" "/" (* any) ".org" eol))))
 #+end_src

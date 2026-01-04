@@ -90,18 +90,19 @@
 
 (use-package recentf
   :straight (:build t :type built-in)
-  :custom ((recentf-max-saved-items 2000))
+  :custom ((recentf-max-saved-items 200))
   :config
   (add-all-to-list 'recentf-exclude
-                   `(,(rx (* any)
+                  `(,(rx (* any)
                           (or "org/config"
                               ".cache/")
                           (* any)
                           (? (or "html" "pdf" "tex" "epub")))
-                     ,(rx (* any)
+                    ,(rx (* any)
                           ".elc"
                           eol)
-                     ,(rx "/"
+                    ,(rx "/"
                           (or "rsync" "ssh" "tmp" "yadm" "sudoedit" "sudo")
                           (* any))
-                     "/nix/.*")))
+                    "/nix/.*"
+                    ,(rx "/" "org" "/" "agenda" "/" (* any) ".org" eol))))
