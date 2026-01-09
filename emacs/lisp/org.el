@@ -321,14 +321,6 @@
     "'" #'org-edit-src-exit
     "k" #'org-edit-src-abort))
 
-(use-package org-contrib
-  :after (org)
-  :defer t
-  :straight (:build t)
-  :init
-  (require 'ox-extra)
-  (ox-extras-activate '(latex-header-blocks ignore-headlines)))
-
 ;; Resume clocking task when emacs restarts.
 (org-clock-persistence-insinuate)
 ;; Show lot of clocking history so it's easy to pick items off the C-F11 list

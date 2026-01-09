@@ -111,22 +111,6 @@ extended however we like!
     "k" #'org-edit-src-abort))
 #+end_src
 
-Since very recently, the ~contrib/lisp/~ directory of org moved out of
-the main repository to [[https://git.sr.ht/~bzg/org-contrib][this repository]]. On the other hand,
-~contrib/scripts/~ moved to [[https://code.orgmode.org/bzg/worg/src/master/code][the worg repository]], but I don't need
-it. The main reason I want ~org-contrib~ is due to ~ox-extra~ that allow
-the usage of the ~:ignore:~ tag in org.
-
-#+begin_src emacs-lisp
-(use-package org-contrib
-  :after (org)
-  :defer t
-  :straight (:build t)
-  :init
-  (require 'ox-extra)
-  (ox-extras-activate '(latex-header-blocks ignore-headlines)))
-#+end_src
-
 ** Clock
 
 #+begin_src emacs-lisp
