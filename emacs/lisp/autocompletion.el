@@ -10,6 +10,11 @@
   ;; Activate vertico
   (vertico-mode))
 
+(use-package savehist
+  :straight t
+  :init
+  (savehist-mode))
+
 (use-package vertico-directory
   :after vertico
   :ensure nil  ;; no need to install, it comes with vertico
@@ -17,15 +22,19 @@
     ("DEL" . vertico-directory-delete-char)))
 
 (use-package orderless
-  :straight (:build t)
+  :straight t
+  :init
   :custom
-  ;; Activate orderless completion
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
+  ;; (orderless-component-separator #'orderless-escapable-split-on-space)
   (completion-styles '(orderless basic))
-  ;; Enable partial completion for file wildcard support
-  (completion-category-overrides '((file (styles partial-completion)))))
+  (completion-category-overrides '((file (styles partial-completion))))
+  (completion-category-defaults nil) ;; Disable defaults, use our settings
+  (completion-pcm-leading-wildcard t)) ;; Emacs 31: partial-completion behaves like substring
 
 (use-package consult
-  :straight (:build t)
+  :straight t
   :custom
   ;; Disable preview
   (consult-preview-key nil)
@@ -37,7 +46,7 @@
    ))
 
 (use-package embark
-  :straight (:build t)
+  :straight t
   :bind
   (("C-."   . embark-act)         ;; Begin the embark process
    ("C-;"   . embark-dwim)        ;; good alternative: M-.
@@ -46,7 +55,7 @@
   (use-package embark-consult))
 
 (use-package marginalia
-  :straight (:build t)
+  :straight t
   ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
   ;; available in the *Completions* buffer, add it to the
   ;; `completion-list-mode-map'.

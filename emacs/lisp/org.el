@@ -79,7 +79,7 @@
             :empty-lines 1)
           ("i" "Inbox" entry
             (file+headline org-inbox-file "Inbox")
-            (file "/Users/ewerlopes/org/capture/notes.orgcaptmpl")
+            (file "/Users/ewerlopes/org/capture/")
             :empty-lines 1)
           ("l" "Link")
           ("ll" "General" entry
@@ -528,11 +528,11 @@
                             ("reading.org" :level . 1)
                             ("projects.org" :maxlevel . 1)))
 
-(use-package org-journal
-  :straight (:build t)
-  :ensure t
-    :init
-    (setq org-journal-dir (expand-file-name "journal/" org-directory)))
+  (use-package org-journal
+    :straight (:build t)
+    :ensure t
+      :init
+      (setq org-journal-dir (expand-file-name "journal/" org-directory)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of

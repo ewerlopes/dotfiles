@@ -119,12 +119,7 @@ of indentation. The minor-mode that enables that is
 
 *** Stay Clean, Emacs!
 
-As nice as Emacs is, it isn't very polite or clean by default: open a
-file, and it will create backup files in the same directory. But then,
-when you open your directory with your favourite file manager and see
-almost all of your files duplicated with a =~= appended to the filename,
-it looks really uncomfortable! This is why I prefer to tell Emacs to
-keep its backup files to itself in a directory.
+As nice as Emacs is, it isn't very polite or clean by default: open a file, and it will create backup files in the same directory. But then, when you open your directory with your favourite file manager and see almost all of your files duplicated with a =~= appended to the filename, it looks really uncomfortable! This is why I prefer to tell Emacs to keep its backup files to itself in a directory.
 
 #+begin_src emacs-lisp
 (setq backup-directory-alist `(("." . ,(expand-file-name ".tmp/backups/"
@@ -133,18 +128,13 @@ keep its backup files to itself in a directory.
                                                                user-emacs-directory))))
 #+end_src
 
-When using LSP with Typescript projects, my =tsconfig.json= or its
-equivalent would constantly get polluted with symlinks going through
-my home directory, creating some horror imports. This is because the
-server tries to import some files through the symlink of the backup of
-the file I want to import. By forbidding Emacs to create symlinks for
-backups, we should avoid this problem.
+When using LSP with Typescript projects, my =tsconfig.json= or its equivalent would constantly get polluted with symlinks going through my home directory, creating some horror imports. This is because the server tries to import some files through the symlink of the backup of the file I want to import. By forbidding Emacs to create symlinks for backups, we should avoid this problem.
+
 #+begin_src emacs-lisp
 (setq backup-by-copying t)
 #+end_src
 
-It also loves to litter its ~init.el~ with custom variables here and
-there, but the thing is: Since I regenerate my ~init.el~ each time I tangle this file we need to set a custom file for the operation.
+It also loves to litter its ~init.el~ with custom variables here and there, but the thing is: Since I regenerate my ~init.el~ each time I tangle this file we need to set a custom file for the operation.
 
 #+begin_src emacs-lisp
 (setq-default custom-file (expand-file-name ".custom.el" user-emacs-directory))
@@ -158,8 +148,7 @@ If we delete a file, we want it moved to the trash, not simply deleted.
 (setq delete-by-moving-to-trash t)
 #+end_src
 
-Finally, the scratch buffer always has some message at its beginning, I
-don't want it!
+Finally, the scratch buffer always has some message at its beginning, I don't want it!
 
 #+begin_src emacs-lisp
 (setq-default initial-scratch-message nil)
@@ -323,10 +312,21 @@ Well, begin with a maximized screen.
 
 *** Buffer Management
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package buffer-terminator
-  :straight t
+  :ensure t
+  :straight (:build t)
+  :custom
+  (buffer-terminator-verbose nil)
+
+  ;; Set the inactivity timeout (in seconds) after which buffers are considered
+  ;; inactive (default is 30 minutes):
+  (buffer-terminator-inactivity-timeout (* 30 60)) ; 30 minutes
+
+  ;; Define how frequently the cleanup process should run (default is every 10
+  ;; minutes):
+  (buffer-terminator-interval (* 10 60)) ; 10 minutes
+
   :config
-  (add-to-list 'buffer-terminator-rules-alist '(kill-buffer-name . ("*Calendar*")))
   (buffer-terminator-mode 1))
 #+end_src

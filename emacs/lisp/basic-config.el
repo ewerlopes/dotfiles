@@ -82,3 +82,20 @@ the user."
 (add-to-list 'default-frame-alist `(font . "Iosevka Nerd Font-20"))
 
 (add-hook 'window-setup-hook 'toggle-frame-maximized t)
+
+(use-package buffer-terminator
+  :ensure t
+  :straight (:build t)
+  :custom
+  (buffer-terminator-verbose nil)
+
+  ;; Set the inactivity timeout (in seconds) after which buffers are considered
+  ;; inactive (default is 30 minutes):
+  (buffer-terminator-inactivity-timeout (* 30 60)) ; 30 minutes
+
+  ;; Define how frequently the cleanup process should run (default is every 10
+  ;; minutes):
+  (buffer-terminator-interval (* 10 60)) ; 10 minutes
+
+  :config
+  (buffer-terminator-mode 1))

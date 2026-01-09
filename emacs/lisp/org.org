@@ -27,7 +27,7 @@
 #+end_src
 
 ~SUPER ODD~:A new backend that was introduced in org-mode for LaTeX source block
-coloring is ~engraved~. I don't need this package at the moment. But, if I don't use it, it will 
+coloring is ~engraved~. I don't need this package at the moment. But, if I don't use it, it will
 not enable the keybindings. SUPER STRANGEEEE! I will investigate this later.
 
 #+BEGIN_SRC emacs-lisp
@@ -473,7 +473,7 @@ the manner described by /insertion mode/.
 |----------+---------------+-----------+----------------+-------------------------+--------------------------|
 | e        | Email         |           |                |                         |                          |
 | ew       | Write Email   | Emails    | file+headline  | org-default-notes-file  | email.orgcaptmpl         |
-| i        | Inbox         |           | file+headline  | org-inbox-file          | notes.orgcaptmpl         |
+| i        | Inbox         |           | file+headline  | org-inbox-file          |                          |
 | l        | Link          |           |                |                         |                          |
 | ll       | General       |           | file+headline  | org-default-notes-file  | link.orgcaptmpl          |
 | ly       | YouTube       |           | file+headline  | org-default-notes-file  | youtube.orgcaptmpl       |
@@ -624,12 +624,12 @@ selected text is quite easy.
 #+name: org-emphasis-character
 | Emphasis       | Character | Character code |
 |----------------+-----------+----------------|
-| bold           | ~*~       |             42 |
-| italic         | ~/~       |             47 |
-| underline      | ~_~       |             95 |
-| verbatim       | ~=~       |             61 |
-| code           | ~~~       |            126 |
-| strike-through | ~+~       |             43 |
+| bold           | ~*~         |             42 |
+| italic         | ~/~         |             47 |
+| underline      | ~_~         |             95 |
+| verbatim       | ~=~         |             61 |
+| code           | ~~~         |            126 |
+| strike-through | ~+~         |             43 |
 
 #+name: org-create-emphasis-functions
 #+header: :tangle no :exports results :cache yes

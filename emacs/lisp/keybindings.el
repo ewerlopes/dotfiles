@@ -129,7 +129,7 @@
   "fs" #'save-buffer
   "fc"  '((lambda ()
             (interactive)
-            (quick-find-files nil "~/org/config/docs/emacs" "org"))
+            (quick-find-files nil "~/.config/emacs/lisp" "org"))
           :wk "emacs config"
           :package quick-find-files)
   "fC"  '((lambda ()

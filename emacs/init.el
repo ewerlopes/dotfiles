@@ -1,7 +1,7 @@
 (dolist (module '(
+    "package-manager.el"
     "basic-config.el"
     "custom-elisp.el"
-    "package-manager.el"
     "keybinding-managers.el"
     "emacs-builtin.el"
     "autocompletion.el"
