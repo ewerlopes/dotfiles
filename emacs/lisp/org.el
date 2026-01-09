@@ -1,10 +1,6 @@
-(use-package engrave-faces
-  :straight (:build t))
-
 (use-package org
   :straight t
   :defer t
-  :after engrave-faces
   :commands (orgtbl-mode)
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-num-mode))

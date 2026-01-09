@@ -26,15 +26,6 @@
            "\n")
 #+end_src
 
-~SUPER ODD~:A new backend that was introduced in org-mode for LaTeX source block
-coloring is ~engraved~. I don't need this package at the moment. But, if I don't use it, it will
-not enable the keybindings. SUPER STRANGEEEE! I will investigate this later.
-
-#+BEGIN_SRC emacs-lisp
-(use-package engrave-faces
-  :straight (:build t))
-#+END_SRC
-
 Org is the main reason I am using Emacs. It is an extremely powerful
 tool when you want to write anything that is not necessarily primarily
 programming-related, though it absolutely can be! Org can be a
@@ -46,11 +37,11 @@ simpler than writing manually HTML and LaTeX code, especially when a
 single document source is meant to be exported for both formats. And
 since org is an Emacs package, that also means it can be greatly
 extended however we like!
+
 #+begin_src emacs-lisp
 (use-package org
   :straight t
   :defer t
-  :after engrave-faces
   :commands (orgtbl-mode)
   :hook ((org-mode . visual-line-mode)
          (org-mode . org-num-mode))
@@ -918,14 +909,6 @@ Let's now define some keybinds for inserting stuff in our org buffer:
 | ip        | org-set-property                     |             |         |
 | is        | org-insert-subheading                |             |         |
 | it        | org-set-tags-command                 |             |         |
-
-There isn't a lot of stuff I can jump to yet, but there's still some (TODO: update this):
-#+name: org-keybinds-jump
-| Key chord | Function             | Description |
-|-----------+----------------------+-------------|
-| j         | nil                  | jump        |
-| ja        | counsel-org-goto-all |             |
-| jh        | counsel-org-goto     |             |
 
 Tables get a bit more love:
 #+name: org-keybinds-tables
