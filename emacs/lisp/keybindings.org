@@ -50,6 +50,7 @@ Undefining some stuff to make keybind prefixes work correctly.
  "<f6>" #'recompile)
 
 (phundrak/leader-key
+  "SPC" 'execute-extended-command
   "'"   '(shell-pop :package shell-pop)
   "R"   #'recompile
   "u"   #'universal-argument

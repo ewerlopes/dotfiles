@@ -8,6 +8,7 @@
  "<f6>" #'recompile)
 
 (phundrak/leader-key
+  "SPC" 'execute-extended-command
   "'"   '(shell-pop :package shell-pop)
   "R"   #'recompile
   "u"   #'universal-argument
