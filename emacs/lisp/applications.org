@@ -147,7 +147,6 @@ to projectile.
 (use-package projectile
   :straight (:build t)
   :diminish projectile-mode
-  :custom ((projectile-completion-system 'ivy))
   :init
   (setq projectile-switch-project-action #'projectile-dired)
   :config
@@ -157,14 +156,6 @@ to projectile.
   :general
   (phundrak/leader-key
     "p" '(:keymap projectile-command-map :which-key "projectile")))
-#+end_src
-
-And of course, there is a counsel package dedicated to projectile.
-#+begin_src emacs-lisp
-(use-package counsel-projectile
-  :straight (:build t)
-  :after (counsel projectile)
-  :config (counsel-projectile-mode))
 #+end_src
 
 *** Recentf

@@ -45,8 +45,7 @@
         dashboard-set-navigator     t
         dashboard-set-heading-icons t
         dashboard-set-file-icons    t
-        initial-buffer-choice       (lambda () (get-buffer "*dashboard*"))
-        dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+        initial-buffer-choice       (lambda () (get-buffer "*dashboard*")))
 
   (setq dashboard-items '((recents  . 15)
                           (agenda   . 10)

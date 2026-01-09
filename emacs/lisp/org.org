@@ -110,7 +110,6 @@ extended however we like!
     <<general-keybindings-gen(table=org-keybinds-babel)>>
     <<general-keybindings-gen(table=org-keybinds-dates)>>
     <<general-keybindings-gen(table=org-keybinds-insert)>>
-    <<general-keybindings-gen(table=org-keybinds-jump)>>
     <<general-keybindings-gen(table=org-keybinds-tables)>>
     <<general-keybindings-gen(table=org-keybinds-toggles)>>)
   <<org-capture-keybinds>>
@@ -624,12 +623,12 @@ selected text is quite easy.
 #+name: org-emphasis-character
 | Emphasis       | Character | Character code |
 |----------------+-----------+----------------|
-| bold           | ~*~         |             42 |
-| italic         | ~/~         |             47 |
-| underline      | ~_~         |             95 |
-| verbatim       | ~=~         |             61 |
-| code           | ~~~         |            126 |
-| strike-through | ~+~         |             43 |
+| bold           | ~*~       |             42 |
+| italic         | ~/~       |             47 |
+| underline      | ~_~       |             95 |
+| verbatim       | ~=~       |             61 |
+| code           | ~~~       |            126 |
+| strike-through | ~+~       |             43 |
 
 #+name: org-create-emphasis-functions
 #+header: :tangle no :exports results :cache yes
@@ -913,7 +912,6 @@ Let's now define some keybinds for inserting stuff in our org buffer:
 | iE        | org-set-effort                       |             |         |
 | if        | org-footnote-new                     |             |         |
 | ih        | org-insert-heading                   |             |         |
-| iH        | counsel-org-link                     |             |         |
 | ii        | org-insert-item                      |             |         |
 | il        | org-insert-link                      |             |         |
 | in        | org-add-note                         |             |         |
@@ -921,7 +919,7 @@ Let's now define some keybinds for inserting stuff in our org buffer:
 | is        | org-insert-subheading                |             |         |
 | it        | org-set-tags-command                 |             |         |
 
-There isn't a lot of stuff I can jump to yet, but there's still some:
+There isn't a lot of stuff I can jump to yet, but there's still some (TODO: update this):
 #+name: org-keybinds-jump
 | Key chord | Function             | Description |
 |-----------+----------------------+-------------|

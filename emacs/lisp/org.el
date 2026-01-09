@@ -277,16 +277,12 @@
     "iE" #'org-set-effort
     "if" #'org-footnote-new
     "ih" #'org-insert-heading
-    "iH" #'counsel-org-link
     "ii" #'org-insert-item
     "il" #'org-insert-link
     "in" #'org-add-note
     "ip" #'org-set-property
     "is" #'org-insert-subheading
     "it" #'org-set-tags-command
-    "j" '(:ignore t :wk t)
-    "ja" #'counsel-org-goto-all
-    "jh" #'counsel-org-goto
     "t" '(:ignore t :wk t)
     "tc" #'org-table-move-column-left
     "tt" #'org-table-move-row-down
@@ -528,11 +524,11 @@
                             ("reading.org" :level . 1)
                             ("projects.org" :maxlevel . 1)))
 
-  (use-package org-journal
-    :straight (:build t)
-    :ensure t
-      :init
-      (setq org-journal-dir (expand-file-name "journal/" org-directory)))
+(use-package org-journal
+  :straight (:build t)
+  :ensure t
+    :init
+    (setq org-journal-dir (expand-file-name "journal/" org-directory)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of

@@ -72,7 +72,6 @@
 (use-package projectile
   :straight (:build t)
   :diminish projectile-mode
-  :custom ((projectile-completion-system 'ivy))
   :init
   (setq projectile-switch-project-action #'projectile-dired)
   :config
@@ -82,11 +81,6 @@
   :general
   (phundrak/leader-key
     "p" '(:keymap projectile-command-map :which-key "projectile")))
-
-(use-package counsel-projectile
-  :straight (:build t)
-  :after (counsel projectile)
-  :config (counsel-projectile-mode))
 
 (use-package recentf
   :straight (:build t :type built-in)

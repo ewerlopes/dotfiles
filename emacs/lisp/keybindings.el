@@ -3,20 +3,11 @@
  "<mouse-2>" nil
  "<mouse-3>" nil)
 
-(phundrak/evil
-  :packages '(counsel)
-  "U"   '(evil-redo :package evil)
-  "C-a" #'beginning-of-line
-  "C-e" #'end-of-line
-  "C-y" #'yank
-  "M-y" '(counsel-yank-pop :package counsel))
-
 (general-define-key
  "<f5>" #'compile
  "<f6>" #'recompile)
 
 (phundrak/leader-key
-  "SPC" '(counsel-M-x :wk "M-x")
   "'"   '(shell-pop :package shell-pop)
   "R"   #'recompile
   "u"   #'universal-argument
@@ -108,7 +99,6 @@
   "bm" #'switch-to-messages-buffer
   "bn" #'next-buffer
   "bp" #'previous-buffer
-  "br" '(counsel-buffer-or-recentf :package counsel)
   "bR" #'rename-uniquely
   "bs" #'switch-to-scratch-buffer
   "c" '(:ignore t :wk "code")
@@ -117,49 +107,13 @@
   "cp" '(hl-todo-previous :package hl-todo)
   "e" '(:ignore t :wk "errors")
   "e." '(hydra-flycheck/body :wk "hydra-flycheck")
-  "el" '(counsel-flycheck :package counsel)
   "eF" '(flyspell-hydra/body :wk "flyspell-hydra")
   "ee" '(:keymap flycheck-command-map :package 'flycheck :wk "flycheck")
   "ef" '(:keymap flyspell-mode-map :package 'flyspell :wk "flyspell")
   "f" '(:ignore t :wk "files")
-  "ff" '(counsel-find-file :package counsel)
   "fF" '(quick-find-files :package quick-find-files)
   "fh" #'hexl-find-file
-  "fr" '(counsel-recentf :package counsel)
   "fs" #'save-buffer
-  "fc"  '((lambda ()
-            (interactive)
-            (quick-find-files nil "~/.config/emacs/lisp" "org"))
-          :wk "emacs config"
-          :package quick-find-files)
-  "fC"  '((lambda ()
-            (interactive)
-            (quick-find-files nil "~/org/config/docs" "org"))
-          :wk "general config"
-          :package quick-find-files)
-  "fi"  '((lambda ()
-            (interactive)
-            (find-file (concat user-emacs-directory "init.el")))
-          :which-key "init.el")
-  "fI"  '((lambda ()
-            (interactive)
-            (quick-find-files nil
-                              (expand-file-name "lisp" user-emacs-directory)
-                              "el"))
-          :which-key "elisp config"
-          :package quick-find-files)
-  "fR"  '((lambda ()
-            (interactive)
-            (counsel-find-file ""
-                               (concat user-emacs-directory
-                                      (file-name-as-directory "straight")
-                                      (file-name-as-directory "repos"))))
-          :which-key "straight package"
-          :package counsel)
-  "fS"  '((lambda ()
-            (interactive)
-            (find-file "~/org/config/stumpwm.org"))
-          :which-key "stumpwm.org")
   "g" '(:ignore t :wk "git")
   "gb" '(magit-blame :package magit)
   "gc" '(magit-clone :package magit)
@@ -191,7 +145,6 @@
   "hds" '(helpful-symbol :package )
   "hdv" '(helpful-variable :package )
   "i" '(:ignore t :wk "insert")
-  "iu" '(counsel-unicode-char :package counsel)
   "iy" '(ivy-yasnippet :package yasnippet)
   "j" '(:ignore t :wk "jump")
   "jC" '(:ignore t :wk "avy copy")
@@ -202,7 +155,6 @@
   "jb" '(avy-pop-mark :package avy)
   "jc" '(evil-avy-goto-char-timer :package avy)
   "jd" '(dirvish-dwim :package dirvish)
-  "jf" '(counsel-file-jump :package counsel)
   "jk" '(:ignore t :wk "avy kill")
   "jkL" '(avy-kill-ring-save-whole-line :package avy)
   "jkR" '(avy-kill-ring-save-region :package avy)
@@ -264,7 +216,6 @@
   "t " '(:ignore t :wk "toggles" :package )
   "t TAB" '(tab-bar-mode :package )
   "t t" '(my/modify-frame-alpha-background/body :package )
-  "t T" '(counsel-load-theme :package )
   "t d" '(:ignore t :wk "debug" :package )
   "t de" '(toggle-debug-on-error :package )
   "t dq" '(toggle-debug-on-quit :package )

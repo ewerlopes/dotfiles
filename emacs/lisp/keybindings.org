@@ -42,14 +42,6 @@ Undefining some stuff to make keybind prefixes work correctly.
  :keymaps 'global-map
  "<mouse-2>" nil
  "<mouse-3>" nil)
-
-(phundrak/evil
-  :packages '(counsel)
-  "U"   '(evil-redo :package evil)
-  "C-a" #'beginning-of-line
-  "C-e" #'end-of-line
-  "C-y" #'yank
-  "M-y" '(counsel-yank-pop :package counsel))
 #+end_src
 
 #+begin_src emacs-lisp :results none
@@ -58,7 +50,6 @@ Undefining some stuff to make keybind prefixes work correctly.
  "<f6>" #'recompile)
 
 (phundrak/leader-key
-  "SPC" '(counsel-M-x :wk "M-x")
   "'"   '(shell-pop :package shell-pop)
   "R"   #'recompile
   "u"   #'universal-argument
@@ -72,7 +63,6 @@ Undefining some stuff to make keybind prefixes work correctly.
   <<general-keybindings-gen(table=keybindings-errors, prefix="e")>>
   <<keybindings-errors-extra>>
   <<general-keybindings-gen(table=keybindings-files, prefix="f")>>
-  <<keybindings-files-extras>>
   <<general-keybindings-gen(table=keybindings-git, prefix="g")>>
   <<general-keybindings-gen(table=keybindings-help, prefix="h")>>
   <<general-keybindings-gen(table=keybindings-insert, prefix="i")>>
@@ -186,7 +176,6 @@ My buffer-related keybindings are all prefixed by ~b~.
 | m   | switch-to-messages-buffer          |             |           |
 | n   | next-buffer                        |             |           |
 | p   | previous-buffer                    |             |           |
-| r   | counsel-buffer-or-recentf          |             | counsel   |
 | R   | rename-uniquely                    |             |           |
 | s   | switch-to-scratch-buffer           |             |           |
 
@@ -218,7 +207,6 @@ My buffer-related keybindings are all prefixed by ~b~.
 |-----+---------------------+----------------+---------|
 |     |                     | errors         |         |
 | .   | hydra-flycheck/body | hydra-flycheck |         |
-| l   | counsel-flycheck    |                | counsel |
 | F   | flyspell-hydra/body | flyspell-hydra |         |
 
 #+name: keybindings-errors-extra
@@ -230,52 +218,12 @@ My buffer-related keybindings are all prefixed by ~b~.
 ** Files
 My keybindings for file manipulation are prefixed by ~f~.
 #+name: keybindings-files
-| Key | Function          | Description | Package          |
-|-----+-------------------+-------------+------------------|
-|     |                   | files       |                  |
-| f   | counsel-find-file |             | counsel          |
-| F   | quick-find-files  |             | quick-find-files |
-| h   | hexl-find-file    |             |                  |
-| r   | counsel-recentf   |             | counsel          |
-| s   | save-buffer       |             |                  |
-
-I also have some keybindings dedicated to opening specific files.
-#+name: keybindings-files-extras
-#+begin_src emacs-lisp :tangle no
-"fc"  '((lambda ()
-          (interactive)
-          (quick-find-files nil "~/.config/emacs/lisp" "org"))
-        :wk "emacs config"
-        :package quick-find-files)
-"fC"  '((lambda ()
-          (interactive)
-          (quick-find-files nil "~/org/config/docs" "org"))
-        :wk "general config"
-        :package quick-find-files)
-"fi"  '((lambda ()
-          (interactive)
-          (find-file (concat user-emacs-directory "init.el")))
-        :which-key "init.el")
-"fI"  '((lambda ()
-          (interactive)
-          (quick-find-files nil
-                            (expand-file-name "lisp" user-emacs-directory)
-                            "el"))
-        :which-key "elisp config"
-        :package quick-find-files)
-"fR"  '((lambda ()
-          (interactive)
-          (counsel-find-file ""
-                             (concat user-emacs-directory
-                                    (file-name-as-directory "straight")
-                                    (file-name-as-directory "repos"))))
-        :which-key "straight package"
-        :package counsel)
-"fS"  '((lambda ()
-          (interactive)
-          (find-file "~/org/config/stumpwm.org"))
-        :which-key "stumpwm.org")
-#+end_src
+| Key | Function         | Description | Package          |
+|-----+------------------+-------------+------------------|
+|     |                  | files       |                  |
+| F   | quick-find-files |             | quick-find-files |
+| h   | hexl-find-file   |             |                  |
+| s   | save-buffer      |             |                  |
 
 ** Git
 #+name: keybindings-git
@@ -320,11 +268,10 @@ My keybindings for help are prefixed by ~h~.
 
 ** Insert
 #+name: keybindings-insert
-| Key | Function             | Description | Package   |
-|-----+----------------------+-------------+-----------|
-|     |                      | insert      |           |
-| u   | counsel-unicode-char |             | counsel   |
-| y   | ivy-yasnippet        |             | yasnippet |
+| Key | Function      | Description | Package   |
+|-----+---------------+-------------+-----------|
+|     |               | insert      |           |
+| y   | ivy-yasnippet |             | yasnippet |
 
 ** Jump
 My keybindings for jumping around are prefixed by ~j~.
@@ -340,7 +287,6 @@ My keybindings for jumping around are prefixed by ~j~.
 | b   | avy-pop-mark                  |             | avy     |
 | c   | evil-avy-goto-char-timer      |             | avy     |
 | d   | dirvish-dwim                  |             | dirvish |
-| f   | counsel-file-jump             |             | counsel |
 | k   |                               | avy kill    |         |
 | kL  | avy-kill-ring-save-whole-line |             | avy     |
 | kR  | avy-kill-ring-save-region     |             | avy     |
@@ -396,14 +342,9 @@ My keybindings for my projects are prefixed by ~p~.
 |     |                                            | project     |            |
 | !   | projectile-run-shell-command-in-root       |             | projectile |
 | &   | projectile-run-async-shell-command-in-root |             | projectile |
-| b   | counsel-projectile-switch-to-buffer        |             | counsel    |
-| c   | counsel-projectile                         |             | counsel    |
-| d   | counsel-projectile-find-dir                |             | counsel    |
 | e   | projectile-edit-dir-locals                 |             | projectile |
-| f   | counsel-projectile-find-file               |             | counsel    |
 | g   | projectile-find-tag                        |             | projectile |
 | k   | project-kill-buffers                       |             |            |
-| p   | counsel-projectile-switch-project          |             | cousel     |
 | v   | projectile-vc                              |             | projectile |
 
 ** Refactor
@@ -480,7 +421,6 @@ My toggle keybindings are prefixed by ~t~.
 |     |                                       | toggles      |
 | TAB | tab-bar-mode                          |              |
 | t   | my/modify-frame-alpha-background/body |              |
-| T   | counsel-load-theme                    |              |
 | d   |                                       | debug        |
 | de  | toggle-debug-on-error                 |              |
 | dq  | toggle-debug-on-quit                  |              |
