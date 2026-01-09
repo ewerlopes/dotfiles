@@ -1,7 +1,7 @@
 (use-package xenops
-    :straight (:build t)
-    :hook (add-hook 'org-mode-hook #'xenops-mode)
+    :straight t
     :after org
+    ;:hook (add-hook 'org-mode-hook #'xenops-mode)
     :config
     (add-to-list 'org-latex-packages-alist '("" "amsmath" t))
     (add-to-list 'org-latex-packages-alist '("" "amssymb" t))

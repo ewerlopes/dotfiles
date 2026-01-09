@@ -8,11 +8,11 @@
     "keybindings.el"
     "visual-config.el"
     "org.el"
-    "latex.el"
     "programming.el"
     "ai-assistant.el"
     "helpful.el"
     "applications.el"
+    "latex.el"
     ))
     (load (expand-file-name module
             (expand-file-name "lisp" user-emacs-directory))))
