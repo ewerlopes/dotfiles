@@ -1,4 +1,3 @@
-
 #+title: Emacs — Packages — Emacs Built-ins
 #+setupfile: ../headers
 #+property: header-args:emacs-lisp  :mkdirp yes :lexical t :exports code
@@ -10,15 +9,13 @@
 
 ** Dired
 
-Dired is Emacs' built-in file manager. It's really great, and replaces
-any graphical file manager for me most of the time because:
+Dired is Emacs' built-in file manager. It's really great, and replaces any graphical file manager for me most of the time, because:
 - I am not limited to /x/ tabs or panes
 - All actions can be done with keybindings
-- I get a consistent behaviour between Dired and Emacs, since it's the
-  same thing.
-I used to have an extensive configuration for Dired with a couple of
-additional packages to make it more usable. Dirvish rendered that
-obsolete!
+- I get a consistent behaviour between Dired and Emacs, since it's the same thing.
+
+I used to have an extensive configuration for Dired with a couple of additional packages to make it more usable. Dirvish rendered that obsolete!
+
 #+begin_src emacs-lisp
 (use-package dirvish
   :straight (:build t)
@@ -28,12 +25,12 @@ obsolete!
   (dirvish-quick-access-entries
    '(("h" "~/" "Home")
      ("d" "~/Downloads/" "Downloads")))
-  (dirvish-mode-line-format
-   '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
-  (dirvish-attributes '(file-size collapse subtree-state vc-state git-msg))
+  ;; (dirvish-mode-line-format
+  ;;  '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
+  ;; (dirvish-attributes '(file-size collapse subtree-state vc-state ;; git-msg))
   :config
   (when (eq system-type 'darwin)
-  (setq insert-directory-program "/opt/homebrew/bin/gls"))
+    (setq insert-directory-program "/opt/homebrew/bin/gls"))
   (dirvish-peek-mode)
   <<dired-drag-and-drop>>
   <<dired-listing-flags>>
@@ -45,6 +42,23 @@ obsolete!
         delete-by-moving-to-trash t
         ; dirvish-preview-dispatchers (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers)
   )
+  (dirvish-peek-mode)             ; Preview files in minibuffer
+  ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
+  (setq dirvish-header-line-format
+      '(:left (path) :right (free-space))
+      dirvish-mode-line-format
+      '(:left (sort file-time " " file-size symlink) :right (omit yank index)))
+  (setq dirvish-attributes
+      (append
+       ;; The order of these attributes is insignificant, they are always
+       ;; displayed in the same position.
+       '(vc-state subtree-state nerd-icons collapse)
+       ;; Other attributes are displayed in the order they appear in this list.
+       '(git-msg file-modes file-time file-size)))
+  ;; open large directory (over 20000 files) asynchronously with `fd' command
+  (setq dirvish-large-directory-threshold 20000)
+  (remove-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+  (remove-hook 'dired-mode-hook 'treemacs-icons-dired-mode)
   :general
   (phundrak/evil
     :keymaps 'dirvish-mode-map
@@ -76,23 +90,24 @@ obsolete!
 #+end_src
 
 It requires some programs which can be installed like so:
+
 #+begin_src sh :dir /sudo::~/ :exports code :tangle no :results verbatim
 pacman -S --needed --noprogressbar --noconfirm --color=never \
        fd poppler ffmpegthumbnailer mediainfo imagemagick tar unzip
 #+end_src
 
-Since Emacs 29, it is possible to enable drag-and-drop between Emacs
-and other applications.
+Since Emacs 29, it is possible to enable drag-and-drop between Emacs and other applications.
+
 #+name: dired-drag-and-drop
 #+begin_src emacs-lisp :tangle no
 (setopt dired-mouse-drag-files                   t
         mouse-drag-and-drop-region-cross-program t)
 #+end_src
 
-In Dirvish, it's best to use the long name of flags whenever possible,
-otherwise some commands won't work.
+In Dirvish, it's best to use the long name of flags whenever possible, otherwise some commands won't work.
+
 #+name: dired-listing-flags
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (setopt dired-listing-switches (string-join '("--all"
                                               "--human-readable"
                                               "--time-style=long-iso"
@@ -101,10 +116,7 @@ otherwise some commands won't work.
                                             " "))
 #+end_src
 
-However, it is possible to instead use =eza= when it is available (it's
-a replacement to the unmaintained =exa=). Instead of making Emacs' main
-thread to the file listing in a directory, we offload it to an
-external thread.
+However, it is possible to instead use =eza= when it is available (it's a replacement to the unmaintained =exa=). Instead of making Emacs' main thread to the file listing in a directory, we offload it to an external thread.
 
 #+name: dirvish-exa-offload
 #+begin_src emacs-lisp :tangle no
@@ -117,8 +129,8 @@ external thread.
 (add-to-list 'dirvish-preview-dispatchers 'eza)
 #+end_src
 
-Finally, some directories need to be set for Dired to store various
-files and images.
+Finally, some directories need to be set for Dired to store various files and images.
+
 #+name: dired-files-and-dirs
 #+begin_src emacs-lisp :tangle no
 (let ((my/file (lambda (path &optional dir)
@@ -134,11 +146,8 @@ files and images.
           image-dired-temp-rotate-image-file (funcall my/file "temp-rotate-image" image-dired-dir)))
 #+end_src
 
-Copying files with Dired is a blocking process. It's usually fine when
-there's not a lot to copy, but it becomes annoying when moving larger
-files. The package ~dired-rsync~ allows copying files with ~rsync~ in the
-background; we can then carry on with our tasks while the copy is
-happening.
+Copying files with Dired is a blocking process. It's usually fine when there's not a lot to copy, but it becomes annoying when moving larger files. The package ~dired-rsync~ allows copying files with ~rsync~ in the background; we can then carry on with our tasks while the copy is happening.
+
 #+begin_src emacs-lisp
 (use-package dired-rsync
   :if (executable-find "rsync")

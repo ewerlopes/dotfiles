@@ -50,9 +50,16 @@
   :bind
   (("C-."   . embark-act)         ;; Begin the embark process
    ("C-;"   . embark-dwim)        ;; good alternative: M-.
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+   ("C-h B" . embark-bindings))   ;; alternative for `describe-bindings'
   :config
   (use-package embark-consult))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :straight t
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package marginalia
   :straight t
@@ -69,3 +76,37 @@
   ;; the mode gets enabled right away. Note that this forces loading the
   ;; package.
   (marginalia-mode))
+
+(use-package corfu
+  :straight t
+  ;; Optional customizations
+  ;; :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match 'insert) ;; Configure handling of exact matches
+
+  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
+  :init
+
+  ;; Recommended: Enable Corfu globally.  Recommended since many modes provide
+  ;; Capfs and Dabbrev can be used globally (M-/).  See also the customization
+  ;; variable `global-corfu-modes' to exclude certain modes.
+  (global-corfu-mode)
+
+  ;; Enable optional extension modes:
+  ;; (corfu-history-mode)
+  ;; (corfu-popupinfo-mode)
+
+  ;; Enable auto completion, configure delay, trigger and quitting
+  (setq corfu-auto t
+    corfu-auto-delay 0.2
+    corfu-auto-trigger "." ;; Custom trigger characters
+    corfu-quit-no-match 'separator) ;; or t
+  )

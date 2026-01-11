@@ -75,12 +75,19 @@ Convenient path selection
   :bind
   (("C-."   . embark-act)         ;; Begin the embark process
    ("C-;"   . embark-dwim)        ;; good alternative: M-.
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+   ("C-h B" . embark-bindings))   ;; alternative for `describe-bindings'
   :config
   (use-package embark-consult))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :straight t
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
-;; Enable rich annotations using the Marginalia package
+Enable rich annotations using the Marginalia package
 #+begin_src emacs-lisp
 (use-package marginalia
   :straight t
@@ -97,4 +104,16 @@ Convenient path selection
   ;; the mode gets enabled right away. Note that this forces loading the
   ;; package.
   (marginalia-mode))
+#+end_src
+
+Corfu enhances in-buffer completion with a small completion popup. The current candidates are shown in a popup below or above the point, and can be selected by moving up and down. Corfu is the minimalistic in-buffer completion counterpart of the Vertico minibuffer UI.
+
+#+begin_src emacs-lisp
+(use-package corfu
+  :straight t
+  :hook
+  (prog-mode . (lambda () (setq-local corfu-auto t)))
+  :init
+  (global-corfu-mode)
+ )
 #+end_src

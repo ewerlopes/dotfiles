@@ -6,12 +6,12 @@
   (dirvish-quick-access-entries
    '(("h" "~/" "Home")
      ("d" "~/Downloads/" "Downloads")))
-  (dirvish-mode-line-format
-   '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
-  (dirvish-attributes '(file-size collapse subtree-state vc-state git-msg))
+  ;; (dirvish-mode-line-format
+  ;;  '(:left (sort file-time "" file-size symlink) :right (omit yank index)))
+  ;; (dirvish-attributes '(file-size collapse subtree-state vc-state ;; git-msg))
   :config
   (when (eq system-type 'darwin)
-  (setq insert-directory-program "/opt/homebrew/bin/gls"))
+    (setq insert-directory-program "/opt/homebrew/bin/gls"))
   (dirvish-peek-mode)
   (setopt dired-mouse-drag-files                   t
           mouse-drag-and-drop-region-cross-program t)
@@ -45,6 +45,23 @@
         delete-by-moving-to-trash t
         ; dirvish-preview-dispatchers (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers)
   )
+  (dirvish-peek-mode)             ; Preview files in minibuffer
+  ;; (dirvish-side-follow-mode)      ; similar to `treemacs-follow-mode'
+  (setq dirvish-header-line-format
+      '(:left (path) :right (free-space))
+      dirvish-mode-line-format
+      '(:left (sort file-time " " file-size symlink) :right (omit yank index)))
+  (setq dirvish-attributes
+      (append
+       ;; The order of these attributes is insignificant, they are always
+       ;; displayed in the same position.
+       '(vc-state subtree-state nerd-icons collapse)
+       ;; Other attributes are displayed in the order they appear in this list.
+       '(git-msg file-modes file-time file-size)))
+  ;; open large directory (over 20000 files) asynchronously with `fd' command
+  (setq dirvish-large-directory-threshold 20000)
+  (remove-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+  (remove-hook 'dired-mode-hook 'treemacs-icons-dired-mode)
   :general
   (phundrak/evil
     :keymaps 'dirvish-mode-map
@@ -73,13 +90,6 @@
     "S"   #'dirvish-setup-menu
     "y"   #'dirvish-yank-menu
     "n"   #'dirvish-narrow))
-
-(setopt dired-listing-switches (string-join '("--all"
-                                              "--human-readable"
-                                              "--time-style=long-iso"
-                                              "--group-directories-first"
-                                              "-lv1")
-                                            " "))
 
 (use-package dired-rsync
   :if (executable-find "rsync")

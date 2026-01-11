@@ -23,24 +23,16 @@ file.
 
 Ahem…
 
-The package ~all-the-icons~ allows us to use a wide variety of icons in
-Emacs for various purposes, wherever we want, and /THAT/ is *GREAT*! I'll
-(ab)use this feature in my config, be warned! *NOTE*: The first time a
-configuration with ~all-the-icons~ loads on a machine, the needed fonts
-might not be available, so you'll need to install them with the
-command ~M-x all-the-icons-install-fonts~.
+The package ~all-the-icons~ allows us to use a wide variety of icons emacs for various purposes, wherever we want, and /THAT/ is *GREAT*! I'll (ab)use this feature in my config, be warned! *NOTE*: The first time a configuration with ~all-the-icons~ loads on a machine, the needed fonts might not be available, so you'll need to install them with the command ~M-x all-the-icons-install-fonts~.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package all-the-icons
       :defer t
       :straight t
       )
 #+end_src
 
-~prettify-symbols-mode~ is also a nifty feature of Emacs, and it is
-built-in! With that, I can replace strings of my choice by another
-character of my choice! First, let's declare the general symbols that
-will be used everywhere.
+~prettify-symbols-mode~ is also a nifty feature of Emacs, and it is built-in! With that, I can replace strings of my choice by another character of my choice! First, let's declare the general symbols that will be used everywhere.
 
 #+begin_src emacs-lisp
 (defun prog-mode-set-symbols-alist ()
@@ -50,15 +42,14 @@ will be used everywhere.
 (add-hook 'prog-mode-hook #'prog-mode-set-symbols-alist)
 #+end_src
 
-We can now take care of the language-specific symbols. First, let's
-declare some symbols for the Lisp languages.
+We can now take care of the language-specific symbols. First, let's declare some symbols for the Lisp languages.
 
 #+begin_src emacs-lisp
 (setq-default lisp-prettify-symbols-alist '(("lambda"    . ?λ)
-	                                            ("defun"     . ?𝑓)
-	                                            ("defvar"    . ?𝑣)
-	                                            ("defcustom" . ?𝑐)
-	                                            ("defconst"  . ?𝐶)))
+                                                    ("defun"     . ?𝑓)
+                                                    ("defvar"    . ?𝑣)
+                                                    ("defcustom" . ?𝑐)
+                                                    ("defconst"  . ?𝐶)))
 
 (defun lisp-mode-prettify ()
   (setq prettify-symbols-alist lisp-prettify-symbols-alist)
@@ -70,8 +61,7 @@ declare some symbols for the Lisp languages.
             #'lisp-mode-prettify))
 #+end_src
 
-Finally, similar to how ~org-appear~ behaves, let's show the real string
-of our symbols when the cursor is on it.
+Finally, similar to how ~org-appear~ behaves, let's show the real string of our symbols when the cursor is on it.
 
 #+begin_src emacs-lisp
 (setq prettify-symbols-unprettify-at-point t)
@@ -83,7 +73,7 @@ of our symbols when the cursor is on it.
 (use-package dashboard
   :straight (:build t)
   :ensure t
-  :after all-the-icons
+  ;:after all-the-icons
   :config
   (setq dashboard-banner-logo-title "Ewerton's Vanilla Emacs"
         dashboard-startup-banner    'logo
@@ -97,7 +87,7 @@ of our symbols when the cursor is on it.
   (setq dashboard-items '((recents  . 15)
                           (agenda   . 10)
                           (projects . 10)))
-  (setq dashboard-icon-type 'all-the-icons)
+  (setq dashboard-icon-type 'nerd-icons)
   (dashboard-setup-startup-hook)
   :init
   (add-hook 'after-init-hook 'dashboard-refresh-buffer))
@@ -255,7 +245,7 @@ opinion, easier to read) with this simple package:
 
 Let's add some icons to Dired buffers. For some reason, the package below is necessary to make the dashboard work properly and show up at startup.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package all-the-icons-dired
       :straight (:build t)
       :hook (dired-mode . all-the-icons-dired-mode))

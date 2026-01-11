@@ -5,11 +5,6 @@
          (markdown-mode . git-gutter-mode)
          (latex-mode    . git-gutter-mode)))
 
-(use-package all-the-icons
-      :defer t
-      :straight t
-      )
-
 (defun prog-mode-set-symbols-alist ()
   (setq prettify-symbols-alist '(("lambda"  . ?λ)))
   (prettify-symbols-mode 1))
@@ -17,10 +12,10 @@
 (add-hook 'prog-mode-hook #'prog-mode-set-symbols-alist)
 
 (setq-default lisp-prettify-symbols-alist '(("lambda"    . ?λ)
-	                                            ("defun"     . ?𝑓)
-	                                            ("defvar"    . ?𝑣)
-	                                            ("defcustom" . ?𝑐)
-	                                            ("defconst"  . ?𝐶)))
+                                                    ("defun"     . ?𝑓)
+                                                    ("defvar"    . ?𝑣)
+                                                    ("defcustom" . ?𝑐)
+                                                    ("defconst"  . ?𝐶)))
 
 (defun lisp-mode-prettify ()
   (setq prettify-symbols-alist lisp-prettify-symbols-alist)
@@ -36,7 +31,7 @@
 (use-package dashboard
   :straight (:build t)
   :ensure t
-  :after all-the-icons
+  ;:after all-the-icons
   :config
   (setq dashboard-banner-logo-title "Ewerton's Vanilla Emacs"
         dashboard-startup-banner    'logo
@@ -50,7 +45,7 @@
   (setq dashboard-items '((recents  . 15)
                           (agenda   . 10)
                           (projects . 10)))
-  (setq dashboard-icon-type 'all-the-icons)
+  (setq dashboard-icon-type 'nerd-icons)
   (dashboard-setup-startup-hook)
   :init
   (add-hook 'after-init-hook 'dashboard-refresh-buffer))
@@ -124,8 +119,3 @@
       :commands info-colors-fnontify-node
       :hook (Info-selection . info-colors-fontify-node)
       :hook (Info-mode      . mixed-pitch-mode))
-
-(use-package all-the-icons-dired
-      :straight (:build t)
-      :hook (dired-mode . all-the-icons-dired-mode))
-      :config (all-the-icons-dired-mode)

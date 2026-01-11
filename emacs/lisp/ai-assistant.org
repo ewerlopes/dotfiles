@@ -6,9 +6,7 @@
 
 * AI Assistant
 
-I have been using LLMs for a while now, and I find it to be a very
-useful tool for generating code snippets, explanations, doing a bit of rubber ducking, etc.
-~gptel~ is a very nice package that integrates well with Emacs.
+I have been using LLMs for a while now, and I find it to be a very useful tool for generating code snippets, explanations, doing a bit of rubber ducking, etc. ~gptel~ is a very nice package that integrates well with Emacs.
 
 #+begin_src emacs-lisp
 (straight-use-package 'gptel)
@@ -19,4 +17,18 @@ useful tool for generating code snippets, explanations, doing a bit of rubber du
                  :protocol "http"
                  :host "localhost:8080"
                  :models '(test)))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package gptel-prompts
+  :straight (:type git :host github :repo "jwiegley/gptel-prompts")
+  :after (gptel)
+  :demand t
+  :config
+  (gptel-prompts-update)
+  ;; Ensure prompts are updated if prompt files change
+  (gptel-prompts-add-update-watchers)
+  (setq gptel-prompts-directory
+       (expand-file-name "~/.config/emacs/prompts/"))
+)
 #+end_src
