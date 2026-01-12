@@ -424,9 +424,9 @@ Adding some refile config
   #+END_SRC
 
 ** Capture
-Org capture is an amazing tool for taking quick notes, be it simple
-text, links, resources, or reminders. They are all organised in
-specified org files which are described below.
+
+Org capture is an amazing tool for taking quick notes, be it simple text, links, resources, or reminders. They are all organised in specified org files which are described below.
+
 #+name: org-capture-target-files
 #+begin_src emacs-lisp :tangle no
 (defvar org-notes-file (expand-file-name "notes.org" org-directory))
@@ -436,18 +436,14 @@ specified org files which are described below.
 (defvar org-inbox-file (expand-file-name "inbox.org" org-agenda-directory))
 #+end_src
 
-When ~org-capture~ is invoked, it will ask which template we wish to
-use. In the table [[org-capture-shortcuts-table]], the /key/ column
-represents which keychord we need to hit, titled with /name/, we need to
-hit in order to use the /template/, inserted in the designated /file/ in
-the manner described by /insertion mode/.
+When ~org-capture~ is invoked, it will ask which template we wish to use. In the table [[org-capture-shortcuts-table]], the /key/ column represents which keychord we need to hit, titled with /name/, we need to hit in order to use the /template/, inserted in the designated /file/ in the manner described by /insertion mode/.
 
 #+name: org-capture-shortcuts-table
 | Shortcut | Name          | Title     | Insertion mode | file                    | template                 |
 |----------+---------------+-----------+----------------+-------------------------+--------------------------|
 | e        | Email         |           |                |                         |                          |
 | ew       | Write Email   | Emails    | file+headline  | org-default-notes-file  | email.orgcaptmpl         |
-| i        | Inbox         |           | file+headline  | org-inbox-file          |                          |
+| i        | Inbox         |           | file+headline  | org-inbox-file          | notes.orgcaptmpl         |
 | l        | Link          |           |                |                         |                          |
 | ll       | General       |           | file+headline  | org-default-notes-file  | link.orgcaptmpl          |
 | ly       | YouTube       |           | file+headline  | org-default-notes-file  | youtube.orgcaptmpl       |
