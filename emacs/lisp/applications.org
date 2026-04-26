@@ -94,12 +94,12 @@ I also want to highlight these angular-style keywords in commit messages.
 display in the Magit buffer a list of TODOs found in the current
 project to remind you of what to do next.
 
-        First, let's setup our todo keywords with =hl-todo=. A good few todo
+First, let's setup our todo keywords with =hl-todo=. A good few todo
 keywords are already defined in the =hl-todo-keyword-faces= variable.
 Why not use them? =hl-todo-mode= enables fontlock highlight of these
-        keywords in a buffer. Let's enable this mode globally.
+keywords in a buffer. Let's enable this mode globally.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package hl-todo
   :defer t
   :straight (:build t)
@@ -108,10 +108,10 @@ Why not use them? =hl-todo-mode= enables fontlock highlight of these
 
 We can now configure properly =magit-todos=. Notice my custom function
 hooked to =magit-mode-hook=. This is because this package tries to find
-        TODOs in all files in the current project, and my yadm repository's
+TODOs in all files in the current project, and my yadm repository's
 root is my =$HOME=. So, yeah, no =magit-todos= in yadm.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package magit-todos
   :straight (:build t)
   :after (magit hl-todo)

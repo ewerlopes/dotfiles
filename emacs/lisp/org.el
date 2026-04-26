@@ -421,7 +421,7 @@
            directory org-agenda-file-regexp))
            (list org-agenda-directory))))
 
-;;(setq org-agenda-block-separator nil)
+(setq org-agenda-block-separator nil)
 (setq org-agenda-start-with-log-mode t)
 
 (setq jethro/org-agenda-todo-view
@@ -431,7 +431,10 @@
                   (org-deadline-warning-days 365)))
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
-                (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))))
+                (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))
+                (org-agenda-skip-function (lambda () 
+                                            (when (> (org-outline-level) 2)
+                                              (org-end-of-subtree t))))))
         (todo "WAITING|HOLD"
               ((org-agenda-overriding-header "On Hold / Waiting")
               (org-agenda-files '(,(concat org-agenda-directory "someday.org")
@@ -512,11 +515,11 @@
                             ("reading.org" :level . 1)
                             ("projects.org" :maxlevel . 1)))
 
-  (use-package org-journal
-    :straight (:build t)
-    :ensure t
-      :init
-      (setq org-journal-dir (expand-file-name "journal/" org-directory)))
+(use-package org-journal
+  :straight (:build t)
+  :ensure t
+    :init
+    (setq org-journal-dir (expand-file-name "journal/" org-directory)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of
@@ -699,14 +702,6 @@ the value `split-window-right', then it will be changed to
   :straight (:build t)
   :hook (org-mode . org-fragtog-mode))
 
-(use-package org-modern
-  :straight (:build t)
-  :after org
-  :defer t
-  :custom (org-modern-table nil)
-  :hook (org-mode . org-modern-mode)
-  :hook (org-agenda-finalize . org-modern-agenda))
-
 (use-package org-ol-tree
   :after (org avy)
   :defer t
@@ -719,26 +714,6 @@ the value `split-window-right', then it will be changed to
     :packages 'org-ol-tree
     :keymaps 'org-mode-map
     "O" #'org-ol-tree))
-
-(add-hook 'org-mode-hook
-          (lambda ()
-            (dolist (pair '(("[ ]"         . ?☐)
-                            ("[X]"         . ?☑)
-                            ("[-]"         . ?❍)
-                            ("#+title:"    . ?📕)
-                            ("#+TITLE:"    . ?📕)
-                            ("#+author:"   . ?✎)
-                            ("#+AUTHOR:"   . ?✎)
-                            ("#+email:"    . ?📧)
-                            ("#+EMAIL:"    . ?📧)
-                            ("#+include"   . ?⭳)
-                            ("#+INCLUDE"   . ?⭳)
-                            ("#+begin_src" . ?λ)
-                            ("#+BEGIN_SRC" . ?λ)
-                            ("#+end_src"   . ?λ)
-                            ("#+END_SRC"   . ?λ)))
-              (add-to-list 'prettify-symbols-alist pair))
-            (prettify-symbols-mode)))
 
 (use-package org-tree-slide
   :defer t

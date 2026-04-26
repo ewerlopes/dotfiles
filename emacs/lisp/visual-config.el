@@ -31,7 +31,6 @@
 (use-package dashboard
   :straight (:build t)
   :ensure t
-  ;:after all-the-icons
   :config
   (setq dashboard-banner-logo-title "Ewerton's Vanilla Emacs"
         dashboard-startup-banner    'logo
@@ -43,8 +42,8 @@
         initial-buffer-choice       (lambda () (get-buffer "*dashboard*")))
 
   (setq dashboard-items '((recents  . 15)
-                          (agenda   . 10)
                           (projects . 10)))
+  (setq dashboard-display-icons-p t)     ; display icons on both GUI and terminal
   (setq dashboard-icon-type 'nerd-icons)
   (dashboard-setup-startup-hook)
   :init
@@ -99,15 +98,10 @@
   ;; :hook ((org-mode markdown-mode) . valign-mode)
   :custom ((valign-fancy-bar t)))
 
-(use-package solaire-mode
-      :defer t
-      :straight (:build t)
-      :init (solaire-global-mode +1))
-
-(use-package doom-themes
-  :straight (:build t)
-  :defer t
-  :init (load-theme 'doom-dark+ t))
+(use-package gruber-darker-theme
+      :straight t
+      :config
+      (load-theme 'gruber-darker t))
 
 (use-package rainbow-delimiters
       :straight (:build t)

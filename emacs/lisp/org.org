@@ -236,7 +236,7 @@ Adding the proper files to pull agenda from. This adds in the project-based file
 #+end_src
 
 #+begin_src emacs-lisp
-;;(setq org-agenda-block-separator nil)
+(setq org-agenda-block-separator nil)
 (setq org-agenda-start-with-log-mode t)
 
 (setq jethro/org-agenda-todo-view
@@ -246,7 +246,10 @@ Adding the proper files to pull agenda from. This adds in the project-based file
                   (org-deadline-warning-days 365)))
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
-                (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))))
+                (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))
+                (org-agenda-skip-function (lambda () 
+                                            (when (> (org-outline-level) 2)
+                                              (org-end-of-subtree t))))))
         (todo "WAITING|HOLD"
               ((org-agenda-overriding-header "On Hold / Waiting")
               (org-agenda-files '(,(concat org-agenda-directory "someday.org")
@@ -594,12 +597,12 @@ selected text is quite easy.
 #+name: org-emphasis-character
 | Emphasis       | Character | Character code |
 |----------------+-----------+----------------|
-| bold           | ~*~         |             42 |
-| italic         | ~/~         |             47 |
-| underline      | ~_~         |             95 |
-| verbatim       | ~=~         |             61 |
-| code           | ~~~         |            126 |
-| strike-through | ~+~         |             43 |
+| bold           | ~*~       |             42 |
+| italic         | ~/~       |             47 |
+| underline      | ~_~       |             95 |
+| verbatim       | ~=~       |             61 |
+| code           | ~~~       |            126 |
+| strike-through | ~+~       |             43 |
 
 #+name: org-create-emphasis-functions
 #+header: :tangle no :exports results :cache yes
@@ -1037,7 +1040,8 @@ just the generated image!
 Org-modern modernizes a bit the appearance of org buffers, including
 tables, source blocks, and tags, and it applies settings similar to
 ~org-superstar~ which I used to use.
-#+begin_src emacs-lisp
+
+#+begin_src emacs-lisp :tangle no
 (use-package org-modern
   :straight (:build t)
   :after org
@@ -1049,6 +1053,7 @@ tables, source blocks, and tags, and it applies settings similar to
 
 ~org-fancy-priorities~ change the priority of an org element such as ~#A~
 to anything user-defined. Let's all-the-iconify this!
+
 #+begin_src emacs-lisp :tangle no
 (use-package org-fancy-priorities
   :after (org all-the-icons)
@@ -1076,7 +1081,7 @@ to anything user-defined. Let's all-the-iconify this!
 #+end_src
 
 #+name: org-mode-visual-prettify-symbols
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (add-hook 'org-mode-hook
           (lambda ()
             (dolist (pair '(("[ ]"         . ?☐)
