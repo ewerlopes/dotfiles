@@ -17,21 +17,21 @@ as possible some built-in features of Emacs before they can be even
 loaded, speeding Emacs up a bit.
 
 #+begin_src emacs-lisp :mkdirp yes
-  (setq package-enable-at-startup nil
-        inhibit-startup-message   t
-        visual-line-fringe-indicators nil ; remove fringe bitmaps on wrapped lines
-        frame-resize-pixelwise    t  ; fine resize
-        package-native-compile    t) ; native compile packages
-  (scroll-bar-mode -1)               ; disable scrollbar
-  (tool-bar-mode -1)                 ; disable toolbar
-  (tooltip-mode -1)                  ; disable tooltips
-  (set-fringe-mode 10)               ; give some breathing room
-  (menu-bar-mode -1)                 ; disable menubar
-  (global-display-line-numbers-mode) ; enable lines globally
-  (setq display-line-numbers-type 'relative) ; enable relative line numbers
-  (global-visual-line-mode 1)        ; enable line wrap
-  (desktop-save-mode -1) ; Disables desktop-save-mode
-
+;; -*- lexical-binding: t; -*-
+(setq package-enable-at-startup nil
+      inhibit-startup-message   t
+      visual-line-fringe-indicators nil ; remove fringe bitmaps on wrapped lines
+      frame-resize-pixelwise    t  ; fine resize
+      package-native-compile    t) ; native compile packages
+(scroll-bar-mode -1)               ; disable scrollbar
+(tool-bar-mode -1)                 ; disable toolbar
+(tooltip-mode -1)                  ; disable tooltips
+(set-fringe-mode 10)               ; give some breathing room
+(menu-bar-mode -1)                 ; disable menubar
+(global-display-line-numbers-mode) ; enable lines globally
+(setq display-line-numbers-type 'relative) ; enable relative line numbers
+(global-visual-line-mode 1)        ; enable line wrap
+(desktop-save-mode -1) ; Disables desktop-save-mode
 #+end_src
 
 ** Emacs Behavior
@@ -329,4 +329,23 @@ Well, begin with a maximized screen.
 
   :config
   (buffer-terminator-mode 1))
+#+end_src
+** Writing
+
+I like using a small text area when writing prose. A quick research reveals ~Olivetti mode~ as a nice alternative to keep my text margins in check. I am not looking for a distraction-free environment with no UI elements, but rather an option to just control text-width.
+
+#+begin_src emacs-lisp
+(use-package olivetti
+  :straight t
+  :diminish olivetti-mode
+  :custom
+  (olivetti-body-width 80) ; Set body width in characters or fraction (e.g., 0.7)
+  (olivetti-recall-visual-line-mode-entry-state t)
+  :init
+  (setq-default olivetti-style 'fancy)
+  :hook ((org-mode . olivetti-mode)
+         (markdown-mode . olivetti-mode)
+         ;; Automatically wrap text when olivetti turns on
+         (olivetti-mode . visual-line-mode)))
+
 #+end_src

@@ -8,7 +8,7 @@
 
 #+name: general-keybindings-gen
 #+header: :tangle no :exports none :results value :cache yes
-#+begin_src emacs-lisp :var table=elfeed-keybinds-show-mode prefix=""
+#+begin_src emacs-lisp :var table='() prefix=""
 (mapconcat (lambda (line)
              (let* ((key      (nth 0 line))
                     (function (nth 1 line))
@@ -130,8 +130,9 @@ root is my =$HOME=. So, yeah, no =magit-todos= in yadm.
 #+end_src
 
 *** Projectile
-First, I need to install ~ripgrep~, a faster reimplementation of ~grep~,
-which will be very useful when managing projects.
+
+First, I need to install ~ripgrep~, a faster reimplementation of ~grep~, which will be very useful when managing projects.
+
 #+begin_src emacs-lisp
 (use-package ripgrep
   :if (executable-find "rg")
@@ -139,8 +140,7 @@ which will be very useful when managing projects.
   :defer t)
 #+end_src
 
-Now, I can use projectile, which is sort of the /de facto/ standard
-        project manager in Emacs. I know there's ~project.el~, but… Eh… I'm used
+Now, I can use projectile, which is sort of the /de facto/ standard project manager in Emacs. I know there's ~project.el~, but… Eh… I'm used
 to projectile.
 
 #+begin_src emacs-lisp

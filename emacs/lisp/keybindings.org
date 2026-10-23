@@ -75,7 +75,8 @@ Undefining some stuff to make keybind prefixes work correctly.
   <<general-keybindings-gen(table=keybindings-toggle, prefix="t ")>>
   <<general-keybindings-gen(table=keybindings-text, prefix="T")>>
   <<general-keybindings-gen(table=keybindings-windows, prefix="w")>>
-  <<general-keybindings-gen(table=keybindings-quit, prefix="q")>>)
+  <<general-keybindings-gen(table=keybindings-quit, prefix="q")>>
+  <<general-keybindings-gen(table=keybindings-gptel, prefix="A")>>)
 #+end_src
 
 ** Apps
@@ -357,6 +358,7 @@ My keybindings for my projects are prefixed by ~p~.
 | q   | evil-iedit-state/quit-iedit-mode | quit-iedit-mode | evil-iedit-state |
 
 ** Org
+Prefixed with ~o~.
 #+name: keybindings-org
 | Key | Function                       | Description | Package  |
 |-----+--------------------------------+-------------+----------|
@@ -473,3 +475,13 @@ Why would I ever use any of these keybindings? They are prefixed with ~q~.
 | f   | delete-frame               |             |
 | q   | save-buffers-kill-terminal |             |
 | Q   | kill-emacs                 |             |
+** Gptel
+I like ~gptel~ for interaction with LLMs. Let's prefixed it with ~A~.
+#+name: keybindings-gptel
+| Key | Functions  | Description |
+|-----+------------+-------------|
+|     |            | AI          |
+| g   |            | gptel       |
+| gg  | gptel      |             |
+| gs  | gptel-send |             |
+| gm  | gptel-menu |             |

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (use-package vertico
   :straight (:build t)
   :custom
@@ -79,34 +80,31 @@
 
 (use-package corfu
   :straight t
-  ;; Optional customizations
-  ;; :custom
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-  ;; (corfu-on-exact-match 'insert) ;; Configure handling of exact matches
-
-  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
-
+  :hook
+  (prog-mode . (lambda () (setq-local corfu-auto t)))
   :init
-
-  ;; Recommended: Enable Corfu globally.  Recommended since many modes provide
-  ;; Capfs and Dabbrev can be used globally (M-/).  See also the customization
-  ;; variable `global-corfu-modes' to exclude certain modes.
   (global-corfu-mode)
+ )
 
-  ;; Enable optional extension modes:
-  ;; (corfu-history-mode)
-  ;; (corfu-popupinfo-mode)
+(use-package yasnippet
+  :defer t
+  :straight (:build t)
+  :init
+  (yas-global-mode)
+  :hook ((prog-mode . yas-minor-mode)
+         (text-mode . yas-minor-mode)))
 
-  ;; Enable auto completion, configure delay, trigger and quitting
-  (setq corfu-auto t
-    corfu-auto-delay 0.2
-    corfu-auto-trigger "." ;; Custom trigger characters
-    corfu-quit-no-match 'separator) ;; or t
-  )
+(use-package yasnippet-snippets
+  :defer t
+  :after yasnippet
+  :straight (:build t))
+
+(use-package yatemplate
+  :defer t
+  :after yasnippet
+  :straight (:build t))
+
+(use-package ivy-yasnippet
+  :defer t
+  :after (ivy yasnippet)
+  :straight (:build t))

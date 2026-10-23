@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (use-package xenops
     :straight t
     :after org
@@ -10,3 +11,4 @@
     (setq xenops-math-image-scale-factor 1.7
         xenops-reveal-on-entry t)
 )
+

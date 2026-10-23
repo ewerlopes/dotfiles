@@ -8,7 +8,7 @@
 
 I have been using LLMs for a while now, and I find it to be a very useful tool for generating code snippets, explanations, doing a bit of rubber ducking, etc. ~gptel~ is a very nice package that integrates well with Emacs.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp  :tangle no
 (straight-use-package 'gptel)
 (setq
  gptel-model   'test
@@ -20,6 +20,20 @@ I have been using LLMs for a while now, and I find it to be a very useful tool f
 #+end_src
 
 #+begin_src emacs-lisp
+(use-package gptel
+  :straight (:build t)
+  :config
+  (setq
+     gptel-model   'gemma-4-12B
+     gptel-backend (gptel-make-openai "llama-cpp"
+                 :stream t
+                 :protocol "http"
+                 :host "localhost:8080"
+                 :models '(gemma-4-12B))))
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle no
 (use-package gptel-prompts
   :straight (:type git :host github :repo "jwiegley/gptel-prompts")
   :after (gptel)

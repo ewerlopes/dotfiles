@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (defun phundrak/open-marked-files (&optional files)
   "Open all marked FILES in Dired buffer as new Emacs buffers."
   (interactive)
@@ -30,6 +31,7 @@ APPEND and COMPARE-FN, see `add-to-list'."
   (interactive)
   (split-window-below)
   (windmove-down))
+
 
   (with-eval-after-load 'hydra
     (defhydra windows-adjust-size ()
@@ -76,17 +78,35 @@ and ending with the extension of the requested TYPE."
   (interactive)
   (switch-to-buffer "*scratch*"))
 
-  (defvar my/emacs-org-config-directory
-    (expand-file-name ".config/emacs" (getenv "HOME"))
-    "Location of my config as org files.")
+(defvar my/emacs-org-config-directory
+  (expand-file-name ".config/emacs/lisp" (getenv "HOME"))
+  "Location of my config as org files.")
 
-  (defun my/tangle-emacs-config ()
-    "Tangle all my Emacs config files from org files."
-    (interactive)
-    (let ((files (f-files my/emacs-org-config-directory
-                  (lambda (file) (f-ext-p file "org"))
-                  t))
-          (org-confirm-babel-evaluate nil))
-      (dolist (file files)
-        (message "Tangling %s" file)
-        (org-babel-tangle-file file))))
+(defun my/ensure-lexical-binding-cookie (file)
+    "Ensure FILE starts with a lexical-binding cookie for Emacs Lisp."
+    (when (and (stringp file)
+               (file-exists-p file)
+               (string= (file-name-extension file) "el"))
+      (with-temp-buffer
+        (insert-file-contents file)
+        (goto-char (point-min))
+        (unless (re-search-forward "^;; -*- lexical-binding: t; -*-" nil t)
+          (let ((contents (buffer-string)))
+            (erase-buffer)
+            (insert ";; -*- lexical-binding: t; -*-\n")
+            (insert contents)
+            (write-region (point-min) (point-max) file nil 'nomsg))))))
+
+(defun my/tangle-emacs-config ()
+  "Tangle all my Emacs config files from org files."
+  (interactive)
+  (let ((files (f-files my/emacs-org-config-directory
+                (lambda (file) (f-ext-p file "org"))
+                t))
+        (org-confirm-babel-evaluate nil))
+    (dolist (file files)
+      (message "Tangling %s" file)
+      (org-babel-tangle-file file)
+        (let ((el-file (concat (file-name-sans-extension file) ".el")))
+          (when (file-exists-p el-file)
+            (my/ensure-lexical-binding-cookie el-file))))))

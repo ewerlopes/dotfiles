@@ -88,7 +88,7 @@ extended however we like!
   <<org-re-reveal>>
   <<org-html-validation>>
   <<org-publish-projects>>
-  <<org-mode-visual-prettify-symbols>>
+  ;<<org-mode-visual-prettify-symbols>>
   :general
   (phundrak/evil
     :keymaps 'org-mode-map
@@ -247,7 +247,7 @@ Adding the proper files to pull agenda from. This adds in the project-based file
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
                 (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))
-                (org-agenda-skip-function (lambda () 
+                (org-agenda-skip-function (lambda ()
                                             (when (> (org-outline-level) 2)
                                               (org-end-of-subtree t))))))
         (todo "WAITING|HOLD"
@@ -300,7 +300,7 @@ One of the amazing features of org-mode is its literary programming capacities b
 #+NAME: org-babel-languages-gen
 #+header: :cache yes :results replace
 #+header: :var languages=org-babel-languages-table[,0]
-#+BEGIN_SRC emacs-lisp :exports none :tangle no
+#+BEGIN_SRC emacs-lisp :exports none :tangle yes
 (format "'(%s)"
         (mapconcat (lambda ($language)
                      (format "(%s . t)" $language))
@@ -308,32 +308,32 @@ One of the amazing features of org-mode is its literary programming capacities b
                    "\n  "))
 #+END_SRC
 
-#+RESULTS[b0a5bea13e6ba99525ad166ea5538e74ba4c6ddc]: org-babel-languages-gen
-#+begin_example
-'((C . t)
-  (emacs-lisp . t)
-  (gnuplot . t)
-  (latex . t)
-  (makefile . t)
-  (python . t)
-  (shell . t)
-  (sql . t))
-#+end_example
+#+RESULTS[6e92b4811a6f8ad71e8b0e5c0f327e37944b323e]: org-babel-languages-gen
+: '((C . t)
+:   (emacs-lisp . t)
+:   (gnuplot . t)
+:   (latex . t)
+:   (makefile . t)
+:   (python . t)
+:   (shell . t)
+:   (sql . t))
 
 The corresponding code is as follows:
 #+NAME: org-babel-load-languages
-#+BEGIN_SRC emacs-lisp :noweb yes :tangle no
+#+BEGIN_SRC emacs-lisp :noweb yes :tangle yes
 (org-babel-do-load-languages
  'org-babel-load-languages
  <<org-babel-languages-gen()>>)
 #+END_SRC
 
-Some languages can run asynchronously with the help of ~ob-async~.
-#+begin_src emacs-lisp
+Some languages can run asynchronously with the help of ~ob-async~. When using it alongside with Jupyter, you have to set jupyter-LANG blocks as ignored by this package, because emacs-jupyter has async execution of its own.
+
+#+begin_src emacs-lisp :tangle no
 (use-package ob-async
   :straight (:build t)
   :defer t
   :after (org ob))
+(setq ob-async-no-async-languages-alist '("python" "jupyter-python"))
 #+end_src
 
 ** Behavior
@@ -597,12 +597,12 @@ selected text is quite easy.
 #+name: org-emphasis-character
 | Emphasis       | Character | Character code |
 |----------------+-----------+----------------|
-| bold           | ~*~       |             42 |
-| italic         | ~/~       |             47 |
-| underline      | ~_~       |             95 |
-| verbatim       | ~=~       |             61 |
-| code           | ~~~       |            126 |
-| strike-through | ~+~       |             43 |
+| bold           | ~*~         |             42 |
+| italic         | ~/~         |             47 |
+| underline      | ~_~         |             95 |
+| verbatim       | ~=~         |             61 |
+| code           | ~~~         |            126 |
+| strike-through | ~+~         |             43 |
 
 #+name: org-create-emphasis-functions
 #+header: :tangle no :exports results :cache yes
@@ -977,6 +977,7 @@ org-roam is a Zettelkasten-style knowledge management system based on org-mode.
 ** Tangle config org files on save
 Something really, really useful is tangling all my configuration files
 on save. For this, a dedicated function will do the trick.
+
 #+begin_src emacs-lisp
 (defun my/tangle-config-file ()
   (when (and (eq major-mode 'org-mode)
@@ -1065,6 +1066,7 @@ to anything user-defined. Let's all-the-iconify this!
 #+end_src
 
 /Org Outline Tree/ is a better way of managing my org files' outline.
+
 #+begin_src emacs-lisp
 (use-package org-ol-tree
   :after (org avy)

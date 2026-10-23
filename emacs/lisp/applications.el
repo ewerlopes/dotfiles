@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (use-package magit
   :straight (:build t)
   :defer t
@@ -42,27 +43,6 @@
     "," #'with-editor-finish
     "k" #'with-editor-cancel
     "a" #'with-editor-cancel))
-
-(use-package hl-todo
-  :defer t
-  :straight (:build t)
-  :init (global-hl-todo-mode 1))
-
-(use-package magit-todos
-  :straight (:build t)
-  :after (magit hl-todo)
-  :init
-;;  (with-eval-after-load 'magit
-;;   (defun my/magit-todos-if-not-yadm ()
-;;     "Deactivate magit-todos if in yadm Tramp connection.
-;;If `magit--default-directory' points to a yadm Tramp directory,
-;;deactivate `magit-todos-mode', otherwise enable it."
-;;     (if (string-prefix-p "/yadm:" magit--default-directory)
-;;         (magit-todos-mode -1)
-;;       (magit-todos-mode +1)))
-;;   (add-hook 'magit-mode-hook #'my/magit-todos-if-not-yadm))
-  :config
-  (setq magit-todos-ignore-case nil))
 
 (use-package ripgrep
   :if (executable-find "rg")

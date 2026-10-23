@@ -1,3 +1,11 @@
+;; -*- lexical-binding: t; -*-
+(use-package exec-path-from-shell
+  :straight t
+  :ensure t
+  :if (memq window-system '(mac ns x))
+  :config
+  (exec-path-from-shell-initialize))
+
 (use-package copilot
   :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
   :ensure t)
@@ -105,7 +113,9 @@
     "xs"  #'markdown-insert-strike-through
     "xq"  #'markdown-blockquote-region)
   :config
-  (setq markdown-fontify-code-blocks-natively t))
+  (setq markdown-fontify-code-blocks-natively t)
+  (setq markdown-command "/opt/homebrew/bin/pandoc")
+)
 
 (use-package gh-md
   :defer t
@@ -142,3 +152,204 @@
 (defun zsh-shell-mode-setup ()
   (setq-local comint-process-echoes t))
 (add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
+
+(use-package treesit
+  :defer t
+  :straight (:type built-in)
+  :hook ((bash-ts-mode c-ts-mode c++-ts-mode
+          html-ts-mode js-ts-mode typescript-ts-mode
+          json-ts-mode rust-ts-mode tsx-ts-mode python-ts-mode
+          css-ts-mode yaml-ts-mode) . lsp-deferred))
+
+(use-package treesit-fold
+  :after tree-sitter
+  :straight (:build t :host github :repo "emacs-tree-sitter/treesit-fold")
+  :init (global-treesit-fold-mode t))
+
+(use-package cc-mode
+  :straight (:type built-in)
+  :defer t
+  :init
+  (put 'c-c++-backend 'safe-local-variable 'symbolp)
+  (add-hook 'c-mode-hook #'tree-sitter-hl-mode)
+  (add-hook 'c++-mode-hook #'tree-sitter-hl-mode)
+  :config
+  (require 'compile)
+  :general
+  (phundrak/undefine
+    :keymaps '(c-mode-map c++-mode-map)
+    ";" nil)
+  (phundrak/major-leader-key
+   :keymaps '(c-mode-map c++-mode-map)
+   "l"  '(:keymap lsp-command-map :which-key "lsp" :package lsp-mode))
+  (phundrak/evil
+   :keymaps '(c-mode-map c++-mode-map)
+   "ga" #'projectile-find-other-file
+   "gA" #'projectile-find-other-file-other-window))
+
+(use-package clang-format+
+  :straight (:build t)
+  :defer t
+  :init
+  (add-hook 'c-mode-common-hook #'clang-format+-mode))
+
+(use-package modern-cpp-font-lock
+  :straight (:build t)
+  :defer t
+  :hook (c++-mode . modern-c++-font-lock-mode))
+
+(use-package lisp-mode
+  :straight (:type built-in)
+  :defer t
+  :after parinfer-rust-mode
+  :hook (lisp-mode . parinfer-rust-mode)
+  :config
+  (put 'defcommand 'lisp-indent-function 'defun)
+  (setq inferior-lisp-program "/usr/bin/sbcl --noinform"))
+
+(use-package python
+  :defer t
+  :straight (:build t)
+  :after ob
+  :mode (("SConstruct\\'" . python-mode)
+         ("SConscript\\'" . python-mode)
+         ("[./]flake8\\'" . conf-mode)
+         ("/Pipfile\\'"   . conf-mode))
+  :init
+  (setq python-indent-guess-indent-offset-verbose nil)
+  (add-hook 'python-mode-local-vars-hook #'lsp)
+  :config
+  (setq python-indent-guess-indent-offset-verbose nil)
+  (when (and (executable-find "python3")
+           (string= python-shell-interpreter "python"))
+    (setq python-shell-interpreter "python3"))
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp")))
+
+(use-package pytest
+  :defer t
+  :straight (:build t)
+  :commands (pytest-one
+             pytest-pdb-one
+             pytest-all
+             pytest-pdb-all
+             pytest-last-failed
+             pytest-pdb-last-failed
+             pytest-module
+             pytest-pdb-module)
+  :config
+  (add-to-list 'pytest-project-root-files "setup.cfg")
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :infix "t"
+   :packages 'pytest
+   ""  '(:ignore t :which-key "test")
+   "a" #'python-pytest
+   "f" #'python-pytest-file-dwim
+   "F" #'python-pytest-file
+   "t" #'python-pytest-function-dwim
+   "T" #'python-pytest-function
+   "r" #'python-pytest-repeat
+   "p" #'python-pytest-dispatch))
+
+(use-package pip-requirements
+  :defer t
+  :straight (:build t))
+
+(use-package pippel
+  :defer t
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'pippel
+   "P" #'pippel-list-packages))
+
+(use-package cython-mode
+  :defer t
+  :straight (:build t)
+  :mode "\\.p\\(yx\\|x[di]\\)\\'"
+  :config
+  (setq cython-default-compile-format "cython -a %s")
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'cython-mode-map
+   :packages 'cython-mode
+   :infix "c"
+   ""  '(:ignore t :which-key "cython")
+   "c" #'cython-compile))
+
+(use-package flycheck-cython
+  :defer t
+  :straight (:build t)
+  :after cython-mode)
+
+(use-package blacken
+  :defer t
+  :straight (:build t)
+  :init
+  (add-hook 'python-mode-hook #'blacken-mode))
+
+(use-package lsp-pyright
+  :after lsp-mode
+  :defer t
+  :straight (:buidl t))
+
+(use-package uv-mode
+  :straight (:build t)
+  :hook (python-mode . uv-mode-auto-activate-hook))
+
+(use-package rust-mode
+  :straight t
+  :defer t
+  :init
+  (setq rust-mode-treesitter-derive t))
+
+(use-package rustic
+  :defer t
+  :straight (:build t)
+  :mode ("\\.rs\\'" . rustic-mode)
+  :hook (rustic-mode-local-vars . rustic-setup-lsp)
+  :hook (rustic-mode . lsp-deferred)
+  :init
+  (with-eval-after-load 'org
+    (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
+    (add-to-list 'org-src-lang-modes '("rust" . rustic)))
+  (setq rustic-lsp-client 'lsp-mode)
+  :general
+  (general-define-key
+   :keymaps 'rustic-mode-map
+   :packages 'lsp
+   "M-t" #'lsp-ui-imenu
+   "M-?" #'lsp-find-references)
+  (phundrak/major-leader-key
+   :keymaps 'rustic-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp"))
+  (phundrak/major-leader-key
+   :keymaps 'rustic-mode-map
+   :packages 'rustic
+   "b"  '(:ignore t :which-key "build")
+   "bb" #'rustic-cargo-build
+   "bB" #'rustic-cargo-bench
+   "bc" #'rustic-cargo-check
+   "bC" #'rustic-cargo-clippy
+   "bd" #'rustic-cargo-doc
+   "bf" #'rustic-cargo-fmt
+   "bn" #'rustic-cargo-new
+   "bo" #'rustic-cargo-outdated
+   "br" #'rustic-cargo-run
+   "t"  '(:ignore t :which-key "cargo test")
+   "ta" #'rustic-cargo-test
+   "tt" #'rustic-cargo-current-test)
+  :config
+  (setq rustic-indent-method-chain    t
+        rustic-babel-format-src-block nil
+        rustic-format-trigger         nil)
+  (remove-hook 'rustic-mode-hook #'flycheck-mode)
+  (remove-hook 'rustic-mode-hook #'flymake-mode-off)
+  (remove-hook 'rustic-mode-hook #'rustic-setup-lsp))

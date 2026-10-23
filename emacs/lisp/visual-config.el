@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (use-package git-gutter-fringe
   :straight (:build t)
   :hook ((prog-mode     . git-gutter-mode)
@@ -98,10 +99,10 @@
   ;; :hook ((org-mode markdown-mode) . valign-mode)
   :custom ((valign-fancy-bar t)))
 
-(use-package gruber-darker-theme
-      :straight t
-      :config
-      (load-theme 'gruber-darker t))
+(use-package doom-themes
+  :straight (:build t)
+  :defer t
+  :init (load-theme 'doom-dark+ t))
 
 (use-package rainbow-delimiters
       :straight (:build t)

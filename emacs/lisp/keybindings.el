@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (general-define-key
  :keymaps 'global-map
  "<mouse-2>" nil
@@ -257,7 +258,12 @@
   "q" '(:ignore t :wk "quit" :package )
   "qf" '(delete-frame :package )
   "qq" '(save-buffers-kill-terminal :package )
-  "qQ" '(kill-emacs :package ))
+  "qQ" '(kill-emacs :package )
+  "A" '(:ignore t :wk "AI" :package )
+  "Ag" '(:ignore t :wk "gptel" :package )
+  "Agg" '(gptel :package )
+  "Ags" '(gptel-send :package )
+  "Agm" '(gptel-menu :package ))
 
 (defhydra hydra-flycheck
   (:pre (flycheck-list-errors)

@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (dolist (module '(
     "package-manager.el"
     "basic-config.el"
@@ -7,8 +8,8 @@
     "autocompletion.el"
     "keybindings.el"
     "visual-config.el"
-    "org.el"
     "programming.el"
+    "org.el"
     "ai-assistant.el"
     "helpful.el"
     "applications.el"

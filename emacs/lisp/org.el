@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (use-package org
   :straight t
   :defer t
@@ -201,25 +202,25 @@
   
   
   
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (dolist (pair '(("[ ]"         . ?☐)
-                              ("[X]"         . ?☑)
-                              ("[-]"         . ?❍)
-                              ("#+title:"    . ?📕)
-                              ("#+TITLE:"    . ?📕)
-                              ("#+author:"   . ?✎)
-                              ("#+AUTHOR:"   . ?✎)
-                              ("#+email:"    . ?📧)
-                              ("#+EMAIL:"    . ?📧)
-                              ("#+include"   . ?⭳)
-                              ("#+INCLUDE"   . ?⭳)
-                              ("#+begin_src" . ?λ)
-                              ("#+BEGIN_SRC" . ?λ)
-                              ("#+end_src"   . ?λ)
-                              ("#+END_SRC"   . ?λ)))
-                (add-to-list 'prettify-symbols-alist pair))
-              (prettify-symbols-mode)))
+  ;(add-hook 'org-mode-hook
+  ;          (lambda ()
+  ;            (dolist (pair '(("[ ]"         . ?☐)
+  ;                            ("[X]"         . ?☑)
+  ;                            ("[-]"         . ?❍)
+  ;                            ("#+title:"    . ?📕)
+  ;                            ("#+TITLE:"    . ?📕)
+  ;                            ("#+author:"   . ?✎)
+  ;                            ("#+AUTHOR:"   . ?✎)
+  ;                            ("#+email:"    . ?📧)
+  ;                            ("#+EMAIL:"    . ?📧)
+  ;                            ("#+include"   . ?⭳)
+  ;                            ("#+INCLUDE"   . ?⭳)
+  ;                            ("#+begin_src" . ?λ)
+  ;                            ("#+BEGIN_SRC" . ?λ)
+  ;                            ("#+end_src"   . ?λ)
+  ;                            ("#+END_SRC"   . ?λ)))
+  ;              (add-to-list 'prettify-symbols-alist pair))
+  ;            (prettify-symbols-mode)))
   :general
   (phundrak/evil
     :keymaps 'org-mode-map
@@ -410,6 +411,7 @@
                         name this-week streak max-streak trend))))
     (org-table-align)))
 
+
 (setq org-habit-show-all-today t
       org-habit-show-habits-only-for-today nil)
 
@@ -432,7 +434,7 @@
          (todo "TODO"
                ((org-agenda-overriding-header "To Refile")
                 (org-agenda-files '(,(concat org-agenda-directory "inbox.org")))
-                (org-agenda-skip-function (lambda () 
+                (org-agenda-skip-function (lambda ()
                                             (when (> (org-outline-level) 2)
                                               (org-end-of-subtree t))))))
         (todo "WAITING|HOLD"
@@ -466,10 +468,24 @@
 
 (setq org-columns-default-format "%40ITEM(Task) %Effort(EE){:} %CLOCKSUM(Time Spent) %SCHEDULED(Scheduled) %DEADLINE(Deadline)")
 
-(use-package ob-async
-  :straight (:build t)
-  :defer t
-  :after (org ob))
+(let ((languages '("C" "emacs-lisp" "gnuplot" "latex" "makefile" "python" "shell" "sql")))
+(format "'(%s)"
+        (mapconcat (lambda ($language)
+                     (format "(%s . t)" $language))
+                   languages
+                   "\n  "))
+)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((C . t)
+   (emacs-lisp . t)
+   (gnuplot . t)
+   (latex . t)
+   (makefile . t)
+   (python . t)
+   (shell . t)
+   (sql . t)))
 
 (use-package toc-org
   :after (org markdown-mode)
@@ -515,11 +531,11 @@
                             ("reading.org" :level . 1)
                             ("projects.org" :maxlevel . 1)))
 
-(use-package org-journal
-  :straight (:build t)
-  :ensure t
-    :init
-    (setq org-journal-dir (expand-file-name "journal/" org-directory)))
+  (use-package org-journal
+    :straight (:build t)
+    :ensure t
+      :init
+      (setq org-journal-dir (expand-file-name "journal/" org-directory)))
 
 (defun phundrak/toggle-org-src-window-split ()
   "This function allows the user to toggle the behavior of
@@ -535,6 +551,7 @@ the value `split-window-right', then it will be changed to
            (if (equal org-src-window-setup 'split-window-right)
                "vertically"
              "horizontally")))
+
 
 (defun jethro/org-archive-done-tasks ()
   "Archive all done tasks."

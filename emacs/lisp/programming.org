@@ -6,6 +6,17 @@
 
 * Programming
 
+Let's set the the path, to be able to use the same tools usable from the terminal.
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :straight t
+  :ensure t
+  :if (memq window-system '(mac ns x))
+  :config
+  (exec-path-from-shell-initialize))
+#+end_src
+
 ** Tools
 *** Copilot
 
@@ -33,10 +44,12 @@ Finaly, we configure the acceptance of suggestions.
 #+end_src
 
 *** Markdown
+
 Yes, I love org-mode and I largely prefer to use it instead of
 Markdown due to its far superior power and abilities. But still,
 sometimes I need to use Markdown because not everyone uses org-mode,
 unfortunately.
+
 #+begin_src emacs-lisp
 (use-package markdown-mode
   :defer t
@@ -134,11 +147,14 @@ unfortunately.
     "xs"  #'markdown-insert-strike-through
     "xq"  #'markdown-blockquote-region)
   :config
-  (setq markdown-fontify-code-blocks-natively t))
+  (setq markdown-fontify-code-blocks-natively t)
+  (setq markdown-command "/opt/homebrew/bin/pandoc")
+)
 #+end_src
 
 Since most of my Markdown files are related to GitHub, I'd like to be
 able to render Markdown through its API.
+
 #+begin_src emacs-lisp
 (use-package gh-md
   :defer t
@@ -154,6 +170,7 @@ able to render Markdown through its API.
 Sometimes, I have to work with GitHub's markdown flavour, but I'm not
 really a huge fan of writing it by hand. So instead, I'll write it in
 org-mode and then export it with ~ox-gfm~.
+
 #+begin_src emacs-lisp
 (use-package ox-gfm
   :straight (:build t)
@@ -163,6 +180,7 @@ org-mode and then export it with ~ox-gfm~.
 
 Tables of content are always nice to have for large files, just like
 with the ~toc-org~ package for org-mode.
+
 #+begin_src emacs-lisp
 (use-package markdown-toc
   :defer t
@@ -178,6 +196,7 @@ with the ~toc-org~ package for org-mode.
 Lastly, ~edit-indirect~ is a package that allows to edit code blocks as
 in org-mode but with other major modes, such as code blocks in
 Markdown.
+
 #+begin_src emacs-lisp
 (use-package edit-indirect
   :straight (:build t)
@@ -185,7 +204,7 @@ Markdown.
 #+end_src
 *** Shell
 
-Let's set `zsh` as the main shell.
+Let's set ~zsh~ as the main shell.
 
 #+begin_src emacs-lisp
 (setq explicit-shell-file-name "/bin/zsh")
@@ -194,4 +213,298 @@ Let's set `zsh` as the main shell.
 (defun zsh-shell-mode-setup ()
   (setq-local comint-process-echoes t))
 (add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
+#+end_src
+
+*** Jupyter
+
+#+begin_src emacs-lisp :tangle no
+(use-package jupyter
+  :straight (:build t))
+
+(defun my/jupyter-refresh-kernelspecs ()
+  "Refresh Jupyter kernelspecs"
+  (interactive)
+  (jupyter-available-kernelspecs t))
+#+end_src
+
+*** Treesitter
+Treesit is a native Emacs [[https://tree-sitter.github.io/tree-sitter/][tree-sitter]] implementation which provides a
+very fast and flexible way of performing code-highlighting in Emacs.
+It is built-in in Emacs 29 and newer, and I just need to tweak a couple of
+variables to install grammars for different languages.
+
+#+begin_src emacs-lisp
+(use-package treesit
+  :defer t
+  :straight (:type built-in)
+  :hook ((bash-ts-mode c-ts-mode c++-ts-mode
+          html-ts-mode js-ts-mode typescript-ts-mode
+          json-ts-mode rust-ts-mode tsx-ts-mode python-ts-mode
+          css-ts-mode yaml-ts-mode) . lsp-deferred))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package treesit-fold
+  :after tree-sitter
+  :straight (:build t :host github :repo "emacs-tree-sitter/treesit-fold")
+  :init (global-treesit-fold-mode t))
+#+end_src
+
+** General Programming Languages
+*** C/C++
+
+I know, I know, C and C++ no longer are closely related languages,
+each one of them went their own way and learning C won’t make you a
+good C++ programmer, neither will the other way around. But, They are
+still somewhat related, and Emacs thinks so too.
+
+#+begin_src emacs-lisp
+(use-package cc-mode
+  :straight (:type built-in)
+  :defer t
+  :init
+  (put 'c-c++-backend 'safe-local-variable 'symbolp)
+  (add-hook 'c-mode-hook #'tree-sitter-hl-mode)
+  (add-hook 'c++-mode-hook #'tree-sitter-hl-mode)
+  :config
+  (require 'compile)
+  :general
+  (phundrak/undefine
+    :keymaps '(c-mode-map c++-mode-map)
+    ";" nil)
+  (phundrak/major-leader-key
+   :keymaps '(c-mode-map c++-mode-map)
+   "l"  '(:keymap lsp-command-map :which-key "lsp" :package lsp-mode))
+  (phundrak/evil
+   :keymaps '(c-mode-map c++-mode-map)
+   "ga" #'projectile-find-other-file
+   "gA" #'projectile-find-other-file-other-window))
+#+end_src
+
+Something that is also important when working with these languages is
+respecting the ~.clang-format~ file that may be provided by a project.
+
+#+begin_src emacs-lisp
+(use-package clang-format+
+  :straight (:build t)
+  :defer t
+  :init
+  (add-hook 'c-mode-common-hook #'clang-format+-mode))
+#+end_src
+
+However, Emacs’ notion of C++ is somewhat outdated, so we need to
+update its fontlock.
+
+#+begin_src emacs-lisp
+(use-package modern-cpp-font-lock
+  :straight (:build t)
+  :defer t
+  :hook (c++-mode . modern-c++-font-lock-mode))
+#+end_src
+
+*** CommonLisp
+
+In Lisp buffers, let’s enable ~parinfer-rust-mode~.
+#+begin_src emacs-lisp
+(use-package lisp-mode
+  :straight (:type built-in)
+  :defer t
+  :after parinfer-rust-mode
+  :hook (lisp-mode . parinfer-rust-mode)
+  :config
+  (put 'defcommand 'lisp-indent-function 'defun)
+  (setq inferior-lisp-program "/usr/bin/sbcl --noinform"))
+#+end_src
+
+*** Python
+First, we need to set up the main Python mode. With this, we’ll also
+add Python to the list of LSP languages and to the list of languages
+org-babel supports.
+#+begin_src emacs-lisp
+(use-package python
+  :defer t
+  :straight (:build t)
+  :after ob
+  :mode (("SConstruct\\'" . python-mode)
+         ("SConscript\\'" . python-mode)
+         ("[./]flake8\\'" . conf-mode)
+         ("/Pipfile\\'"   . conf-mode))
+  :init
+  (setq python-indent-guess-indent-offset-verbose nil)
+  (add-hook 'python-mode-local-vars-hook #'lsp)
+  :config
+  (setq python-indent-guess-indent-offset-verbose nil)
+  (when (and (executable-find "python3")
+           (string= python-shell-interpreter "python"))
+    (setq python-shell-interpreter "python3"))
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp")))
+#+end_src
+
+Now let’s add a package for [[https://docs.pytest.org/en/latest/][pytest]].
+#+begin_src emacs-lisp
+(use-package pytest
+  :defer t
+  :straight (:build t)
+  :commands (pytest-one
+             pytest-pdb-one
+             pytest-all
+             pytest-pdb-all
+             pytest-last-failed
+             pytest-pdb-last-failed
+             pytest-module
+             pytest-pdb-module)
+  :config
+  (add-to-list 'pytest-project-root-files "setup.cfg")
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :infix "t"
+   :packages 'pytest
+   ""  '(:ignore t :which-key "test")
+   "a" #'python-pytest
+   "f" #'python-pytest-file-dwim
+   "F" #'python-pytest-file
+   "t" #'python-pytest-function-dwim
+   "T" #'python-pytest-function
+   "r" #'python-pytest-repeat
+   "p" #'python-pytest-dispatch))
+#+end_src
+
+This package will bring a new major mode for editing pip requirements.
+#+begin_src emacs-lisp
+(use-package pip-requirements
+  :defer t
+  :straight (:build t))
+#+end_src
+
+Why use the command line to interact with pip when we can do it with
+an Emacs frontend?
+#+begin_src emacs-lisp
+(use-package pippel
+  :defer t
+  :straight (:build t)
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'python-mode-map
+   :packages 'pippel
+   "P" #'pippel-list-packages))
+#+end_src
+
+Cython is a Python to C compiler. It also introduces the extended
+Cython programming language which makes writing C for Python easier.
+This package is a major mode for the Cython programming language.
+#+begin_src emacs-lisp
+(use-package cython-mode
+  :defer t
+  :straight (:build t)
+  :mode "\\.p\\(yx\\|x[di]\\)\\'"
+  :config
+  (setq cython-default-compile-format "cython -a %s")
+  :general
+  (phundrak/major-leader-key
+   :keymaps 'cython-mode-map
+   :packages 'cython-mode
+   :infix "c"
+   ""  '(:ignore t :which-key "cython")
+   "c" #'cython-compile))
+#+end_src
+
+Flycheck can also be enabled for Cython:
+#+begin_src emacs-lisp
+(use-package flycheck-cython
+  :defer t
+  :straight (:build t)
+  :after cython-mode)
+#+end_src
+
+Blacken uses the ~black~ formatter backend to format Python buffers.
+#+begin_src emacs-lisp
+(use-package blacken
+  :defer t
+  :straight (:build t)
+  :init
+  (add-hook 'python-mode-hook #'blacken-mode))
+#+end_src
+
+Finally, I’m using [[https://github.com/microsoft/pyright][Pyright]] as my LSP backend for Python.
+#+begin_src emacs-lisp
+(use-package lsp-pyright
+  :after lsp-mode
+  :defer t
+  :straight (:buidl t))
+#+end_src
+
+I prefer using UV as my python package management.
+
+#+begin_src emacs-lisp
+(use-package uv-mode
+  :straight (:build t)
+  :hook (python-mode . uv-mode-auto-activate-hook))
+#+end_src
+
+*** Rust
+Rust is a general programming language, akin to C++ in some ways, but
+much more oriented towards safe code, and much better suited for web
+development.
+
+First, I’m using =rust-mode= to tell it to use [[https://tree-sitter.github.io/tree-sitter/][tree sitter]].
+#+begin_src emacs-lisp
+(use-package rust-mode
+  :straight t
+  :defer t
+  :init
+  (setq rust-mode-treesitter-derive t))
+#+end_src
+
+Then, let’s install the most important package, =rustic=, which provides
+several improvements on top of =rust-mode=.
+#+begin_src emacs-lisp
+(use-package rustic
+  :defer t
+  :straight (:build t)
+  :mode ("\\.rs\\'" . rustic-mode)
+  :hook (rustic-mode-local-vars . rustic-setup-lsp)
+  :hook (rustic-mode . lsp-deferred)
+  :init
+  (with-eval-after-load 'org
+    (defalias 'org-babel-execute:rust #'org-babel-execute:rustic)
+    (add-to-list 'org-src-lang-modes '("rust" . rustic)))
+  (setq rustic-lsp-client 'lsp-mode)
+  :general
+  (general-define-key
+   :keymaps 'rustic-mode-map
+   :packages 'lsp
+   "M-t" #'lsp-ui-imenu
+   "M-?" #'lsp-find-references)
+  (phundrak/major-leader-key
+   :keymaps 'rustic-mode-map
+   :packages 'lsp-mode
+   "l"  '(:keymap lsp-command-map :which-key "lsp"))
+  (phundrak/major-leader-key
+   :keymaps 'rustic-mode-map
+   :packages 'rustic
+   "b"  '(:ignore t :which-key "build")
+   "bb" #'rustic-cargo-build
+   "bB" #'rustic-cargo-bench
+   "bc" #'rustic-cargo-check
+   "bC" #'rustic-cargo-clippy
+   "bd" #'rustic-cargo-doc
+   "bf" #'rustic-cargo-fmt
+   "bn" #'rustic-cargo-new
+   "bo" #'rustic-cargo-outdated
+   "br" #'rustic-cargo-run
+   "t"  '(:ignore t :which-key "cargo test")
+   "ta" #'rustic-cargo-test
+   "tt" #'rustic-cargo-current-test)
+  :config
+  (setq rustic-indent-method-chain    t
+        rustic-babel-format-src-block nil
+        rustic-format-trigger         nil)
+  (remove-hook 'rustic-mode-hook #'flycheck-mode)
+  (remove-hook 'rustic-mode-hook #'flymake-mode-off)
+  (remove-hook 'rustic-mode-hook #'rustic-setup-lsp))
 #+end_src

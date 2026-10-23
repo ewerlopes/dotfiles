@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 (add-hook 'before-save-hook #'whitespace-cleanup)
 
 (setq-default sentence-end-double-space nil)
@@ -99,3 +100,17 @@ the user."
 
   :config
   (buffer-terminator-mode 1))
+
+(use-package olivetti
+  :straight t
+  :diminish olivetti-mode
+  :custom
+  (olivetti-body-width 80) ; Set body width in characters or fraction (e.g., 0.7)
+  (olivetti-recall-visual-line-mode-entry-state t)
+  :init
+  (setq-default olivetti-style 'fancy)
+  :hook ((org-mode . olivetti-mode)
+         (markdown-mode . olivetti-mode)
+         ;; Automatically wrap text when olivetti turns on
+         (olivetti-mode . visual-line-mode)))
+
